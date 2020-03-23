@@ -4,7 +4,7 @@
     "strict": true,
     "jsx": "react",
     "module": "commonjs",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "outDir": "./build/",
     "preserveConstEnums": true,
     "removeComments": true,
@@ -16,6 +16,9 @@
     ],
     "skipLibCheck": false,
     "types": ["reflect-metadata"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false

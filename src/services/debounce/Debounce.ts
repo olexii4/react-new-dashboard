@@ -6,7 +6,7 @@ import {injectable} from 'inversify';
  */
 @injectable()
 export class Debounce {
-    private debounceTimer: number | undefined;
+    private debounceTimer: any;
     private isDebounceDelay = false;
     private debounceDelayHandlers: Array<Function> = [];
 

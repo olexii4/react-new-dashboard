@@ -8,7 +8,7 @@ import {
 import './progress.styl';
 
 class CheProgress extends React.PureComponent<{ isLoading: boolean }, { progressVal: number }> {
-    private intervalId: number | undefined;
+    private intervalId: any;
     private readonly onProgressInc: () => void;
 
     constructor(props: any) {

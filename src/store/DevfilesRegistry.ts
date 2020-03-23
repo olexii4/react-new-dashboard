@@ -1,11 +1,11 @@
 import {Action, Reducer} from 'redux';
 import {AppThunkAction} from './';
-import fetchDevfiles from '../services/api/devfiles-registry';
+import {fetchDevfiles} from '../services/api/devfiles-registry';
 
 // This state defines the type of data maintained in the Redux store.
 export interface DevfilesState {
     isLoading: boolean;
-    data: { devfiles: che.IDevfileMetaData[]; registryUrl: string }[];
+    data: { devfiles: che.IDevfileMetaData[]; registryUrl: string; jsonSchema?: any }[];
 }
 
 interface RequestDevfilesAction {

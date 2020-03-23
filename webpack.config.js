@@ -18,6 +18,10 @@ module.exports = env => {
         module: {
             rules: [
                 {
+                    test: /node_modules[\\\\|\/](yaml-language-server)/,
+                    loader: 'umd-compat-loader'
+                },
+                {
                     test: /\.tsx?$/,
                     loader: 'ts-loader'
                 },
@@ -46,7 +50,13 @@ module.exports = env => {
 
             ]
         },
+        node: {
+            fs: 'empty',
+            net: 'empty',
+            module: 'empty'
+        },
         plugins: [
+            new webpack.IgnorePlugin(/prettier/),
             new HtmlWebpackPlugin({
                 template: './index.html'
             }),
