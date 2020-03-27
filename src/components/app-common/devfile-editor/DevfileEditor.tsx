@@ -7,20 +7,21 @@ import * as monacoConversion from 'monaco-languageclient/lib/monaco-converter';
 import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
 import {language, conf} from 'monaco-languages/release/esm/yaml/yaml';
 import * as yamlLanguageServer from 'yaml-language-server';
-import {registerCustomThemes, DEFAULT_CHE_THEME} from './monaco-editor-theme-register';
-import {safeLoad, dump} from 'js-yaml';
+import {registerCustomThemes, DEFAULT_CHE_THEME} from './monaco-theme-register';
+import {load, dump} from 'js-yaml';
 import * as $ from 'jquery';
 
 import './devfile-editor.styl';
 
 const EDITOR_THEME = DEFAULT_CHE_THEME;
 const LANGUAGE_ID = 'yaml';
+const YAML_SERVICE = 'yamlService';
 const MONACO_CONFIG = {language: 'yaml', wordWrap: 'on', lineNumbers: 'on', matchBrackets: true, readOnly: false};
 
 type Props = { devfilesRegistry: DevfilesRegistry.DevfilesState, branding: { branding: BrandingState } } // Redux store
-    & { devfile: che.IWorkspaceDevfile, onChange?: (devfile: che.IWorkspaceDevfile) => void }; // incoming parameters
+    & { devfile: che.IWorkspaceDevfile, onChange?: (devfile: che.IWorkspaceDevfile, isValid: boolean) => void };
 
-class DevfileEditor extends React.PureComponent<Props> {
+class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }> {
     private editor: any;
     private yamlService: any;
     private m2p = new monacoConversion.MonacoToProtocolConverter();
@@ -34,13 +35,15 @@ class DevfileEditor extends React.PureComponent<Props> {
 
     constructor(props: Props) {
         super(props);
+
+        this.state = {errorMessage: ''};
         // lazy initialization
-        if (!window['yamlService']) {
+        if (!window[YAML_SERVICE]) {
             // TODO add loading the web worker code in main thread
             this.yamlService = yamlLanguageServer.getLanguageService(() => Promise.resolve(''), {} as any, []);
-            window['yamlService'] = this.yamlService;
+            window[YAML_SERVICE] = this.yamlService;
         } else {
-            this.yamlService = window['yamlService'];
+            this.yamlService = window[YAML_SERVICE];
             return;
         }
         // register the YAML language with Monaco
@@ -81,7 +84,7 @@ class DevfileEditor extends React.PureComponent<Props> {
             const doc = this.editor.getModel();
             doc.updateOptions({tabSize: 2});
             doc.onDidChangeContent(() => {
-                this.onChange(this.editor.getValue());
+                this.onChange(this.editor.getValue(), true);
             });
             // init language server validation
             this.initLanguageServerValidation(this.editor);
@@ -98,26 +101,27 @@ class DevfileEditor extends React.PureComponent<Props> {
 
     public render() {
         const href = (this.props.branding.branding.branding.docs as any).devfile;
+        const {errorMessage} = this.state;
 
         return (
             <div className='devfile-editor'>
                 <div className='monaco'>&nbsp;</div>
+                <div className='error'>{errorMessage}</div>
                 <a target='_blank' href={href}>Docs: Devfile Structure</a>
             </div>
         );
     }
 
-    private onChange(newValue: string): void {
+    private onChange(newValue: string, isValid: boolean): void {
         let devfile: che.IWorkspaceDevfile;
         try {
-            devfile = safeLoad(newValue);
+            devfile = load(newValue);
         } catch (e) {
             console.error('DevfileEditor parse error', e);
             return;
         }
-        this.setState({devfile});
         if (this.props.onChange) {
-            this.props.onChange(devfile);
+            this.props.onChange(devfile, isValid);
         }
     }
 
@@ -165,12 +169,18 @@ class DevfileEditor extends React.PureComponent<Props> {
                 clearTimeout(request);
                 pendingValidationRequests.delete(document.uri);
             }
+            this.setState({errorMessage: ''});
             pendingValidationRequests.set(document.uri,
                 setTimeout(() => {
                     pendingValidationRequests.delete(document.uri);
                     if (document.getText().length) {
                         this.yamlService.doValidation(document, false).then((diagnostics: any) => {
                             const markers = this.p2m.asDiagnostics(diagnostics);
+                            const errorMessage = markers && markers[0] ? (markers[0] as any).message : '';
+                            if (errorMessage) {
+                                this.setState({errorMessage: `Error. ${errorMessage}`});
+                                this.onChange(editor.getValue(), false);
+                            }
                             monaco.editor.setModelMarkers(model, 'default', markers as any);
                         });
                     } else {

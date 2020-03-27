@@ -33,6 +33,14 @@ export const deleteWorkspace = (workspaceId: string): Promise<che.IWorkspace> =>
     });
 };
 
+export const updateWorkspace = (workspace: che.IWorkspace): Promise<che.IWorkspace> => {
+    return axios.put(`/api/workspace/${workspace.id}`, workspace).then(resp => {
+        return Promise.resolve(resp.data);
+    }).catch(error => {
+        return Promise.reject(error.response);
+    });
+};
+
 export const createWorkspace = (devfileUrl: string, attr: { [param: string]: string }): Promise<che.IWorkspace> => {
     return axios.get(devfileUrl).then(resp => {
         return axios({

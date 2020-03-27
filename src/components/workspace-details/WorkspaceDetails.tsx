@@ -4,12 +4,11 @@ import {RouteComponentProps} from 'react-router';
 import {PageSection, PageSectionVariants, Text, TextContent, Tabs, Tab} from '@patternfly/react-core';
 import {AppState} from '../../store';
 import * as WorkspacesStore from '../../store/Workspaces';
-import {Debounce} from '../../services/debounce/Debounce';
-import {container} from '../../inversify.config';
 import DevfileEditor from '../app-common/devfile-editor/DevfileEditor';
 
 import './workspace-details.styl';
 import WorkspaceIndicator from "../app-nav-menu/workspaces/workspace-indicator/WorkspaceIndicator";
+import CheProgress from "../app-common/progress/progress";
 
 const SECTION_THEME = PageSectionVariants.light;
 
@@ -22,14 +21,12 @@ type WorkspaceDetailsProps =
 type WorkspaceDetailsState = { activeTabKey: number, workspace?: che.IWorkspace };
 
 class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, WorkspaceDetailsState> {
-    private debounce: Debounce;
+    private timeoutId: any;
     private readonly handleTabClick: (event: any, tabIndex: any) => void;
 
 
     constructor(props: WorkspaceDetailsProps) {
         super(props);
-
-        this.debounce = container.get(Debounce);
 
         const {namespace, workspaceName} = this.props.match.params;
         const workspace = this.props.workspaces.find(workspace => {
@@ -63,29 +60,57 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
                     </TextContent>
                 </PageSection>
                 <PageSection variant={SECTION_THEME}>
-                    <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
+                    <Tabs isFilled activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
                         <Tab eventKey={0} title="Overview">
-                            <br/><p>Tab 1 section</p>
+                            <br/><br/><p>Tab 1 section</p><br/><br/>
                         </Tab>
                         <Tab eventKey={1} title="Projects">
-                            <br/><p>Tab 2 section</p>
+                            <br/><br/><p>Tab 2 section</p><br/><br/>
                         </Tab>
                         <Tab eventKey={2} title="Plugins">
-                            <br/><p>Tab 3 section</p>
+                            <br/><br/><p>Tab 3 section</p><br/><br/>
                         </Tab>
                         <Tab eventKey={3} title="Editors">
-                            <br/><p>Tab 4 section</p>
+                            <br/><br/><p>Tab 4 section</p><br/><br/>
                         </Tab>
                         <Tab eventKey={4} title="Devfile">
+                            <CheProgress isLoading={this.props.isLoading}/><br/>
                             <TextContent className='workspace-details-editor'>
                                 <Text component='h3' className='label'>Workspace</Text>
-                                <DevfileEditor devfile={workspace.devfile}/>
+                                <DevfileEditor devfile={workspace.devfile}
+                                               onChange={(devfile: che.IWorkspaceDevfile, isValid: boolean) => {
+                                                   this.onChange(workspace, devfile, isValid);
+                                               }}/>
                             </TextContent>
                         </Tab>
                     </Tabs>
                 </PageSection>
             </React.Fragment>
         );
+    }
+
+    private onChange(workspace: che.IWorkspace, newDevfile: che.IWorkspaceDevfile, isValid: boolean): void {
+        clearTimeout(this.timeoutId);
+        if (!isValid) {
+            return;
+        }
+        if (!this.isEqualObject(workspace.devfile, newDevfile)) {
+            this.timeoutId = setTimeout(() => {
+                const newWorkspace = Object.assign({}, workspace);
+                newWorkspace.devfile = newDevfile;
+                this.props.updateWorkspace(newWorkspace);
+            }, 2000);
+        }
+    }
+
+    // TODO rework this temporary solution
+    private sortObject(o: che.IWorkspaceDevfile) {
+        return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+    }
+
+    // TODO rework this temporary solution
+    private isEqualObject(a: che.IWorkspaceDevfile, b: che.IWorkspaceDevfile) {
+        return JSON.stringify(this.sortObject(a)) == JSON.stringify(this.sortObject(b));
     }
 }
 

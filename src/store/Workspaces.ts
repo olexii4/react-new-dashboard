@@ -5,7 +5,8 @@ import {
     deleteWorkspace,
     fetchWorkspaces,
     startWorkspace,
-    stopWorkspace
+    stopWorkspace,
+    updateWorkspace
 } from '../services/api/workspaces';
 import {container} from '../inversify.config';
 import {CheJsonRpcApi} from '../services/json-rpc/JsonRpcApiFactory';
@@ -65,9 +66,10 @@ const jsonRpcApiLocation = new URL(window.location.href).origin.replace('http', 
 
 export type IActionCreators = {
     requestWorkspaces: () => any;
-    startWorkspace: (workspace: string) => any;
-    stopWorkspace: (workspace: string) => any;
-    deleteWorkspace: (workspace: string) => any;
+    startWorkspace: (workspaceId: string) => any;
+    stopWorkspace: (workspaceId: string) => any;
+    deleteWorkspace: (workspaceId: string) => any;
+    updateWorkspace: (workspace: che.IWorkspace) => any;
     createWorkspace: (devfileUrl: string, attributes: { [param: string]: string }) => any;
 }
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -143,6 +145,21 @@ export const actionCreators: IActionCreators = {
             const promise = deleteWorkspace(workspaceId);
             promise.then(() => {
                 dispatch({type: 'DELETE_WORKSPACE', workspaceId});
+            }).catch(error => {
+                dispatch({type: 'RECEIVE_ERROR'});
+                return Promise.reject(error);
+            });
+            dispatch({type: 'REQUEST_WORKSPACES'});
+            return promise;
+        }
+        return Promise.reject();
+    },
+    updateWorkspace: (workspace: che.IWorkspace): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const appState = getState();
+        if (appState && appState.workspaces) {
+            const promise = updateWorkspace(workspace);
+            promise.then(workspace => {
+                dispatch({type: 'UPDATE_WORKSPACE', workspace});
             }).catch(error => {
                 dispatch({type: 'RECEIVE_ERROR'});
                 return Promise.reject(error);
