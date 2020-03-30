@@ -1,14 +1,24 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {RouteComponentProps} from 'react-router';
-import {PageSection, PageSectionVariants, Text, TextContent, Tabs, Tab} from '@patternfly/react-core';
+import {
+    PageSection,
+    PageSectionVariants,
+    Text,
+    TextContent,
+    Tabs,
+    Tab,
+    Button,
+    Alert,
+    AlertActionCloseButton
+} from '@patternfly/react-core';
+import WorkspaceIndicator from '../app-nav-menu/workspaces/workspace-indicator/WorkspaceIndicator';
+import CheProgress from '../app-common/progress/progress';
 import {AppState} from '../../store';
 import * as WorkspacesStore from '../../store/Workspaces';
 import DevfileEditor from '../app-common/devfile-editor/DevfileEditor';
 
 import './workspace-details.styl';
-import WorkspaceIndicator from "../app-nav-menu/workspaces/workspace-indicator/WorkspaceIndicator";
-import CheProgress from "../app-common/progress/progress";
 
 const SECTION_THEME = PageSectionVariants.light;
 
@@ -18,12 +28,16 @@ type WorkspaceDetailsProps =
     & { history: any } // ... plus history
     & RouteComponentProps<{ namespace: string, workspaceName: string }>; // incoming parameters
 
-type WorkspaceDetailsState = { activeTabKey: number, workspace?: che.IWorkspace };
+type WorkspaceDetailsState = { activeTabKey: number, workspace: che.IWorkspace, alertVisible: boolean, isDevfileValid: boolean, hasRequestErrors: boolean };
 
 class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, WorkspaceDetailsState> {
     private timeoutId: any;
+    private cancelFn: Function;
+    private alert: { variant?: 'success' | 'danger'; title?: string } = {};
+    private showAlert: (variant: 'success' | 'danger', title: string, timeDelay?: number) => void;
+    private hideAlert: () => void;
     private readonly handleTabClick: (event: any, tabIndex: any) => void;
-
+    private readonly cancelChanges: (workspaceId: string | undefined) => void;
 
     constructor(props: WorkspaceDetailsProps) {
         super(props);
@@ -34,23 +48,57 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
         });
         if (!workspace) {
             this.props.history.push('/');
+            return;
         }
 
-        const activeTabKey = 4;
-        this.state = {workspace, activeTabKey};
+        this.state = {
+            workspace: Object.assign({}, workspace),
+            activeTabKey: 4,
+            alertVisible: false,
+            isDevfileValid: true,
+            hasRequestErrors: false
+        };
 
         // Toggle currently active tab
         this.handleTabClick = (event: any, tabIndex: any) => {
             this.setState({activeTabKey: tabIndex});
         };
+        this.cancelChanges = (workspaceId: string | undefined) => {
+            clearTimeout(this.timeoutId);
+            const workspace = this.props.workspaces.find(workspace => {
+                return workspace.id === workspaceId;
+            });
+            if (workspace) {
+                this.setState({workspace: Object.assign({}, workspace)});
+            }
+        };
+        this.showAlert = (variant: 'success' | 'danger', title: string, timeDelay?: number) => {
+            this.alert = {variant, title};
+            this.setState({alertVisible: true});
+            setTimeout(() => {
+                this.setState({alertVisible: false});
+            }, timeDelay ? timeDelay : 2000);
+        };
+        this.hideAlert = () => this.setState({alertVisible: false});
     }
 
     public render() {
-        const workspace = this.state.workspace!;
-        const {namespace, workspaceName} = this.props.match.params;
+        const {workspace, alertVisible} = this.state;
+        const workspaceName = workspace.devfile.metadata.name;
+
+        const setCallback = (updateFunction: Function) => {
+            this.cancelFn = updateFunction;
+        };
 
         return (
             <React.Fragment>
+                {alertVisible && (
+                    <Alert
+                        variant={this.alert.variant}
+                        title={this.alert.title}
+                        action={<AlertActionCloseButton onClose={this.hideAlert}/>}
+                    />
+                )}
                 <PageSection variant={SECTION_THEME} className='workspace-details-header'>
                     <TextContent>
                         <Text component='h1'>
@@ -61,26 +109,35 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
                 </PageSection>
                 <PageSection variant={SECTION_THEME}>
                     <Tabs isFilled activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
-                        <Tab eventKey={0} title="Overview">
+                        <Tab eventKey={0} title='Overview'>
                             <br/><br/><p>Tab 1 section</p><br/><br/>
                         </Tab>
-                        <Tab eventKey={1} title="Projects">
+                        <Tab eventKey={1} title='Projects'>
                             <br/><br/><p>Tab 2 section</p><br/><br/>
                         </Tab>
-                        <Tab eventKey={2} title="Plugins">
+                        <Tab eventKey={2} title='Plugins'>
                             <br/><br/><p>Tab 3 section</p><br/><br/>
                         </Tab>
-                        <Tab eventKey={3} title="Editors">
+                        <Tab eventKey={3} title='Editors'>
                             <br/><br/><p>Tab 4 section</p><br/><br/>
                         </Tab>
-                        <Tab eventKey={4} title="Devfile">
+                        <Tab eventKey={4} title='Devfile'>
                             <CheProgress isLoading={this.props.isLoading}/><br/>
                             <TextContent className='workspace-details-editor'>
                                 <Text component='h3' className='label'>Workspace</Text>
-                                <DevfileEditor devfile={workspace.devfile}
+                                <DevfileEditor devfile={workspace.devfile} setUpdateEditorCallback={setCallback}
                                                onChange={(devfile: che.IWorkspaceDevfile, isValid: boolean) => {
-                                                   this.onChange(workspace, devfile, isValid);
+                                                   this.onDevfileChange(workspace, devfile, isValid);
                                                }}/>
+                                {(!this.state.isDevfileValid || this.state.hasRequestErrors) && (
+                                    <Button onClick={() => {
+                                        if (this.cancelFn) {
+                                            this.cancelFn();
+                                        }
+                                    }} variant='secondary' className='cancel-button'>
+                                        Cancel
+                                    </Button>
+                                )}
                             </TextContent>
                         </Tab>
                     </Tabs>
@@ -89,7 +146,8 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
         );
     }
 
-    private onChange(workspace: che.IWorkspace, newDevfile: che.IWorkspaceDevfile, isValid: boolean): void {
+    private onDevfileChange(workspace: che.IWorkspace, newDevfile: che.IWorkspaceDevfile, isValid: boolean): void {
+        this.setState({isDevfileValid: isValid});
         clearTimeout(this.timeoutId);
         if (!isValid) {
             return;
@@ -98,7 +156,17 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
             this.timeoutId = setTimeout(() => {
                 const newWorkspace = Object.assign({}, workspace);
                 newWorkspace.devfile = newDevfile;
-                this.props.updateWorkspace(newWorkspace);
+                this.props.updateWorkspace(newWorkspace).then((workspace: che.IWorkspace) => {
+                    this.setState({hasRequestErrors: false});
+                    this.setState({workspace});
+                    this.showAlert('success', `Workspace has been updated`, 1000);
+                    const url = `/workspace/${workspace.namespace}/${workspace.devfile.metadata.name}`;
+                    this.props.history.replace(url);
+                }).catch((error: { data?: { message?: string } }) => {
+                    this.setState({hasRequestErrors: true});
+                    const message = error.data && error.data.message ? error.data.message : 'Unknown error';
+                    this.showAlert('danger', message, 10000);
+                });
             }, 2000);
         }
     }

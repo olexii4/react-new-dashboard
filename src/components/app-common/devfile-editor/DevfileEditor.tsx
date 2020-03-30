@@ -19,7 +19,11 @@ const YAML_SERVICE = 'yamlService';
 const MONACO_CONFIG = {language: 'yaml', wordWrap: 'on', lineNumbers: 'on', matchBrackets: true, readOnly: false};
 
 type Props = { devfilesRegistry: DevfilesRegistry.DevfilesState, branding: { branding: BrandingState } } // Redux store
-    & { devfile: che.IWorkspaceDevfile, onChange?: (devfile: che.IWorkspaceDevfile, isValid: boolean) => void };
+    & {
+    devfile: che.IWorkspaceDevfile,
+    onChange?: (devfile: che.IWorkspaceDevfile, isValid: boolean) => void,
+    setUpdateEditorCallback?: (Function) => void
+};
 
 class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }> {
     private editor: any;
@@ -37,6 +41,14 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
         super(props);
 
         this.state = {errorMessage: ''};
+        if (this.props.setUpdateEditorCallback) {
+            this.props.setUpdateEditorCallback(() => {
+                if (this.editor) {
+                    const doc = this.editor.getModel();
+                    doc.setValue(dump(this.props.devfile, {'indent': 1}));
+                }
+            });
+        }
         // lazy initialization
         if (!window[YAML_SERVICE]) {
             // TODO add loading the web worker code in main thread

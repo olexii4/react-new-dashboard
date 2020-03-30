@@ -8,7 +8,6 @@ import {Table, TableBody, TableHeader} from '@patternfly/react-table';
 import WorkspaceIndicator from './workspace-indicator/WorkspaceIndicator';
 import WorkspaceStatus from './actions/WorkspaceStatus';
 import DeleteWorkspace from './actions/DeleteWorkspace';
-import {IBrandingDocs} from '../../../services/bootstrap/branding.constant';
 import {BrandingState} from '../../../store/Branding';
 import {Debounce} from '../../../services/debounce/Debounce';
 import {container} from '../../../inversify.config';
@@ -24,13 +23,11 @@ type WorkspacesProps =
     & { history: any };
 
 export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
-    private docs: IBrandingDocs;
     private debounce: Debounce;
 
     constructor(props: WorkspacesProps) {
         super(props);
 
-        this.docs = this.props.branding.branding.branding.docs as IBrandingDocs;
         this.debounce = container.get(Debounce);
     }
 
@@ -79,6 +76,8 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
             ]
         })) || [];
 
+        const {docs: {workspace}, workspace: {creationLink}} = this.props.branding.branding.branding as any;
+
         return (
             <React.Fragment>
                 <PageSection variant={SECTION_THEME}>
@@ -87,11 +86,11 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
                 <Text className='page-description' component='p'>
                     A workspace is where your projects live and run.
                     Create workspaces from stacks that define projects, runtimes, and commands.
-                    <a href={this.docs.workspace}>Learn more.</a>
+                    <a href={workspace}>Learn more.</a>
                 </Text>
                 <CheProgress isLoading={this.props.workspaces.isLoading}/>
                 <PageSection variant={SECTION_THEME} className='header-buttons'>
-                    <Button component='a' href='#/create-workspace' variant='primary'>
+                    <Button onClick={() => this.props.history.push(creationLink)} variant='primary'>
                         Add Workspace
                     </Button>
                 </PageSection>
