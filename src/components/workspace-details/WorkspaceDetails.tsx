@@ -107,25 +107,26 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
                         </Text>
                     </TextContent>
                 </PageSection>
-                <PageSection variant={SECTION_THEME}>
+                <PageSection variant={SECTION_THEME} className='workspace-details-tabs'>
                     <Tabs isFilled activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
                         <Tab eventKey={0} title='Overview'>
-                            <br/><br/><p>Tab 1 section</p><br/><br/>
+                            <br/><p>Tab 1 section</p>
                         </Tab>
                         <Tab eventKey={1} title='Projects'>
-                            <br/><br/><p>Tab 2 section</p><br/><br/>
+                            <br/><p>Tab 2 section</p>
                         </Tab>
                         <Tab eventKey={2} title='Plugins'>
-                            <br/><br/><p>Tab 3 section</p><br/><br/>
+                            <br/><p>Tab 3 section</p>
                         </Tab>
                         <Tab eventKey={3} title='Editors'>
-                            <br/><br/><p>Tab 4 section</p><br/><br/>
+                            <br/><p>Tab 4 section</p>
                         </Tab>
                         <Tab eventKey={4} title='Devfile'>
                             <CheProgress isLoading={this.props.isLoading}/><br/>
                             <TextContent className='workspace-details-editor'>
                                 <Text component='h3' className='label'>Workspace</Text>
                                 <DevfileEditor devfile={workspace.devfile} setUpdateEditorCallback={setCallback}
+                                               decorationPattern='location[ \t]*(.*)[ \t]*$'
                                                onChange={(devfile: che.IWorkspaceDevfile, isValid: boolean) => {
                                                    this.onDevfileChange(workspace, devfile, isValid);
                                                }}/>

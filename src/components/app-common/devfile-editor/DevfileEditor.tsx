@@ -13,6 +13,12 @@ import * as $ from 'jquery';
 
 import './devfile-editor.styl';
 
+interface IEditor {
+    getValue(): string,
+
+    getModel(): any
+}
+
 const EDITOR_THEME = DEFAULT_CHE_THEME;
 const LANGUAGE_ID = 'yaml';
 const YAML_SERVICE = 'yamlService';
@@ -21,11 +27,13 @@ const MONACO_CONFIG = {language: 'yaml', wordWrap: 'on', lineNumbers: 'on', matc
 type Props = { devfilesRegistry: DevfilesRegistry.DevfilesState, branding: { branding: BrandingState } } // Redux store
     & {
     devfile: che.IWorkspaceDevfile,
+    decorationPattern?: string,
     onChange?: (devfile: che.IWorkspaceDevfile, isValid: boolean) => void,
     setUpdateEditorCallback?: (Function) => void
 };
 
 class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }> {
+    private handleResize: () => void;
     private editor: any;
     private yamlService: any;
     private m2p = new monacoConversion.MonacoToProtocolConverter();
@@ -51,7 +59,6 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
         }
         // lazy initialization
         if (!window[YAML_SERVICE]) {
-            // TODO add loading the web worker code in main thread
             this.yamlService = yamlLanguageServer.getLanguageService(() => Promise.resolve(''), {} as any, []);
             window[YAML_SERVICE] = this.yamlService;
         } else {
@@ -91,11 +98,34 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
         const element = $('.devfile-editor .monaco').get(0);
         if (element) {
             const value = dump(this.props.devfile, {'indent': 1});
-            this.editor = monaco.editor.create(element, Object.assign({value}, MONACO_CONFIG));
-            this.editor.layout({height: '600', width: '1000'});
+            this.editor = monaco.editor.create(element, Object.assign(
+                {value},
+                MONACO_CONFIG,
+                {
+                    automaticLayout: true
+                }
+            ));
+
+            this.handleResize = () => {
+                const layout = {height: element.offsetHeight, width: element.offsetWidth};
+                this.editor.layout(layout);
+            };
+            const handleResize = this.handleResize;
+            handleResize();
+            window.addEventListener('resize', handleResize);
+
             const doc = this.editor.getModel();
             doc.updateOptions({tabSize: 2});
+
+            let oldDecorationIds: string[] = []; // Array containing previous decorations identifiers.
+            const updateDecorations = () => {
+                if (this.props.decorationPattern) {
+                    oldDecorationIds = this.editor.deltaDecorations(oldDecorationIds, this.getDecorations());
+                }
+            };
+            updateDecorations();
             doc.onDidChangeContent(() => {
+                updateDecorations();
                 this.onChange(this.editor.getValue(), true);
             });
             // init language server validation
@@ -108,6 +138,10 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
         if (!this.editor) {
             this.editor.getModel().dispose();
             this.editor.dispose();
+        }
+        if (this.handleResize) {
+            const handleResize = this.handleResize;
+            window.removeEventListener('resize', handleResize);
         }
     }
 
@@ -122,6 +156,33 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
                 <a target='_blank' href={href}>Docs: Devfile Structure</a>
             </div>
         );
+    }
+
+    private getDecorations(): monaco.editor.IModelDecoration[] {
+        const decorations: monaco.editor.IModelDecoration[] = [];
+        if (this.props.decorationPattern) {
+            const decorationRegExp = new RegExp(this.props.decorationPattern, 'img');
+            const model = this.editor.getModel();
+            const value = this.editor.getValue();
+            let match = decorationRegExp.exec(value);
+            while (match) {
+                const startPosition = model.getPositionAt(match.index);
+                const endPosition = model.getPositionAt(match.index + match[0].length);
+                decorations.push({
+                    range: {
+                        startLineNumber: startPosition.lineNumber,
+                        startColumn: startPosition.column,
+                        endLineNumber: endPosition.lineNumber,
+                        endColumn: endPosition.column,
+                    },
+                    options: {
+                        inlineClassName: 'devfile-editor-decoration'
+                    }
+                } as monaco.editor.IModelDecoration);
+                match = decorationRegExp.exec(value);
+            }
+        }
+        return decorations;
     }
 
     private onChange(newValue: string, isValid: boolean): void {
@@ -140,22 +201,20 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
     private registerLanguageServerProviders(languages: any): void {
         const createDocument = this.createDocument;
         const yamlService = this.yamlService;
-        const m2p = this.m2p as any;
-        const p2m = this.p2m as any;
+        const m2p = this.m2p;
+        const p2m = this.p2m;
 
         languages.registerCompletionItemProvider(LANGUAGE_ID, {
-            provideCompletionItems(model: any, position: any) {
+            provideCompletionItems(model: monaco.editor.ITextModel, position: monaco.Position) {
                 const document = createDocument(model);
-                return yamlService
-                    .doComplete(document, m2p.asPosition(position.lineNumber, position.column), true)
-                    .then(list => p2m.asCompletionResult(list));
+                return yamlService.doComplete(document, m2p.asPosition(position.lineNumber, position.column), true)
+                    .then(list => p2m.asCompletionResult(list, {} as any));
             },
-            resolveCompletionItem(item: any) {
-                return yamlService
-                    .doResolve(m2p.asCompletionItem(item))
-                    .then(result => p2m.asCompletionItem(result));
+            resolveCompletionItem(item: monaco.languages.CompletionItem) {
+                return yamlService.doResolve(m2p.asCompletionItem(item))
+                    .then(result => p2m.asCompletionItem(result, {} as any));
             },
-        });
+        } as monaco.languages.CompletionItemProvider);
         languages.registerDocumentSymbolProvider(LANGUAGE_ID, {
             provideDocumentSymbols(model: any) {
                 return p2m.asSymbolInformations(yamlService.findDocumentSymbols(createDocument(model)));
@@ -163,46 +222,33 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
         });
         languages.registerHoverProvider(LANGUAGE_ID, {
             provideHover(model: any, position: any) {
-                return yamlService
-                    .doHover(createDocument(model), m2p.asPosition(position.lineNumber, position.column))
+                return yamlService.doHover(createDocument(model), m2p.asPosition(position.lineNumber, position.column))
                     .then(hover => p2m.asHover(hover));
             },
         });
     }
 
-    private initLanguageServerValidation(editor: any): void {
+    private initLanguageServerValidation(editor: IEditor): void {
         const model = editor.getModel();
-        const pendingValidationRequests = new Map();
+        let validationTimer: any;
 
         model.onDidChangeContent(() => {
             const document = this.createDocument(model);
-            const request = pendingValidationRequests.get(document.uri);
-            if (request) {
-                clearTimeout(request);
-                pendingValidationRequests.delete(document.uri);
-            }
             this.setState({errorMessage: ''});
-            pendingValidationRequests.set(document.uri,
-                setTimeout(() => {
-                    pendingValidationRequests.delete(document.uri);
-                    if (document.getText().length) {
-                        this.yamlService.doValidation(document, false).then((diagnostics: any) => {
-                            const markers = this.p2m.asDiagnostics(diagnostics);
-                            const errorMessage = markers && markers[0] ? (markers[0] as any).message : '';
-                            if (errorMessage) {
-                                this.setState({errorMessage: `Error. ${errorMessage}`});
-                                this.onChange(editor.getValue(), false);
-                            }
-                            monaco.editor.setModelMarkers(model, 'default', markers as any);
-                        });
-                    } else {
-                        monaco.editor.setModelMarkers(monaco.editor.getModel({
-                            scheme: 'inmemory',
-                            authority: 'model.yaml'
-                        } as any), 'default', []);
+            if (validationTimer) {
+                clearTimeout(validationTimer);
+            }
+            validationTimer = setTimeout(() => {
+                this.yamlService.doValidation(document, false).then(diagnostics => {
+                    const markers = this.p2m.asDiagnostics(diagnostics);
+                    const errorMessage = markers && markers[0] ? (markers[0] as any).message : '';
+                    if (errorMessage) {
+                        this.setState({errorMessage: `Error. ${errorMessage}`});
+                        this.onChange(editor.getValue(), false);
                     }
-                })
-            );
+                    monaco.editor.setModelMarkers(model, 'default', markers as any);
+                });
+            })
         });
     }
 }
@@ -210,6 +256,6 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
 export default connect(
     (state: AppState) => {
         const {devfilesRegistry, branding} = state;
-        return {devfilesRegistry, branding}; // Selects which state properties are merged into the component's props
+        return {devfilesRegistry, branding}; // Properties are merged into the component's props
     }
 )(DevfileEditor);

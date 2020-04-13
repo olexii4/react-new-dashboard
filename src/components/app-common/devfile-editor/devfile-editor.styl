@@ -1,15 +1,25 @@
 .devfile-editor
-  width 1000px
-  height 670px
-  float left
+  width calc(100% - 70px)
+  .monaco
+    position relative
+    min-width 550px
+    width 100%
+    min-height 550px
+    .monaco-editor
+      border 1px solid #cecece
+      position absolute
+      top 0
+      left 0
+      right 0
+      bottom 0
+    .devfile-editor-decoration
+      background-color alpha(#f1c050, 0.5)
   .error
     color #e22812
     font-size 15px
-    height 18px
+    height 16px
   a
     color #3782c4
     font-size 15px
     line-height 25px
     text-decoration none
-  .monaco .monaco-editor
-    border 1px solid #cecece
