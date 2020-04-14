@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {AppState} from '../../../store';
 import * as DevfilesRegistry from '../../../store/DevfilesRegistry';
 import {BrandingState} from '../../../store/Branding';
+import {DisposableCollection} from '../../../services/disposable';
 import * as monacoConversion from 'monaco-languageclient/lib/monaco-converter';
 import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
 import {language, conf} from 'monaco-languages/release/esm/yaml/yaml';
@@ -14,9 +15,8 @@ import * as $ from 'jquery';
 import './devfile-editor.styl';
 
 interface IEditor {
-    getValue(): string,
-
-    getModel(): any
+    getValue(): string;
+    getModel(): any;
 }
 
 const EDITOR_THEME = DEFAULT_CHE_THEME;
@@ -33,7 +33,7 @@ type Props = { devfilesRegistry: DevfilesRegistry.DevfilesState, branding: { bra
 };
 
 class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }> {
-    private handleResize: () => void;
+    private readonly toDispose = new DisposableCollection();
     private editor: any;
     private yamlService: any;
     private m2p = new monacoConversion.MonacoToProtocolConverter();
@@ -100,22 +100,28 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
             const value = dump(this.props.devfile, {'indent': 1});
             this.editor = monaco.editor.create(element, Object.assign(
                 {value},
-                MONACO_CONFIG,
-                {
-                    automaticLayout: true
-                }
+                MONACO_CONFIG
             ));
-
-            this.handleResize = () => {
-                const layout = {height: element.offsetHeight, width: element.offsetWidth};
-                this.editor.layout(layout);
-            };
-            const handleResize = this.handleResize;
-            handleResize();
-            window.addEventListener('resize', handleResize);
 
             const doc = this.editor.getModel();
             doc.updateOptions({tabSize: 2});
+
+            const handleResize = () => {
+                const layout = {height: element.offsetHeight, width: element.offsetWidth};
+                this.editor.layout(layout);
+            };
+            window.addEventListener('resize', handleResize);
+            this.toDispose.push({
+                dispose: () => {
+                    if (doc) {
+                        doc.dispose();
+                    }
+                    if (this.editor) {
+                        this.editor.dispose();
+                    }
+                    window.removeEventListener('resize', handleResize);
+                }
+            });
 
             let oldDecorationIds: string[] = []; // Array containing previous decorations identifiers.
             const updateDecorations = () => {
@@ -135,14 +141,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
 
     // This method is called when the component is removed from the document
     public componentWillUnmount() {
-        if (!this.editor) {
-            this.editor.getModel().dispose();
-            this.editor.dispose();
-        }
-        if (this.handleResize) {
-            const handleResize = this.handleResize;
-            window.removeEventListener('resize', handleResize);
-        }
+        this.toDispose.dispose();
     }
 
     public render() {
