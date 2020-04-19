@@ -2,7 +2,7 @@
   "name": "react-new-dashboard",
   "version": "1.0.0",
   "description": "New dashboard for Eclipse CHE",
-  "main": "webpack.config.js",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/olexii4/react-new-dashboard.git"
@@ -13,13 +13,35 @@
     "url": "https://github.com/olexii4/react-new-dashboard/issues"
   },
   "homepage": "https://github.com/olexii4/react-new-dashboard#readme",
+  "engines": {
+    "yarn": ">=1.13.0",
+    "node": ">=8.16"
+  },
+  "scripts": {
+    "compile": "webpack --config webpack.config.prod.js",
+    "compile:source-map": "yarn run compile --devtool source-map",
+    "start": "webpack-dev-server --progress --color --config webpack.config.dev.js",
+    "format": "tsfmt -r --useTsfmt tsfmt.json",
+    "lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --fix",
+    "serve:prod": "yarn run compile:source-map && webpack-dev-server --color --disable-host-check --config webpack.config.prod-dev.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
   "dependencies": {
     "@material-ui/core": "^4.9.2",
     "@patternfly/patternfly": "^2.62.0",
     "@patternfly/react-core": "^3.140.11",
     "@patternfly/react-icons": "^3.15.3",
     "@patternfly/react-table": "^2.27.11",
-    "@types/react-gravatar": "^2.6.7",
     "axios": "^0.19.2",
     "connected-react-router": "^6.7.0",
     "history": "^4.10.1",
@@ -47,14 +69,6 @@
     "umd-compat-loader": "2.1.1",
     "yaml-language-server": "^0.7.2"
   },
-  "engines": {
-    "yarn": ">=1.13.0",
-    "node": ">=8.16"
-  },
-  "scripts": {
-    "build": "webpack --mode development",
-    "start": "webpack-dev-server --color --client-log-level debug"
-  },
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/history": "^4.7.5",
@@ -64,15 +78,25 @@
     "@types/node": "^13.7.1",
     "@types/react": "^16.9.19",
     "@types/react-dom": "^16.9.5",
+    "@types/react-gravatar": "^2.6.7",
     "@types/react-redux": "^7.1.7",
     "@types/react-router": "^5.1.4",
     "@types/react-router-dom": "^5.1.3",
     "@types/reactstrap": "^8.4.1",
     "@types/webpack": "^4.41.6",
     "@types/webpack-dev-server": "^3.10.0",
+    "@typescript-eslint/eslint-plugin": "^2.28.0",
+    "@typescript-eslint/parser": "^2.28.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.4.2",
+    "eslint": "^6.8.0",
+    "eslint-loader": "^4.0.0",
+    "eslint-plugin-react": "^7.19.0",
     "file-loader": "^5.0.2",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.1.4",
     "poststylus": "^1.0.0",
     "regenerator-runtime": "^0.13.3",
     "source-map-loader": "^0.2.4",
@@ -82,8 +106,10 @@
     "ts-loader": "^6.2.1",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5",
+    "typescript-formatter": "^7.2.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.10.3",
+    "webpack-merge": "^4.2.2"
   }
 }

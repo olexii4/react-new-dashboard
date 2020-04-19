@@ -34,9 +34,6 @@ So, it is better to login previously (I am about [che.openshift.io](https://che.
 
 With initial implementation, this dashboard can show a simple list of created workspaces.
 
-PS
-We can check our proxy. Just try in browser '${CHE_HOST}/api/nope' and you will receive a bypass page(bypass.html).
-
 An example of how to run with custom port and  server  
 
 ```sh
