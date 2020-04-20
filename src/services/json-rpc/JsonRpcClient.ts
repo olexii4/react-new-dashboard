@@ -42,16 +42,16 @@ export interface ICommunicationClient {
 }
 
 type IRequest = {
-  jsonrpc: string,
-  id: string,
-  method: string,
-  params: any,
+  jsonrpc: string;
+  id: string;
+  method: string;
+  params: any;
 }
 
 type INotification = {
-  jsonrpc: string,
-  method: string,
-  params: any,
+  jsonrpc: string;
+  method: string;
+  params: any;
 }
 
 /**
@@ -70,7 +70,7 @@ export class JsonRpcClient {
    * The list of notification handlers by method name.
    */
   private notificationHandlers: Map<string, Array<Function>>;
-  private counter: number = 100;
+  private counter = 100;
 
   constructor(client: ICommunicationClient) {
     this.client = client;

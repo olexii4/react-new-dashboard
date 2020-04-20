@@ -22,8 +22,8 @@ import './samples-list.styl';
 // At runtime, Redux will merge together...
 type DevfilesRegistryProps =
   {
-    devfilesRegistry: DevfilesRegistryStore.DevfilesState,
-    workspaces: WorkspacesStore.WorkspacesState
+    devfilesRegistry: DevfilesRegistryStore.DevfilesState;
+    workspaces: WorkspacesStore.WorkspacesState;
   }// ... state we've requested from the Redux store
   & WorkspacesStore.IActionCreators // ... plus action creators we've requested
   & { history: any };
@@ -101,7 +101,7 @@ export class SamplesList extends React.PureComponent<DevfilesRegistryProps, { al
         <CheProgress isLoading={this.props.workspaces.isLoading} />
         <PageSection>
           <Gallery gutter='md'>
-            {data.map((data: { devfiles: che.IDevfileMetaData[], registryUrl: string }, index: number) => (
+            {data.map((data: { devfiles: che.IDevfileMetaData[]; registryUrl: string }, index: number) => (
               data.devfiles.map((devfile: che.IDevfileMetaData, key: number) => (
                 <div
                   className='pf-c-card pf-m-hoverable pf-m-compact get-started-template'

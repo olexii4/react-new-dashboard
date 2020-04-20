@@ -9,8 +9,8 @@ export enum MasterChannels {
   ENVIRONMENT_STATUS = 'machine/statusChanged',
   WORKSPACE_STATUS = 'workspace/statusChanged'
 }
-const SUBSCRIBE: string = 'subscribe';
-const UNSUBSCRIBE: string = 'unsubscribe';
+const SUBSCRIBE = 'subscribe';
+const UNSUBSCRIBE = 'unsubscribe';
 
 /**
  * Client API for workspace master interactions.

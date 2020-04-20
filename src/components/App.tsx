@@ -13,10 +13,10 @@ import './app.styl';
 
 
 type Item = {
-  to: string,
-  component: React.FunctionComponent<any>,
-  label?: string,
-  ico?: string
+  to: string;
+  component: React.FunctionComponent<any>;
+  label?: string;
+  ico?: string;
 };
 
 const items: Item[] = [

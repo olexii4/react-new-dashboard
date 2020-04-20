@@ -19,7 +19,7 @@ export const setUser = (user: che.IUser | {}) => {
 
 const unloadedState: UserState = { user: { id: '', name: '', email: '' }, isLogged: false };
 
-const userReducer = (state: UserState | undefined, action: { type: string; user: che.IUser, isLogged: boolean }) => {
+const userReducer = (state: UserState | undefined, action: { type: string; user: che.IUser; isLogged: boolean }) => {
   if (state === undefined) {
     return unloadedState;
   }

@@ -24,12 +24,12 @@ const LANGUAGE_ID = 'yaml';
 const YAML_SERVICE = 'yamlService';
 const MONACO_CONFIG = { language: 'yaml', wordWrap: 'on', lineNumbers: 'on', matchBrackets: true, readOnly: false };
 
-type Props = { devfilesRegistry: DevfilesRegistry.DevfilesState, branding: { branding: BrandingState } } // Redux store
+type Props = { devfilesRegistry: DevfilesRegistry.DevfilesState; branding: { branding: BrandingState } } // Redux store
   & {
-    devfile: che.IWorkspaceDevfile,
-    decorationPattern?: string,
-    onChange?: (devfile: che.IWorkspaceDevfile, isValid: boolean) => void,
-    setUpdateEditorCallback?: (Function) => void
+    devfile: che.IWorkspaceDevfile;
+    decorationPattern?: string;
+    onChange?: (devfile: che.IWorkspaceDevfile, isValid: boolean) => void;
+    setUpdateEditorCallback?: (Function) => void;
   };
 
 class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }> {

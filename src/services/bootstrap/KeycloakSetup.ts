@@ -3,16 +3,16 @@ import axios from 'axios';
 import { injectable } from 'inversify';
 
 type IResolveFn<T> = {
-  (value?: T | PromiseLike<T>): void
+  (value?: T | PromiseLike<T>): void;
 }
 
 type IRejectFn<T> = {
-  (reason?: any): void
+  (reason?: any): void;
 }
 
 type ICallbacks = {
-  onLoad: Function,
-  onError: Function
+  onLoad: Function;
+  onError: Function;
 }
 
 type IDocumentReadyState = 'loading' | 'interactive' | 'complete';

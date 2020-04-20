@@ -8,16 +8,16 @@ import {
 } from './branding.constant'
 
 type IResolveFn<T> = {
-  (value?: T | PromiseLike<T>): void
+  (value?: T | PromiseLike<T>): void;
 }
 
 type IRejectFn<T> = {
-  (reason?: any): void
+  (reason?: any): void;
 }
 
-export type IBranding = { [key: string]: string | Object };
+export type IBranding = { [key: string]: string | Record<string, any> };
 
-const ASSET_PREFIX = 'dashboard/assets/branding/';
+const ASSET_PREFIX = '/assets/branding/';
 
 /**
  * This class is handling the branding data.

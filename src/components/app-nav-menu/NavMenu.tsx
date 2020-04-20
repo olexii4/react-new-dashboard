@@ -28,7 +28,7 @@ import WorkspaceIndicator from './workspaces/workspace-indicator/WorkspaceIndica
 const DARK = 'dark';
 const LIGHT = 'light';
 
-type INavItem = { to: string, label?: string, ico?: string };
+type INavItem = { to: string; label?: string; ico?: string };
 
 /**
  * This class prepares the main dashboard page with nav menu.
@@ -148,7 +148,7 @@ export class NavMenu extends React.PureComponent<any, any> {
       </Toolbar>
     );
     const Avatar = <Gravatar email={(this.props.user ? this.props.user.email : '')} className='pf-c-avatar' />;
-    const Logo = <Brand src={`./${this.props.logoURL}`} alt='' />;
+    const Logo = <Brand src={`${this.props.logoURL}`} alt='' />;
     const Header = (
       <PageHeader
         className={isNavOpen ? 'nav-show' : 'nav-hide'}

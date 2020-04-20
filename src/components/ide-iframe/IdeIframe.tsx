@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 
-const IdeIframe = (props: RouteComponentProps<{ namespace: string, workspaceName: string }>) => {
+const IdeIframe = (props: RouteComponentProps<{ namespace: string; workspaceName: string }>) => {
   const randVal = Math.floor((Math.random() * 1000000) + 1);
   const { namespace, workspaceName } = props.match.params;
 

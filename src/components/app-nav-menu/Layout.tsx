@@ -4,7 +4,7 @@ import { AppState } from '../../store';
 import { NavMenu } from './NavMenu';
 import Loader from '../app-common/loaders/Loader';
 
-export default (props: { items: { to: string; label?: string }[], children?: React.ReactNode }) => {
+export default (props: { items: { to: string; label?: string }[]; children?: React.ReactNode }) => {
   const state = useSelector((state: AppState) => state);
   if (!state.user.isLogged) {
     return <Loader />;

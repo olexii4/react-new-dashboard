@@ -9,7 +9,7 @@ import './workspace-status.styl';
 const STOPPED = 'STOPPED';
 const RUNNING = 'RUNNING';
 
-type WorkspaceStatusProps = { workspaceId: string, status: string, startWorkspace: Function, stopWorkspace: Function }; // incoming parameters
+type WorkspaceStatusProps = { workspaceId: string; status: string; startWorkspace: Function; stopWorkspace: Function }; // incoming parameters
 
 class WorkspaceStatus extends React.PureComponent<WorkspaceStatusProps, { isDebounceDelay: boolean }> {
   private debounce: Debounce;

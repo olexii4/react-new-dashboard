@@ -26,9 +26,9 @@ type WorkspaceDetailsProps =
   WorkspacesStore.WorkspacesState // ... state we've requested from the Redux store
   & WorkspacesStore.IActionCreators // ... plus action creators we've requested
   & { history: any } // ... plus history
-  & RouteComponentProps<{ namespace: string, workspaceName: string }>; // incoming parameters
+  & RouteComponentProps<{ namespace: string; workspaceName: string }>; // incoming parameters
 
-type WorkspaceDetailsState = { activeTabKey: number, workspace: che.IWorkspace, alertVisible: boolean, isDevfileValid: boolean, hasRequestErrors: boolean };
+type WorkspaceDetailsState = { activeTabKey: number; workspace: che.IWorkspace; alertVisible: boolean; isDevfileValid: boolean; hasRequestErrors: boolean };
 
 class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, WorkspaceDetailsState> {
   private timeoutId: any;

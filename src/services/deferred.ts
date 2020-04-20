@@ -1,9 +1,9 @@
 export type IResolveFn<T> = {
-  (value?: T | PromiseLike<T>): void
+  (value?: T | PromiseLike<T>): void;
 }
 
 export type IRejectFn<T> = {
-  (reason?: any): void
+  (reason?: any): void;
 }
 
 /**

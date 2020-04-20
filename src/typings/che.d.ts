@@ -8,7 +8,7 @@ declare namespace che {
     id?: string;
     projects?: any;
     links?: {
-      ide?: string
+      ide?: string;
       [rel: string]: string | undefined;
     };
     temporary?: boolean;
@@ -54,14 +54,14 @@ declare namespace che {
     metadata: {
       name?: string;
       generateName?: string;
-    }
+    };
   }
 
   export interface IWorkspaceRuntime {
     activeEnv: string;
     links: any[];
     machines: {
-      [machineName: string]: IWorkspaceRuntimeMachine
+      [machineName: string]: IWorkspaceRuntimeMachine;
     };
     owner: string;
     warnings: IWorkspaceWarning[];
@@ -90,7 +90,7 @@ declare namespace che {
   export interface IProjectSource {
     location: string;
     parameters?: {
-      [paramName: string]: any
+      [paramName: string]: any;
     };
     type?: string;
   }
@@ -110,7 +110,7 @@ declare namespace che {
   }
 
   export interface IUser {
-    links: any[]
+    links: any[];
     attributes?: {
       firstName?: string;
       lastName?: string;

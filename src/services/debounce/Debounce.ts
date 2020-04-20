@@ -10,7 +10,7 @@ export class Debounce {
   private isDebounceDelay = false;
   private debounceDelayHandlers: Array<Function> = [];
 
-  setDelay(timeDelay: number = 5000) {
+  setDelay(timeDelay = 5000) {
     this.setDebounceDelay(true);
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer);

@@ -1,59 +1,59 @@
 export type IBranding = {
-  title: string,
-  name: string,
-  logoFile: string,
-  logoTextFile: string,
-  favicon: string,
-  loader: string,
-  websocketContext: string,
-  helpPath: string,
-  helpTitle: string,
-  supportEmail: string,
-  oauthDocs: string,
+  title: string;
+  name: string;
+  logoFile: string;
+  logoTextFile: string;
+  favicon: string;
+  loader: string;
+  websocketContext: string;
+  helpPath: string;
+  helpTitle: string;
+  supportEmail: string;
+  oauthDocs: string;
   cli: {
     configName: string;
     name: string;
-  },
-  docs: IBrandingDocs,
-  workspace: IBrandingWorkspace,
-  footer: IBrandingFooter,
-  configuration: IBrandingConfiguration,
+  };
+  docs: IBrandingDocs;
+  workspace: IBrandingWorkspace;
+  footer: IBrandingFooter;
+  configuration: IBrandingConfiguration;
 }
 
 export type IBrandingDocs = {
-  devfile: string,
-  workspace: string,
-  factory: string,
-  organization: string,
-  general: string,
-  converting: string,
-  certificate: string,
-  faq?: string,
+  devfile: string;
+  workspace: string;
+  factory: string;
+  organization: string;
+  general: string;
+  converting: string;
+  certificate: string;
+  faq?: string;
 }
 
 export type IBrandingWorkspace = {
-  priorityStacks: Array<string>,
-  defaultStack: string,
-  creationLink: string
+  priorityStacks: Array<string>;
+  defaultStack: string;
+  creationLink: string;
 }
 
 export type IBrandingFooter = {
-  content: string,
-  links: Array<{ title: string, location: string }>,
-  email: { title: string, address: string, subject: string } | null
+  content: string;
+  links: Array<{ title: string; location: string }>;
+  email: { title: string; address: string; subject: string } | null;
 }
 
 export type IBrandingConfiguration = {
   menu: {
     disabled: string[];
-  },
+  };
   prefetch: {
     cheCDN?: string;
     resources: string[];
-  },
+  };
   features: {
     disabled: string[];
-  }
+  };
 }
 
 export const BRANDING_DEFAULT: IBranding = {

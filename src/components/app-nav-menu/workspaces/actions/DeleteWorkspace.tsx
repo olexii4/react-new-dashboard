@@ -8,7 +8,7 @@ import './delete-workspace.styl';
 // TODO should move this constant to the separate file
 const STOPPED = 'STOPPED';
 
-type DeleteWorkspaceProps = { workspaceId: string, status: string, deleteWorkspace: Function }; // incoming parameters
+type DeleteWorkspaceProps = { workspaceId: string; status: string; deleteWorkspace: Function }; // incoming parameters
 
 class DeleteWorkspace extends React.PureComponent<DeleteWorkspaceProps, { isDebounceDelay: boolean }> {
   private debounce: Debounce;
