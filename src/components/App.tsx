@@ -1,6 +1,6 @@
 import * as React from 'react';
-import {Redirect, Route} from 'react-router';
-import {ConnectedRouter as Router} from 'connected-react-router';
+import { Redirect, Route } from 'react-router';
+import { ConnectedRouter as Router } from 'connected-react-router';
 import Layout from './app-nav-menu//Layout';
 import Dashboard from './app-nav-menu/dashboard/Dashboard';
 import SamplesList from './app-nav-menu/get-started/SamplesList';
@@ -13,28 +13,28 @@ import './app.styl';
 
 
 type Item = {
-    to: string,
-    component: React.FunctionComponent<any>,
-    label?: string,
-    ico?: string
+  to: string,
+  component: React.FunctionComponent<any>,
+  label?: string,
+  ico?: string
 };
 
 const items: Item[] = [
-    {to: '/', component: Dashboard, label: 'Dashboard', ico: 'chefont cheico-dashboard'},
-    {to: '/getstarted', component: SamplesList, label: 'Get Started', ico: 'fa fa-plus'},
-    {to: '/workspaces', component: WorkspacesList, label: 'Workspaces', ico: 'chefont cheico-workspace'},
-    {to: '/administration', component: Administration, label: 'Administration', ico: 'material-design icon-ic_settings_24px'},
-    {to: '/workspace/:namespace/:workspaceName/', component: WorkspaceDetails},
-    {to: '/ide/:namespace/:workspaceName/', component: IdeIframe},
+  { to: '/', component: Dashboard, label: 'Dashboard', ico: 'chefont cheico-dashboard' },
+  { to: '/getstarted', component: SamplesList, label: 'Get Started', ico: 'fa fa-plus' },
+  { to: '/workspaces', component: WorkspacesList, label: 'Workspaces', ico: 'chefont cheico-workspace' },
+  { to: '/administration', component: Administration, label: 'Administration', ico: 'material-design icon-ic_settings_24px' },
+  { to: '/workspace/:namespace/:workspaceName/', component: WorkspaceDetails },
+  { to: '/ide/:namespace/:workspaceName/', component: IdeIframe },
 ];
 
 export default (props: { history: any }) => {
-    return (<Router history={props.history}>
-        <Layout items={items.map(item => ({to: item.to, label: item.label, ico: item.ico}))}>
-            {items.map((item: Item, index: number) => (
-                <Route key={`app_route_${index + 1}`} path={item.to} exact component={item.component}/>
-            ))}
-            <Redirect path='*' to='/getstarted' />
-        </Layout>
-    </Router>);
+  return (<Router history={props.history}>
+    <Layout items={items.map(item => ({ to: item.to, label: item.label, ico: item.ico }))}>
+      {items.map((item: Item, index: number) => (
+        <Route key={`app_route_${index + 1}`} path={item.to} exact component={item.component} />
+      ))}
+      <Redirect path='*' to='/getstarted' />
+    </Layout>
+  </Router>);
 };

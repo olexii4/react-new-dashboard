@@ -1,5 +1,5 @@
-import {JsonRpcMasterApi} from './JsonRpcMasterApi';
-import {injectable} from 'inversify';
+import { JsonRpcMasterApi } from './JsonRpcMasterApi';
+import { injectable } from 'inversify';
 
 /**
  * This class manages the api connection through JSON RPC.

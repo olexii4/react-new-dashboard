@@ -1,7 +1,7 @@
-import {CommunicationClientEvent, ICommunicationClient} from './JsonRpcClient';
+import { CommunicationClientEvent, ICommunicationClient } from './JsonRpcClient';
 import ReconnectingWebSocket from 'reconnecting-websocket';
-import {getDefer} from '../deferred';
-import {injectable} from 'inversify';
+import { getDefer } from '../deferred';
+import { injectable } from 'inversify';
 
 
 /**
@@ -10,7 +10,7 @@ import {injectable} from 'inversify';
 @injectable()
 export class WebsocketClient implements ICommunicationClient {
   private websocketStream: ReconnectingWebSocket;
-  private handlers: {[event: string]: Function[]} = {};
+  private handlers: { [event: string]: Function[] } = {};
 
 
   /**

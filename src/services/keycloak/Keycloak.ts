@@ -1,13 +1,13 @@
-import {injectable} from 'inversify';
-import {getDefer, IDeferred} from '../deferred';
-import {KeycloakSetup} from '../bootstrap/KeycloakSetup';
+import { injectable } from 'inversify';
+import { getDefer, IDeferred } from '../deferred';
+import { KeycloakSetup } from '../bootstrap/KeycloakSetup';
 
 export type IKeycloakUserInfo = {
-    email: string;
-    family_name: string;
-    given_name: string;
-    preferred_username: string;
-    sub: string;
+  email: string;
+  family_name: string;
+  given_name: string;
+  preferred_username: string;
+  sub: string;
 };
 
 /**
@@ -16,55 +16,55 @@ export type IKeycloakUserInfo = {
 @injectable()
 export class Keycloak {
 
-    fetchUserInfo(): Promise<IKeycloakUserInfo> {
-        const defer: IDeferred<IKeycloakUserInfo> = getDefer();
+  fetchUserInfo(): Promise<IKeycloakUserInfo> {
+    const defer: IDeferred<IKeycloakUserInfo> = getDefer();
 
-        if (!KeycloakSetup.keycloakAuth.keycloak) {
-            defer.reject('Keycloak is not found on the page.');
-            return defer.promise;
-        }
-
-        (KeycloakSetup.keycloakAuth.keycloak as any).loadUserInfo().success((userInfo: IKeycloakUserInfo) => {
-            defer.resolve(userInfo);
-        }).error((error: any) => {
-            defer.reject(`User info fetching failed, error: ${error}`);
-        });
-
-        return defer.promise;
+    if (!KeycloakSetup.keycloakAuth.keycloak) {
+      defer.reject('Keycloak is not found on the page.');
+      return defer.promise;
     }
 
-    updateToken(validityTime: number): Promise<boolean> {
-        const deferred: IDeferred<boolean> = getDefer();
+    (KeycloakSetup.keycloakAuth.keycloak as any).loadUserInfo().success((userInfo: IKeycloakUserInfo) => {
+      defer.resolve(userInfo);
+    }).error((error: any) => {
+      defer.reject(`User info fetching failed, error: ${error}`);
+    });
 
-        if(!KeycloakSetup.keycloakAuth.keycloak) {
-            deferred.reject();
-            return deferred.promise;
-        }
-        (KeycloakSetup.keycloakAuth.keycloak as any).updateToken(validityTime).success((refreshed: boolean) => {
-            deferred.resolve(refreshed);
-        }).error((error: any) => {
-            deferred.reject(error);
-        });
+    return defer.promise;
+  }
 
-        return deferred.promise;
+  updateToken(validityTime: number): Promise<boolean> {
+    const deferred: IDeferred<boolean> = getDefer();
+
+    if (!KeycloakSetup.keycloakAuth.keycloak) {
+      deferred.reject();
+      return deferred.promise;
     }
+    (KeycloakSetup.keycloakAuth.keycloak as any).updateToken(validityTime).success((refreshed: boolean) => {
+      deferred.resolve(refreshed);
+    }).error((error: any) => {
+      deferred.reject(error);
+    });
 
-    isPresent(): boolean {
-        return KeycloakSetup.keycloakAuth.isPresent
-    }
+    return deferred.promise;
+  }
 
-    getProfileUrl(): string {
-        const keycloak: any = KeycloakSetup.keycloakAuth.keycloak;
-        return keycloak && keycloak.createAccountUrl ? keycloak.createAccountUrl() : '';
-    }
+  isPresent(): boolean {
+    return KeycloakSetup.keycloakAuth.isPresent
+  }
 
-    logout(): void {
-        window.sessionStorage.removeItem('githubToken');
-        window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
-        const keycloak: any = KeycloakSetup.keycloakAuth.keycloak;
-        if(keycloak && keycloak.logout) {
-            keycloak.logout({});
-        }
+  getProfileUrl(): string {
+    const keycloak: any = KeycloakSetup.keycloakAuth.keycloak;
+    return keycloak && keycloak.createAccountUrl ? keycloak.createAccountUrl() : '';
+  }
+
+  logout(): void {
+    window.sessionStorage.removeItem('githubToken');
+    window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
+    const keycloak: any = KeycloakSetup.keycloakAuth.keycloak;
+    if (keycloak && keycloak.logout) {
+      keycloak.logout({});
     }
+  }
 
 }
