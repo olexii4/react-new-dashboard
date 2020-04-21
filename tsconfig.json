@@ -14,7 +14,7 @@
       "es2015",
       "dom"
     ],
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "types": ["reflect-metadata"],
     "typeRoots": [
       "node_modules/@types"
