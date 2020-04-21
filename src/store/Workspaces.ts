@@ -16,7 +16,7 @@ import { JsonRpcMasterApi } from '../services/json-rpc/JsonRpcMasterApi';
 // This state defines the type of data maintained in the Redux store.
 export interface WorkspacesState {
   isLoading: boolean;
-  workspaces: che.IWorkspace[];
+  workspaces: che.Workspace[];
 }
 
 interface RequestWorkspacesAction {
@@ -29,12 +29,12 @@ interface ReceiveErrorAction {
 
 interface ReceiveWorkspacesAction {
   type: 'RECEIVE_WORKSPACES';
-  workspaces: che.IWorkspace[];
+  workspaces: che.Workspace[];
 }
 
 interface UpdateWorkspaceAction {
   type: 'UPDATE_WORKSPACE';
-  workspace: che.IWorkspace;
+  workspace: che.Workspace;
 }
 
 interface DeleteWorkspaceAction {
@@ -44,7 +44,7 @@ interface DeleteWorkspaceAction {
 
 interface AddWorkspaceAction {
   type: 'ADD_WORKSPACE';
-  workspace: che.IWorkspace;
+  workspace: che.Workspace;
 }
 
 type KnownAction =
@@ -69,14 +69,14 @@ export type IActionCreators = {
   startWorkspace: (workspaceId: string) => any;
   stopWorkspace: (workspaceId: string) => any;
   deleteWorkspace: (workspaceId: string) => any;
-  updateWorkspace: (workspace: che.IWorkspace) => any;
+  updateWorkspace: (workspace: che.Workspace) => any;
   createWorkspace: (devfileUrl: string, attributes: { [param: string]: string }) => any;
 }
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 export const actionCreators: IActionCreators = {
 
-  requestWorkspaces: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+  requestWorkspaces: (): AppThunkAction<KnownAction> => (dispatch, getState): Promise<Array<che.Workspace>> => {
     // Lazy initialization of jsonRpcMasterApi
     if (!jsonRpcMasterApi) {
       jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
@@ -105,7 +105,7 @@ export const actionCreators: IActionCreators = {
     }
     return Promise.reject();
   },
-  startWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
+  startWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
     const appState = getState();
     if (appState && appState.workspaces) {
       const promise = startWorkspace(workspaceId);
@@ -122,7 +122,7 @@ export const actionCreators: IActionCreators = {
     }
     return Promise.reject();
   },
-  stopWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
+  stopWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
     const appState = getState();
     if (appState && appState.workspaces) {
       const promise = stopWorkspace(workspaceId);
@@ -139,7 +139,7 @@ export const actionCreators: IActionCreators = {
     }
     return Promise.reject();
   },
-  deleteWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState) => {
+  deleteWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
     const appState = getState();
     if (appState && appState.workspaces) {
       const promise = deleteWorkspace(workspaceId);
@@ -154,7 +154,7 @@ export const actionCreators: IActionCreators = {
     }
     return Promise.reject();
   },
-  updateWorkspace: (workspace: che.IWorkspace): AppThunkAction<KnownAction> => (dispatch, getState) => {
+  updateWorkspace: (workspace: che.Workspace): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
     const appState = getState();
     if (appState && appState.workspaces) {
       const promise = updateWorkspace(workspace);
@@ -169,7 +169,7 @@ export const actionCreators: IActionCreators = {
     }
     return Promise.reject();
   },
-  createWorkspace: (devfileUrl: string, attr: { [param: string]: string }): AppThunkAction<KnownAction> => (dispatch, getState) => {
+  createWorkspace: (devfileUrl: string, attr: { [param: string]: string }): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
     // Lazy initialization of jsonRpcMasterApi
     if (!jsonRpcMasterApi) {
       jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
@@ -221,7 +221,7 @@ export const reducer: Reducer<WorkspacesState> = (state: WorkspacesState | undef
       };
     case 'UPDATE_WORKSPACE':
       return {
-        workspaces: state.workspaces.map((workspace: che.IWorkspace) => {
+        workspaces: state.workspaces.map((workspace: che.Workspace) => {
           return workspace.id === action.workspace.id ? action.workspace : workspace;
         }),
         isLoading: false

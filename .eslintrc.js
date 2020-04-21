@@ -22,29 +22,9 @@ module.exports = {
 
         // following rules are disabled temporary in order to fix project build
         // todo: enable rules below and fix errors
-        '@typescript-eslint/camelcase': 'off',
-        '@typescript-eslint/class-name-casing': 'off',
-        '@typescript-eslint/consistent-type-assertions': 'off',
-        '@typescript-eslint/explicit-function-return-type': 'off',
-        '@typescript-eslint/interface-name-prefix': 'off',
-        '@typescript-eslint/no-empty-function': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/no-non-null-assertion': 'off',
-        '@typescript-eslint/no-this-alias': 'off',
-        '@typescript-eslint/no-unused-vars': 'off',
-        '@typescript-eslint/no-use-before-define': 'off',
-        '@typescript-eslint/no-var-requires': 'off',
-        'no-var': 'off',
-        'prefer-const': 'off',
-        'prefer-rest-params': 'off',
-        'prefer-spread': 'off',
-        'react/display-name': 'off',
         'react/jsx-key': 'off',
-        'react/jsx-no-target-blank': 'off',
         'react/no-children-prop': 'off',
-        'react/no-find-dom-node': 'off',
-        'react/no-unescaped-entities': 'off',
-        'react/prop-types': 'off',
     },
     settings: {
         react: {

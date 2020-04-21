@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Gallery, PageSection, Text, TextContent } from "@patternfly/react-core";
 
-const Administration = () => (
+const Administration = (): React.ReactElement => (
   <React.Fragment>
     <PageSection>
       <TextContent>

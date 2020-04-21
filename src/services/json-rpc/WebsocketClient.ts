@@ -1,4 +1,4 @@
-import { CommunicationClientEvent, ICommunicationClient } from './JsonRpcClient';
+import { CommunicationClientEvent, CommunicationClient } from './JsonRpcClient';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import { getDefer } from '../deferred';
 import { injectable } from 'inversify';
@@ -8,7 +8,7 @@ import { injectable } from 'inversify';
  * JSON RPC through websocket.
  */
 @injectable()
-export class WebsocketClient implements ICommunicationClient {
+export class WebsocketClient implements CommunicationClient {
   private websocketStream: ReconnectingWebSocket;
   private handlers: { [event: string]: Function[] } = {};
 
@@ -18,7 +18,7 @@ export class WebsocketClient implements ICommunicationClient {
    * @param entrypointProvider the entrypoint to connect to
    */
   connect(entrypointProvider: (() => Promise<string>)): Promise<any> {
-    let deferred = getDefer();
+    const deferred = getDefer();
     this.websocketStream = new ReconnectingWebSocket(entrypointProvider, [], {
       connectionTimeout: 60000
     });

@@ -53,27 +53,27 @@ export class NavMenu extends React.PureComponent<any, any> {
 
     const keycloak = container.get(Keycloak);
 
-    this.onTheme = (theme: string) => {
+    this.onTheme = (theme: string): void => {
       this.setState({ theme });
       window.sessionStorage.setItem('theme', theme);
     };
-    this.onLogout = () => {
+    this.onLogout = (): void => {
       keycloak.logout();
     };
-    this.onDropdownToggle = (isDropdownOpen: any) => {
+    this.onDropdownToggle = (isDropdownOpen: any): void => {
       this.setState({ isDropdownOpen })
     };
-    this.onDropdownSelect = () => {
+    this.onDropdownSelect = (): void => {
       this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
     };
-    this.onNavSelect = (result: any) => {
+    this.onNavSelect = (result: any): void => {
       this.setState({ activeItem: result.itemId });
     };
-    this.onNavToggle = () => {
+    this.onNavToggle = (): void => {
       this.setState({ isNavOpen: !this.state.isNavOpen });
     };
 
-    this.handleMessage = event => {
+    this.handleMessage = (event): void => {
       if (event.data === 'show-navbar') {
         this.setState({ isNavOpen: true });
       } else if (event.data === 'hide-navbar') {
@@ -82,15 +82,15 @@ export class NavMenu extends React.PureComponent<any, any> {
     }
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     window.addEventListener('message', this.handleMessage, false);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener('message', this.handleMessage);
   }
 
-  render() {
+  render(): React.ReactElement {
     const { isDropdownOpen, activeItem, isNavOpen, theme } = this.state;
     // create a Sidebar
     const PageNav = (
@@ -121,7 +121,7 @@ export class NavMenu extends React.PureComponent<any, any> {
       </Nav>
     );
 
-    const getUserName = () => {
+    const getUserName = (): string => {
       const user = this.props.user;
       if (user.given_name && user.family_name) {
         return `${user.given_name} ${user.family_name}`;
@@ -130,8 +130,8 @@ export class NavMenu extends React.PureComponent<any, any> {
     };
 
     const UserDropdownItems = [
-      <DropdownItem key='white' onClick={() => this.onTheme(LIGHT)} component='button'>Light theme</DropdownItem>,
-      <DropdownItem key='dark' onClick={() => this.onTheme(DARK)} component='button'>Dadark theme</DropdownItem>,
+      <DropdownItem key='white' onClick={(): void => this.onTheme(LIGHT)} component='button'>Light theme</DropdownItem>,
+      <DropdownItem key='dark' onClick={(): void => this.onTheme(DARK)} component='button'>Dadark theme</DropdownItem>,
       <DropdownItem key='account_details'>Account details</DropdownItem>,
       <DropdownItem key='account_logout' onClick={this.onLogout} component='button'>Logout</DropdownItem>
     ];

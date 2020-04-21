@@ -1,10 +1,6 @@
-declare module 'che' {
-  export = che;
-}
-
 declare namespace che {
 
-  export interface IWorkspace {
+  export interface Workspace {
     id?: string;
     projects?: any;
     links?: {
@@ -14,21 +10,21 @@ declare namespace che {
     temporary?: boolean;
     status?: string;
     namespace?: string;
-    attributes?: IWorkspaceAttributes;
-    devfile: IWorkspaceDevfile;
-    runtime?: IWorkspaceRuntime;
+    attributes?: WorkspaceAttributes;
+    devfile: WorkspaceDevfile;
+    runtime?: WorkspaceRuntime;
     isLocked?: boolean;
     usedResources?: string;
   }
 
-  export interface IWorkspaceSettings {
+  export interface WorkspaceSettings {
     cheWorkspaceDevfileRegistryUrl?: string;
     cheWorkspacePluginRegistryUrl: string;
     'che.workspace.persist_volumes.default': 'false' | 'true';
     supportedRecipeTypes: string;
   }
 
-  export interface IWorkspaceAttributes {
+  export interface WorkspaceAttributes {
     created: number;
     updated?: number;
     stackId?: string;
@@ -39,46 +35,46 @@ declare namespace che {
     [propName: string]: string | number | undefined;
   }
 
-  export interface IWorkspaceConfigAttributes {
+  export interface WorkspaceConfigAttributes {
     persistVolumes?: 'false';
     editor?: string;
     plugins?: string;
   }
 
-  export interface IWorkspaceDevfile {
+  export interface WorkspaceDevfile {
     apiVersion: string;
     components: Array<any>;
     projects?: Array<any>;
     commands?: Array<any>;
-    attributes?: che.IWorkspaceConfigAttributes;
+    attributes?: che.WorkspaceConfigAttributes;
     metadata: {
       name?: string;
       generateName?: string;
     };
   }
 
-  export interface IWorkspaceRuntime {
+  export interface WorkspaceRuntime {
     activeEnv: string;
     links: any[];
     machines: {
-      [machineName: string]: IWorkspaceRuntimeMachine;
+      [machineName: string]: WorkspaceRuntimeMachine;
     };
     owner: string;
-    warnings: IWorkspaceWarning[];
+    warnings: WorkspaceWarning[];
     machineToken?: string;
   }
 
-  export interface IWorkspaceWarning {
+  export interface WorkspaceWarning {
     code?: number;
     message: string;
   }
 
-  export interface IWorkspaceRuntimeMachine {
+  export interface WorkspaceRuntimeMachine {
     attributes: { [propName: string]: string };
-    servers: { [serverName: string]: IWorkspaceRuntimeMachineServer };
+    servers: { [serverName: string]: WorkspaceRuntimeMachineServer };
   }
 
-  export interface IWorkspaceRuntimeMachineServer {
+  export interface WorkspaceRuntimeMachineServer {
     status: string;
     port: string;
     url: string;
@@ -87,7 +83,7 @@ declare namespace che {
     path: string;
   }
 
-  export interface IProjectSource {
+  export interface ProjectSource {
     location: string;
     parameters?: {
       [paramName: string]: any;
@@ -95,21 +91,21 @@ declare namespace che {
     type?: string;
   }
 
-  export interface IProfileAttributes {
+  export interface ProfileAttributes {
     firstName?: string;
     lastName?: string;
 
     [propName: string]: string | number | undefined;
   }
 
-  export interface IProfile {
-    attributes?: IProfileAttributes;
+  export interface Profile {
+    attributes?: ProfileAttributes;
     email: string;
     links?: Array<any>;
     userId: string;
   }
 
-  export interface IUser {
+  export interface User {
     links: any[];
     attributes?: {
       firstName?: string;
@@ -125,7 +121,7 @@ declare namespace che {
     sub?: string;
   }
 
-  export interface IDevfileMetaData {
+  export interface DevfileMetaData {
     displayName: string;
     description?: string;
     globalMemoryLimit: string;
@@ -133,4 +129,8 @@ declare namespace che {
     links: any;
     tags: Array<string>;
   }
+}
+
+declare module 'che' {
+  export = che;
 }

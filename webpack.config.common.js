@@ -36,17 +36,17 @@ module.exports = {
                         },
                         loader: require.resolve('eslint-loader'),
                     }
-                ]
+                ],
+                exclude: /node_modules/,
             },
             {
                 test: /\.tsx?$/,
-                enforce: 'pre',
                 use: [
                     {
                         loader: 'ts-loader'
                     },
                 ],
-                exclude: /node_modules/
+                exclude: /node_modules/,
             },
             {
                 test: /node_modules[\\\\|\/](yaml-language-server)/,

@@ -2,7 +2,7 @@ import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
 
 export const DEFAULT_CHE_THEME = 'che';
 
-export const registerCustomThemes = () => {
+export const registerCustomThemes = (): void => {
 
   // register the white editor theme
   Monaco.editor.defineTheme(DEFAULT_CHE_THEME, {

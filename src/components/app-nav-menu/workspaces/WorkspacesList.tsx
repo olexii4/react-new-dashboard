@@ -32,34 +32,34 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
   }
 
   // This method is called when the component is first added to the document
-  public componentDidMount() {
+  public componentDidMount(): void {
     this.ensureDataFetched();
   }
 
   // This method is called when the route parameters change
-  public componentDidUpdate() {
+  public componentDidUpdate(): void {
     this.ensureDataFetched();
   }
 
-  public render() {
-    const onRowClick = (workspace: che.IWorkspace) => {
+  public render(): React.ReactElement {
+    const onRowClick = (workspace: che.Workspace): void => {
       this.props.history.push(`/workspace/${workspace.namespace}/${workspace.devfile.metadata.name}`);
     };
 
     const columns = ['NAME', 'RAM', 'PROJECTS', 'STACK', 'ACTIONS'];
-    const rows = this.props.workspaces.workspaces.map((workspace: che.IWorkspace, key: number) => ({
+    const rows = this.props.workspaces.workspaces.map((workspace: che.Workspace, key: number) => ({
       cells: [
-        <span onClick={() => onRowClick(workspace)}>
+        <span onClick={(): void => onRowClick(workspace)}>
           <WorkspaceIndicator key={`indicator_${key}`} status={workspace.status} />
           {workspace.namespace}/{workspace.devfile.metadata.name}
         </span>,
-        <span onClick={() => onRowClick(workspace)}>
+        <span onClick={(): void => onRowClick(workspace)}>
           -
                     </span>,
-        <span onClick={() => onRowClick(workspace)}>
+        <span onClick={(): void => onRowClick(workspace)}>
           {workspace.devfile.projects ? workspace.devfile.projects.length : '-'}
         </span>,
-        <span onClick={() => onRowClick(workspace)}>
+        <span onClick={(): void => onRowClick(workspace)}>
           {workspace.attributes && workspace.attributes.stackName ? workspace.attributes.stackName : ''}
         </span>,
         <span>
@@ -90,7 +90,7 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
         </Text>
         <CheProgress isLoading={this.props.workspaces.isLoading} />
         <PageSection variant={SECTION_THEME} className='header-buttons'>
-          <Button onClick={() => this.props.history.push(creationLink)} variant='primary'>
+          <Button onClick={(): void => this.props.history.push(creationLink)} variant='primary'>
             Add Workspace
                     </Button>
         </PageSection>
@@ -109,7 +109,7 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
     );
   }
 
-  private ensureDataFetched() {
+  private ensureDataFetched(): void {
     if (this.debounce.hasDelay()) {
       return;
     }

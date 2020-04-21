@@ -30,16 +30,16 @@ export class KeycloakSetup {
     keycloak: null,
     config: null
   };
-  private static isDocumentReady: Promise<void> = new Promise<void>((resolve: IResolveFn<void>) => {
+  private static isDocumentReady = new Promise<void>(resolve => {
     const state: IDocumentReadyState = document.readyState;
     if (state === 'interactive' || state === 'complete') {
       resolve();
     } else {
-      document.onreadystatechange = () => resolve();
+      document.onreadystatechange = (): void => resolve();
     }
   });
 
-  private user: che.IUser | {} = {};
+  private user: che.User | {} = {};
 
 
   resolve(): Promise<void> {
@@ -53,7 +53,7 @@ export class KeycloakSetup {
           KeycloakSetup.keycloakAuth.config = this.buildKeycloakConfig(keycloakSettings);
           return new Promise((resolve: IResolveFn<any>, reject: IRejectFn<any>) => {
             const src = keycloakSettings['che.keycloak.js_adapter_url'];
-            const onLoad = () => {
+            const onLoad = (): void => {
               let theUseNonce = false;
               if (typeof keycloakSettings['che.keycloak.use_nonce'] === 'string') {
                 theUseNonce = keycloakSettings['che.keycloak.use_nonce'].toLowerCase() === 'true';
@@ -89,7 +89,7 @@ export class KeycloakSetup {
     });
   };
 
-  getUser(): che.IUser | {} {
+  getUser(): che.User | {} {
     return this.user;
   }
 
@@ -169,7 +169,7 @@ export class KeycloakSetup {
     });
   }
 
-  private addScript(src: string, callbacks: ICallbacks) {
+  private addScript(src: string, callbacks: ICallbacks): void {
     KeycloakSetup.isDocumentReady.then(() => {
       const script = document.createElement('script');
       script.type = 'text/javascript';

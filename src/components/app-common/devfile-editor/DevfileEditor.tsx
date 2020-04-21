@@ -14,7 +14,7 @@ import * as $ from 'jquery';
 
 import './devfile-editor.styl';
 
-interface IEditor {
+interface Editor {
   getValue(): string;
   getModel(): any;
 }
@@ -26,9 +26,9 @@ const MONACO_CONFIG = { language: 'yaml', wordWrap: 'on', lineNumbers: 'on', mat
 
 type Props = { devfilesRegistry: DevfilesRegistry.DevfilesState; branding: { branding: BrandingState } } // Redux store
   & {
-    devfile: che.IWorkspaceDevfile;
+    devfile: che.WorkspaceDevfile;
     decorationPattern?: string;
-    onChange?: (devfile: che.IWorkspaceDevfile, isValid: boolean) => void;
+    onChange?: (devfile: che.WorkspaceDevfile, isValid: boolean) => void;
     setUpdateEditorCallback?: (Function) => void;
   };
 
@@ -38,7 +38,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
   private yamlService: any;
   private m2p = new monacoConversion.MonacoToProtocolConverter();
   private p2m = new monacoConversion.ProtocolToMonacoConverter();
-  private createDocument = model => yamlLanguageServer.TextDocument.create(
+  private createDocument = (model): yamlLanguageServer.TextDocument => yamlLanguageServer.TextDocument.create(
     'inmemory://model.yaml',
     model.getModeId(),
     model.getVersionId(),
@@ -94,7 +94,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
   }
 
   // This method is called when the component is first added to the document
-  public componentDidMount() {
+  public componentDidMount(): void {
     const element = $('.devfile-editor .monaco').get(0);
     if (element) {
       const value = dump(this.props.devfile, { 'indent': 1 });
@@ -106,7 +106,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
       const doc = this.editor.getModel();
       doc.updateOptions({ tabSize: 2 });
 
-      const handleResize = () => {
+      const handleResize = (): void => {
         const layout = { height: element.offsetHeight, width: element.offsetWidth };
         this.editor.layout(layout);
       };
@@ -124,7 +124,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
       });
 
       let oldDecorationIds: string[] = []; // Array containing previous decorations identifiers.
-      const updateDecorations = () => {
+      const updateDecorations = (): void => {
         if (this.props.decorationPattern) {
           oldDecorationIds = this.editor.deltaDecorations(oldDecorationIds, this.getDecorations());
         }
@@ -140,11 +140,11 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
   }
 
   // This method is called when the component is removed from the document
-  public componentWillUnmount() {
+  public componentWillUnmount(): void {
     this.toDispose.dispose();
   }
 
-  public render() {
+  public render(): React.ReactElement {
     const href = (this.props.branding.branding.branding.docs as any).devfile;
     const { errorMessage } = this.state;
 
@@ -152,7 +152,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
       <div className='devfile-editor'>
         <div className='monaco'>&nbsp;</div>
         <div className='error'>{errorMessage}</div>
-        <a target='_blank' href={href}>Docs: Devfile Structure</a>
+        <a target='_blank' rel="noopener noreferrer" href={href}>Docs: Devfile Structure</a>
       </div>
     );
   }
@@ -185,7 +185,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
   }
 
   private onChange(newValue: string, isValid: boolean): void {
-    let devfile: che.IWorkspaceDevfile;
+    let devfile: che.WorkspaceDevfile;
     try {
       devfile = load(newValue);
     } catch (e) {
@@ -227,7 +227,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
     });
   }
 
-  private initLanguageServerValidation(editor: IEditor): void {
+  private initLanguageServerValidation(editor: Editor): void {
     const model = editor.getModel();
     let validationTimer: any;
 

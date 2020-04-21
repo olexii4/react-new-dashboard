@@ -1,17 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import {
-  Card,
-  CardBody,
   Gallery,
-  GalleryItem,
   PageSection,
-  PageSectionVariants,
   Text,
   TextContent
 } from "@patternfly/react-core";
 
-const Dashboard = () => (
+const Dashboard = (): React.ReactElement => (
   <React.Fragment>
     <PageSection>
       <TextContent>

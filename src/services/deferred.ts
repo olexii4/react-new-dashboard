@@ -15,11 +15,11 @@ export type IDeferred<T> = {
   promise: Promise<T>;
 }
 
-export const getDefer = <T>() => {
+export const getDefer = <T>(): IDeferred<T> => {
   const defer: { [param: string]: any } = {};
   defer.promise = new Promise((resolve: IResolveFn<T>, reject: IRejectFn<any>) => {
     defer.resolve = resolve;
     defer.reject = reject;
   });
-  return <IDeferred<T>>defer;
+  return defer as IDeferred<T>;
 };

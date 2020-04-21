@@ -17,7 +17,7 @@ export class CheJsonRpcApi {
 
   getJsonRpcMasterApi(entrypoint: string): JsonRpcMasterApi {
     if (this.jsonRpcApiConnection.has(entrypoint)) {
-      return <JsonRpcMasterApi>this.jsonRpcApiConnection.get(entrypoint);
+      return this.jsonRpcApiConnection.get(entrypoint) as JsonRpcMasterApi;
     } else {
       const cheJsonRpcMasterApi: JsonRpcMasterApi = new JsonRpcMasterApi(entrypoint);
       this.jsonRpcApiConnection.set(entrypoint, cheJsonRpcMasterApi);

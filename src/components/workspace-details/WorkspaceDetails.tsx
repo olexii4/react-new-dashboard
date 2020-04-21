@@ -28,7 +28,7 @@ type WorkspaceDetailsProps =
   & { history: any } // ... plus history
   & RouteComponentProps<{ namespace: string; workspaceName: string }>; // incoming parameters
 
-type WorkspaceDetailsState = { activeTabKey: number; workspace: che.IWorkspace; alertVisible: boolean; isDevfileValid: boolean; hasRequestErrors: boolean };
+type WorkspaceDetailsState = { activeTabKey: number; workspace: che.Workspace; alertVisible: boolean; isDevfileValid: boolean; hasRequestErrors: boolean };
 
 class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, WorkspaceDetailsState> {
   private timeoutId: any;
@@ -60,10 +60,10 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
     };
 
     // Toggle currently active tab
-    this.handleTabClick = (event: any, tabIndex: any) => {
+    this.handleTabClick = (event: any, tabIndex: any): void => {
       this.setState({ activeTabKey: tabIndex });
     };
-    this.cancelChanges = (workspaceId: string | undefined) => {
+    this.cancelChanges = (workspaceId: string | undefined): void => {
       clearTimeout(this.timeoutId);
       const workspace = this.props.workspaces.find(workspace => {
         return workspace.id === workspaceId;
@@ -72,21 +72,21 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
         this.setState({ workspace: Object.assign({}, workspace) });
       }
     };
-    this.showAlert = (variant: 'success' | 'danger', title: string, timeDelay?: number) => {
+    this.showAlert = (variant: 'success' | 'danger', title: string, timeDelay?: number): void => {
       this.alert = { variant, title };
       this.setState({ alertVisible: true });
       setTimeout(() => {
         this.setState({ alertVisible: false });
       }, timeDelay ? timeDelay : 2000);
     };
-    this.hideAlert = () => this.setState({ alertVisible: false });
+    this.hideAlert = (): void => this.setState({ alertVisible: false });
   }
 
-  public render() {
+  public render(): React.ReactElement {
     const { workspace, alertVisible } = this.state;
     const workspaceName = workspace.devfile.metadata.name;
 
-    const setCallback = (updateFunction: Function) => {
+    const setCallback = (updateFunction: Function): void => {
       this.cancelFn = updateFunction;
     };
 
@@ -102,7 +102,7 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
         <PageSection variant={SECTION_THEME} className='workspace-details-header'>
           <TextContent>
             <Text component='h1'>
-              Workspaces&nbsp;<b>&nbsp;>&nbsp;</b>&nbsp;{workspaceName}&nbsp;
+              Workspaces&nbsp;<b>&nbsp;&gt;&nbsp;</b>&nbsp;{workspaceName}&nbsp;
                             <WorkspaceIndicator status={workspace.status} /><span>{workspace.status}</span>
             </Text>
           </TextContent>
@@ -127,11 +127,11 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
                 <Text component='h3' className='label'>Workspace</Text>
                 <DevfileEditor devfile={workspace.devfile} setUpdateEditorCallback={setCallback}
                   decorationPattern='location[ \t]*(.*)[ \t]*$'
-                  onChange={(devfile: che.IWorkspaceDevfile, isValid: boolean) => {
+                  onChange={(devfile: che.WorkspaceDevfile, isValid: boolean): void => {
                     this.onDevfileChange(workspace, devfile, isValid);
                   }} />
                 {(!this.state.isDevfileValid || this.state.hasRequestErrors) && (
-                  <Button onClick={() => {
+                  <Button onClick={(): void => {
                     if (this.cancelFn) {
                       this.cancelFn();
                     }
@@ -147,7 +147,7 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
     );
   }
 
-  private onDevfileChange(workspace: che.IWorkspace, newDevfile: che.IWorkspaceDevfile, isValid: boolean): void {
+  private onDevfileChange(workspace: che.Workspace, newDevfile: che.WorkspaceDevfile, isValid: boolean): void {
     this.setState({ isDevfileValid: isValid });
     clearTimeout(this.timeoutId);
     if (!isValid) {
@@ -157,7 +157,7 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
       this.timeoutId = setTimeout(() => {
         const newWorkspace = Object.assign({}, workspace);
         newWorkspace.devfile = newDevfile;
-        this.props.updateWorkspace(newWorkspace).then((workspace: che.IWorkspace) => {
+        this.props.updateWorkspace(newWorkspace).then((workspace: che.Workspace) => {
           this.setState({ hasRequestErrors: false });
           this.setState({ workspace });
           this.showAlert('success', `Workspace has been updated`, 1000);
@@ -173,12 +173,12 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
   }
 
   // TODO rework this temporary solution
-  private sortObject(o: che.IWorkspaceDevfile) {
-    return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+  private sortObject(o: che.WorkspaceDevfile): che.WorkspaceDevfile {
+    return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {} as che.WorkspaceDevfile);
   }
 
   // TODO rework this temporary solution
-  private isEqualObject(a: che.IWorkspaceDevfile, b: che.IWorkspaceDevfile) {
+  private isEqualObject(a: che.WorkspaceDevfile, b: che.WorkspaceDevfile): boolean {
     return JSON.stringify(this.sortObject(a)) == JSON.stringify(this.sortObject(b));
   }
 }

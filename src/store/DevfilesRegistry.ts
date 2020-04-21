@@ -5,7 +5,7 @@ import { fetchDevfiles } from '../services/api/devfiles-registry';
 // This state defines the type of data maintained in the Redux store.
 export interface DevfilesState {
   isLoading: boolean;
-  data: { devfiles: che.IDevfileMetaData[]; registryUrl: string; jsonSchema?: any }[];
+  data: { devfiles: che.DevfileMetaData[]; registryUrl: string; jsonSchema?: any }[];
 }
 
 interface RequestDevfilesAction {
@@ -14,16 +14,15 @@ interface RequestDevfilesAction {
 
 interface ReceiveDevfilesAction {
   type: 'RECEIVE_DEVFILES';
-  data: { devfiles: che.IDevfileMetaData[]; registryUrl: string }[];
+  data: { devfiles: che.DevfileMetaData[]; registryUrl: string }[];
 }
 
 type KnownAction = RequestDevfilesAction | ReceiveDevfilesAction;
 
-
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 export const actionCreators = {
-  requestDevfiles: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+  requestDevfiles: (): AppThunkAction<KnownAction> => (dispatch, getState): void => {
     const appState = getState();
     if (appState && appState.devfilesRegistry) {
       fetchDevfiles()

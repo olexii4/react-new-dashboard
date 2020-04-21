@@ -22,7 +22,7 @@
     "compile:source-map": "yarn run compile --devtool source-map",
     "start": "webpack-dev-server --progress --color --config webpack.config.dev.js",
     "format": "tsfmt -r --useTsfmt tsfmt.json",
-    "lint": "tsc --noEmit && eslint 'src/**/*.{js,ts,tsx}' --fix",
+    "lint:fix": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --fix",
     "serve:prod": "yarn run compile:source-map && webpack-dev-server --color --disable-host-check --config webpack.config.prod-dev.js"
   },
   "husky": {

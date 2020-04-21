@@ -4,7 +4,11 @@ export interface BrandingState {
   branding: IBranding;
 }
 
-export const setBranding = (branding: IBranding) => {
+export interface BrandingAction extends BrandingState {
+  type: 'SET_BRANDING' | string;
+}
+
+export const setBranding = (branding: IBranding): BrandingAction => {
   return {
     type: 'SET_BRANDING',
     branding: branding
@@ -13,7 +17,7 @@ export const setBranding = (branding: IBranding) => {
 
 const unloadedState: BrandingState = { branding: {} };
 
-const brandingReducer = (state: { branding: IBranding } | undefined = { branding: {} }, action: { type: string; branding: IBranding }) => {
+const brandingReducer = (state: { branding: IBranding } | undefined = { branding: {} }, action: BrandingAction): BrandingState => {
   if (state === undefined) {
     return unloadedState;
   }

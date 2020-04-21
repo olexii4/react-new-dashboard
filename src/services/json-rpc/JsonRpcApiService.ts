@@ -1,4 +1,4 @@
-import { ICommunicationClient, JsonRpcClient } from './JsonRpcClient';
+import { CommunicationClient, JsonRpcClient } from './JsonRpcClient';
 
 /**
  * Class for basic CHE API communication methods.
@@ -11,9 +11,9 @@ export class CheJsonRpcApiClient {
   /**
    * Communication client (can be http, websocket).
    */
-  private client: ICommunicationClient;
+  private client: CommunicationClient;
 
-  constructor(client: ICommunicationClient) {
+  constructor(client: CommunicationClient) {
     this.client = client;
     this.jsonRpcClient = new JsonRpcClient(client);
   }
@@ -35,9 +35,8 @@ export class CheJsonRpcApiClient {
    * @param event event's name to unsubscribe
    * @param notification notification name binded to the event
    * @param handler handler to be removed
-   * @param params params (optional)
    */
-  unsubscribe(event: string, notification: string, handler: Function, params?: any): void {
+  unsubscribe(event: string, notification: string, handler: Function): void {
     this.jsonRpcClient.removeNotificationHandler(notification, handler);
     this.jsonRpcClient.notify(event);
   }

@@ -10,7 +10,7 @@ export class Debounce {
   private isDebounceDelay = false;
   private debounceDelayHandlers: Array<Function> = [];
 
-  setDelay(timeDelay = 5000) {
+  setDelay(timeDelay = 5000): void {
     this.setDebounceDelay(true);
     if (this.debounceTimer) {
       clearTimeout(this.debounceTimer);
@@ -20,7 +20,7 @@ export class Debounce {
     }, timeDelay);
   }
 
-  private setDebounceDelay(isDebounceDelay: boolean) {
+  private setDebounceDelay(isDebounceDelay: boolean): void {
     this.isDebounceDelay = isDebounceDelay;
     this.debounceDelayHandlers.forEach(handler => {
       if (typeof handler === 'function') {
@@ -37,11 +37,11 @@ export class Debounce {
     this.debounceDelayHandlers.push(handler);
   }
 
-  unsubscribeAll() {
+  unsubscribeAll(): void {
     this.debounceDelayHandlers = [];
   }
 
-  hasDelay() {
+  hasDelay(): boolean {
     return this.isDebounceDelay;
   }
 }

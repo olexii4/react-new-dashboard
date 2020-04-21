@@ -11,7 +11,6 @@ import IdeIframe from './ide-iframe/IdeIframe';
 
 import './app.styl';
 
-
 type Item = {
   to: string;
   component: React.FunctionComponent<any>;
@@ -28,7 +27,7 @@ const items: Item[] = [
   { to: '/ide/:namespace/:workspaceName/', component: IdeIframe },
 ];
 
-export default (props: { history: any }) => {
+const LayoutComponent = (props: { history: any }): React.ReactElement => {
   return (<Router history={props.history}>
     <Layout items={items.map(item => ({ to: item.to, label: item.label, ico: item.ico }))}>
       {items.map((item: Item, index: number) => (
@@ -38,3 +37,7 @@ export default (props: { history: any }) => {
     </Layout>
   </Router>);
 };
+
+LayoutComponent.displayName = 'LayoutComponent';
+
+export default LayoutComponent;

@@ -40,12 +40,12 @@ export class SamplesList extends React.PureComponent<DevfilesRegistryProps, { al
     this.debounce = container.get(Debounce);
 
     this.state = { alertVisible: false };
-    this.showAlert = (variant: 'success' | 'danger', title: string, timeDelay?: number) => {
+    this.showAlert = (variant: 'success' | 'danger', title: string, timeDelay?: number): void => {
       this.alert = { variant, title };
       this.setState({ alertVisible: true });
       this.debounce.setDelay(timeDelay);
     };
-    this.hideAlert = () => this.setState({ alertVisible: false });
+    this.hideAlert = (): void => this.setState({ alertVisible: false });
 
     this.debounce.subscribe(isDebounceDelay => {
       if (!isDebounceDelay) {
@@ -54,17 +54,17 @@ export class SamplesList extends React.PureComponent<DevfilesRegistryProps, { al
     });
   }
 
-  public render() {
+  public render(): React.ReactElement {
     const { alertVisible } = this.state;
     const { data } = this.props.devfilesRegistry;
 
-    const createWorkspace = (registryUrl: string, devfile: che.IDevfileMetaData) => {
+    const createWorkspace = (registryUrl: string, devfile: che.DevfileMetaData): void => {
       if (this.debounce.hasDelay() || !devfile.links || !devfile.links.self) {
         return;
       }
       const devfileUrl = registryUrl + devfile.links.self;
       const attr = { stackName: devfile.displayName };
-      this.props.createWorkspace(devfileUrl, attr).then((workspace: che.IWorkspace) => {
+      this.props.createWorkspace(devfileUrl, attr).then((workspace: che.Workspace) => {
         const workspaceName = workspace.devfile.metadata.name;
         this.showAlert('success', `Workspace ${workspaceName} has been created`, 1500);
         // force start for the new workspace
@@ -101,12 +101,12 @@ export class SamplesList extends React.PureComponent<DevfilesRegistryProps, { al
         <CheProgress isLoading={this.props.workspaces.isLoading} />
         <PageSection>
           <Gallery gutter='md'>
-            {data.map((data: { devfiles: che.IDevfileMetaData[]; registryUrl: string }, index: number) => (
-              data.devfiles.map((devfile: che.IDevfileMetaData, key: number) => (
+            {data.map((data: { devfiles: che.DevfileMetaData[]; registryUrl: string }, index: number) => (
+              data.devfiles.map((devfile: che.DevfileMetaData, key: number) => (
                 <div
                   className='pf-c-card pf-m-hoverable pf-m-compact get-started-template'
                   key={`${index}_${key}`}
-                  onClick={() => createWorkspace(data.registryUrl, devfile)}>
+                  onClick={(): void => createWorkspace(data.registryUrl, devfile)}>
                   <div className='pf-c-card__head'>
                     <img alt='Icon' src={`${data.registryUrl}${devfile.icon}`} />
                   </div>

@@ -16,13 +16,13 @@ class CheProgress extends React.PureComponent<{ isLoading: boolean }, { progress
 
     this.state = { progressVal: 0 };
 
-    this.onProgressInc = () => {
+    this.onProgressInc = (): void => {
       const progressVal = this.state.progressVal < 100 ? this.state.progressVal + 5 : 0;
       this.setState({ progressVal });
     };
   }
 
-  private updateProgressInterval() {
+  private updateProgressInterval(): void {
     if (this.props.isLoading) {
       if (!this.intervalId) {
         this.intervalId = setInterval(() => {
@@ -40,23 +40,23 @@ class CheProgress extends React.PureComponent<{ isLoading: boolean }, { progress
   }
 
   // This method is called when the component is first added to the document
-  public componentDidMount() {
+  public componentDidMount(): void {
     this.updateProgressInterval();
   }
 
   // This method is called when the route parameters change
-  public componentDidUpdate() {
+  public componentDidUpdate(): void {
     this.updateProgressInterval();
   }
 
   // This method is called when the component is removed from the document
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
   }
 
-  public render() {
+  public render(): React.ReactElement {
     const { progressVal } = this.state;
 
     return (

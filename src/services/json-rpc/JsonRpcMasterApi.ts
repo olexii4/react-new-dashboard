@@ -1,5 +1,5 @@
 import { CheJsonRpcApiClient } from './JsonRpcApiService';
-import { ICommunicationClient, CommunicationClientEvent } from './JsonRpcClient';
+import { CommunicationClient, CommunicationClientEvent } from './JsonRpcClient';
 import { Keycloak } from '../keycloak/Keycloak';
 import { container } from '../../inversify.config';
 import { WebsocketClient } from "./WebsocketClient";
@@ -17,7 +17,7 @@ const UNSUBSCRIBE = 'unsubscribe';
  */
 export class JsonRpcMasterApi {
   private readonly keycloak: Keycloak;
-  private client: ICommunicationClient;
+  private client: CommunicationClient;
   private cheJsonRpcApi: CheJsonRpcApiClient;
   private clientId: string;
 
@@ -43,7 +43,7 @@ export class JsonRpcMasterApi {
    * @returns {Promise<void>}
    */
   async connect(): Promise<void> {
-    const entryPointProvider = async () => {
+    const entryPointProvider = async (): Promise<string> => {
       const entryPoint = this.entryPoint + (await this.getAuthenticationToken());
       if (this.clientId) {
         let clientId = `clientId=${this.clientId}`;
@@ -68,7 +68,7 @@ export class JsonRpcMasterApi {
     return new Promise(resolve => {
       this.keycloak.updateToken(5).then(() => {
         resolve('?token=' + (window as any)._keycloak.token);
-      }).catch((error: any) => {
+      }).catch(() => {
         resolve('');
       });
     });
@@ -116,7 +116,7 @@ export class JsonRpcMasterApi {
    * @param callback callback to process event
    */
   subscribeWorkspaceStatus(workspaceId: string, callback: Function): void {
-    const statusHandler = (message: any) => {
+    const statusHandler = (message: any): void => {
       if (workspaceId === message.workspaceId) {
         callback(message);
       }
@@ -177,8 +177,7 @@ export class JsonRpcMasterApi {
    */
   private unsubscribe(channel: MasterChannels, workspaceId: string, callback: Function): void {
     const method: string = channel.toString();
-    const params = { method: method, scope: { workspaceId: workspaceId } };
-    this.cheJsonRpcApi.unsubscribe(UNSUBSCRIBE, method, callback, params);
+    this.cheJsonRpcApi.unsubscribe(UNSUBSCRIBE, method, callback);
   }
 
   /**

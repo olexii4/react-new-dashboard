@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { load } from 'js-yaml';
 
-export const fetchWorkspaces = (): Promise<Array<che.IWorkspace>> => {
+export const fetchWorkspaces = (): Promise<Array<che.Workspace>> => {
   return axios.get('/api/workspace').then(resp => {
     return Promise.resolve(resp.data);
   }).catch(error => {
@@ -9,7 +9,7 @@ export const fetchWorkspaces = (): Promise<Array<che.IWorkspace>> => {
   });
 };
 
-export const startWorkspace = (workspaceId: string): Promise<che.IWorkspace> => {
+export const startWorkspace = (workspaceId: string): Promise<che.Workspace> => {
   return axios.post(`/api/workspace/${workspaceId}/runtime`).then(resp => {
     return Promise.resolve(resp.data);
   }).catch(error => {
@@ -17,7 +17,7 @@ export const startWorkspace = (workspaceId: string): Promise<che.IWorkspace> => 
   });
 };
 
-export const stopWorkspace = (workspaceId: string): Promise<che.IWorkspace> => {
+export const stopWorkspace = (workspaceId: string): Promise<che.Workspace> => {
   return axios.delete(`/api/workspace/${workspaceId}/runtime`).then(resp => {
     return Promise.resolve(resp.data);
   }).catch(error => {
@@ -25,7 +25,7 @@ export const stopWorkspace = (workspaceId: string): Promise<che.IWorkspace> => {
   });
 };
 
-export const deleteWorkspace = (workspaceId: string): Promise<che.IWorkspace> => {
+export const deleteWorkspace = (workspaceId: string): Promise<che.Workspace> => {
   return axios.delete(`/api/workspace/${workspaceId}`).then(resp => {
     return Promise.resolve(resp.data);
   }).catch(error => {
@@ -33,7 +33,7 @@ export const deleteWorkspace = (workspaceId: string): Promise<che.IWorkspace> =>
   });
 };
 
-export const updateWorkspace = (workspace: che.IWorkspace): Promise<che.IWorkspace> => {
+export const updateWorkspace = (workspace: che.Workspace): Promise<che.Workspace> => {
   return axios.put(`/api/workspace/${workspace.id}`, workspace).then(resp => {
     return Promise.resolve(resp.data);
   }).catch(error => {
@@ -41,7 +41,7 @@ export const updateWorkspace = (workspace: che.IWorkspace): Promise<che.IWorkspa
   });
 };
 
-export const createWorkspace = (devfileUrl: string, attr: { [param: string]: string }): Promise<che.IWorkspace> => {
+export const createWorkspace = (devfileUrl: string, attr: { [param: string]: string }): Promise<che.Workspace> => {
   return axios.get(devfileUrl).then(resp => {
     return axios({
       method: 'post',

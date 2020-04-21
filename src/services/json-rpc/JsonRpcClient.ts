@@ -7,7 +7,7 @@ export type CommunicationClientEvent = 'open' | 'message' | 'close' | 'error';
 /**
  * Interface for communication between two entrypoints
  */
-export interface ICommunicationClient {
+export interface CommunicationClient {
   /**
    * Adds listener callbacks for specified client event.
    * @param {CommunicationClientEvent} eventType an event type
@@ -61,7 +61,7 @@ export class JsonRpcClient {
   /**
    * Client for performing communications.
    */
-  private client: ICommunicationClient;
+  private client: CommunicationClient;
   /**
    * The list of the pending requests by request id.
    */
@@ -72,7 +72,7 @@ export class JsonRpcClient {
   private notificationHandlers: Map<string, Array<Function>>;
   private counter = 100;
 
-  constructor(client: ICommunicationClient) {
+  constructor(client: CommunicationClient) {
     this.client = client;
     this.pendingRequests = new Map<string, IDeferred<any>>();
     this.notificationHandlers = new Map<string, Array<Function>>();

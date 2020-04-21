@@ -23,21 +23,21 @@ class DeleteWorkspace extends React.PureComponent<DeleteWorkspaceProps, { isDebo
   }
 
   // This method is called when the component is removed from the document
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     this.debounce.unsubscribeAll();
   }
 
-  private isDisabled = () => {
+  private isDisabled = (): boolean => {
     return this.debounce.hasDelay() || this.props.status !== STOPPED;
   };
 
-  public render() {
+  public render(): React.ReactElement {
 
     return (
       <span className={this.isDisabled() ?
         'disabled-delete-workspace' :
         'delete-workspace'}
-        onClick={e => {
+        onClick={(e): void => {
           e.stopPropagation();
           this.onActionClick();
         }}>
@@ -48,7 +48,7 @@ class DeleteWorkspace extends React.PureComponent<DeleteWorkspaceProps, { isDebo
     );
   }
 
-  private onActionClick() {
+  private onActionClick(): void {
     if (this.isDisabled()) {
       return;
     }

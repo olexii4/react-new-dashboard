@@ -4,7 +4,7 @@ import { AppState } from '../../store';
 import { NavMenu } from './NavMenu';
 import Loader from '../app-common/loaders/Loader';
 
-export default (props: { items: { to: string; label?: string }[]; children?: React.ReactNode }) => {
+const NavMenuComponent = (props: { items: { to: string; label?: string }[]; children?: React.ReactNode }): React.ReactElement => {
   const state = useSelector((state: AppState) => state);
   if (!state.user.isLogged) {
     return <Loader />;
@@ -20,3 +20,7 @@ export default (props: { items: { to: string; label?: string }[]; children?: Rea
         children={props.children} />
     </React.Fragment>);
 };
+
+NavMenuComponent.displayName = 'NavMenuComponent';
+
+export default NavMenuComponent;

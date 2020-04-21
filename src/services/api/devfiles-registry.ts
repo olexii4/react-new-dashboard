@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-export const fetchDevfiles = (): Promise<{ devfiles: che.IDevfileMetaData[]; registryUrl: string }> => {
-  return axios.get('/api/workspace/settings').then((resp: { data: che.IWorkspaceSettings }) => {
+export const fetchDevfiles = (): Promise<{ devfiles: che.DevfileMetaData[]; registryUrl: string }> => {
+  return axios.get('/api/workspace/settings').then((resp: { data: che.WorkspaceSettings }) => {
     // TODO  remove 'https://che-devfile-registry.openshift.io'. Just for testing.
     const registryUrl = resp && resp.data && resp.data.cheWorkspaceDevfileRegistryUrl || 'https://che-devfile-registry.openshift.io';
-    return axios.get(`${registryUrl}/devfiles/index.json`).then((resp: { data: che.IDevfileMetaData[] }) => {
+    return axios.get(`${registryUrl}/devfiles/index.json`).then((resp: { data: che.DevfileMetaData[] }) => {
       const devfiles = resp.data;
       return axios.get('/api/devfile').then((resp: { data: any }) => {
         const jsonSchema = resp.data;

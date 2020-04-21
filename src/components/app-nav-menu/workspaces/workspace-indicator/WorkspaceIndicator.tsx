@@ -10,7 +10,7 @@ const STOPPING = 'STOPPING';
 
 class WorkspaceIndicator extends React.PureComponent<{ status: string | undefined }> {
 
-  public render() {
+  public render(): React.ReactElement {
 
     if (this.props.status === STARTING || this.props.status === STOPPING) {
       return (
@@ -24,7 +24,7 @@ class WorkspaceIndicator extends React.PureComponent<{ status: string | undefine
       );
     }
 
-    const iconClass = (status: string | undefined) => {
+    const iconClass = (status: string | undefined): string => {
       if (status === ERROR) {
         return 'fa fa-circle workspace-status-error';
       }

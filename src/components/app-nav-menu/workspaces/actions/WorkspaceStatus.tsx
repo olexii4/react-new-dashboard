@@ -24,22 +24,22 @@ class WorkspaceStatus extends React.PureComponent<WorkspaceStatusProps, { isDebo
   }
 
   // This method is called when the component is removed from the document
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     this.debounce.unsubscribeAll();
   }
 
-  private isDisabled = () => {
+  private isDisabled = (): boolean => {
     return this.debounce.hasDelay() || (this.props.status !== STOPPED && this.props.status !== RUNNING);
   };
 
-  public render() {
-    const tooltipContent = () => this.props.status === STOPPED ? 'Run Workspace' : 'Stop workspace';
-    const iconClass = () => this.props.status === STOPPED ? 'fa fa-play' : 'fa fa-stop';
+  public render(): React.ReactElement {
+    const tooltipContent = (): string => this.props.status === STOPPED ? 'Run Workspace' : 'Stop workspace';
+    const iconClass = (): string => this.props.status === STOPPED ? 'fa fa-play' : 'fa fa-stop';
 
     return (
       <span key={`wrks-status-${this.props.workspaceId}`}
         className={this.isDisabled() ? 'disabled-workspace-status' : 'workspace-status'}
-        onClick={e => {
+        onClick={(e): void => {
           e.stopPropagation();
           this.onActionClick();
         }}>
@@ -51,7 +51,7 @@ class WorkspaceStatus extends React.PureComponent<WorkspaceStatusProps, { isDebo
     );
   }
 
-  private onActionClick() {
+  private onActionClick(): void {
     if (this.isDisabled()) {
       return;
     }

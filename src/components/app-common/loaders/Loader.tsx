@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 
-const Loader = () => {
+const Loader = (): React.ReactElement => {
   const branding = useSelector((state: { branding: { loaderURL: string } }) => state.branding);
 
   return <div className='main-page-loader'>
