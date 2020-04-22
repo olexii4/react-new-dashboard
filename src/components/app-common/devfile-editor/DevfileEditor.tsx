@@ -152,7 +152,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
       <div className='devfile-editor'>
         <div className='monaco'>&nbsp;</div>
         <div className='error'>{errorMessage}</div>
-        <a target='_blank' rel="noopener noreferrer" href={href}>Docs: Devfile Structure</a>
+        <a target='_blank' rel='noopener noreferrer' href={href}>Docs: Devfile Structure</a>
       </div>
     );
   }
