@@ -1,16 +1,16 @@
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
 import * as DevfilesRegistry from '../../../store/DevfilesRegistry';
 import { BrandingState } from '../../../store/Branding';
 import { DisposableCollection } from '../../../services/disposable';
-import * as monacoConversion from 'monaco-languageclient/lib/monaco-converter';
+import monacoConversion from 'monaco-languageclient/lib/monaco-converter';
 import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
 import { language, conf } from 'monaco-languages/release/esm/yaml/yaml';
-import * as yamlLanguageServer from 'yaml-language-server';
+import yamlLanguageServer from 'yaml-language-server';
 import { registerCustomThemes, DEFAULT_CHE_THEME } from './monaco-theme-register';
 import { load, dump } from 'js-yaml';
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 import './devfile-editor.styl';
 

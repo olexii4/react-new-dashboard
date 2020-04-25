@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Tooltip } from '@patternfly/react-core';
 import { Debounce } from '../../../../services/debounce/Debounce';
 import { container } from '../../../../inversify.config';

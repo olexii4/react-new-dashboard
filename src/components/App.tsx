@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Redirect, Route } from 'react-router';
 import { ConnectedRouter as Router } from 'connected-react-router';
 import Layout from './app-nav-menu/Layout';

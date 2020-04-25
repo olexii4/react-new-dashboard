@@ -1,8 +1,8 @@
 import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
 import '@patternfly/react-core/dist/styles/base.css';
-import * as React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import * as Gravatar from 'react-gravatar';
+import Gravatar from 'react-gravatar';
 import { css } from '@patternfly/react-styles';
 import {
   Brand,
