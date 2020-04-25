@@ -1,23 +1,28 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { AppState } from '../../../store';
-import * as DevfilesRegistryStore from '../../../store/DevfilesRegistry';
-import * as WorkspacesStore from '../../../store/Workspaces';
-import CheProgress from '../../app-common/progress/progress';
 import {
+  Alert,
+  AlertActionCloseButton,
+  Brand,
+  Card,
+  CardBody,
+  CardHead,
+  CardHeader,
+  CardHeadMain,
   Gallery,
   PageSection,
   PageSectionVariants,
   Text,
   TextContent,
-  Alert,
-  AlertActionCloseButton
 } from '@patternfly/react-core';
-import { Debounce } from '../../../services/debounce/Debounce';
+import { AppState } from '../../../store';
 import { container } from '../../../inversify.config';
+import { Debounce } from '../../../services/debounce/Debounce';
+import * as DevfilesRegistryStore from '../../../store/DevfilesRegistry';
+import * as WorkspacesStore from '../../../store/Workspaces';
+import CheProgress from '../../app-common/progress/progress';
 
 import './samples-list.styl';
-
 
 // At runtime, Redux will merge together...
 type DevfilesRegistryProps =
@@ -103,20 +108,19 @@ export class SamplesList extends React.PureComponent<DevfilesRegistryProps, { al
           <Gallery gutter='md'>
             {data.map((data: { devfiles: che.DevfileMetaData[]; registryUrl: string }, index: number) => (
               data.devfiles.map((devfile: che.DevfileMetaData, key: number) => (
-                <div
-                  className='pf-c-card pf-m-hoverable pf-m-compact get-started-template'
+                <Card isHoverable isCompact isSelectable
                   key={`${index}_${key}`}
                   onClick={(): void => createWorkspace(data.registryUrl, devfile)}>
-                  <div className='pf-c-card__head'>
-                    <img alt='Icon' src={`${data.registryUrl}${devfile.icon}`} />
-                  </div>
-                  <div className='pf-c-card__header pf-c-title pf-m-md'>
-                    <b>{devfile.displayName}</b>
-                  </div>
-                  <div className='pf-c-card__body'>
-                    {devfile.description}
-                  </div>
-                </div>
+                  <CardHead>
+                    <CardHeadMain>
+                      <Brand src={`${data.registryUrl}${devfile.icon}`}
+                        alt={devfile.displayName}
+                        style={{ height: '64px' }} />
+                    </CardHeadMain>
+                  </CardHead>
+                  <CardHeader>{devfile.displayName}</CardHeader>
+                  <CardBody>{devfile.description}</CardBody>
+                </Card>
               ))
             ))}
           </Gallery>
