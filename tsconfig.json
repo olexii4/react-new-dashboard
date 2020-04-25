@@ -3,7 +3,7 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "jsx": "react",
-    "module": "commonjs",
+    "module": "esnext",
     "noImplicitAny": false,
     "outDir": "./build/",
     "preserveConstEnums": true,
@@ -21,7 +21,8 @@
     ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
   },
   "include": [
     "./src/**/*"

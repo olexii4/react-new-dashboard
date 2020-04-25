@@ -12,17 +12,54 @@
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { loadableTransformer } = require('loadable-ts-transformer');
 const stylus_plugin = require('poststylus');
 const stylusLoader = require('stylus-loader');
 const webpack = require('webpack');
+const LoadablePlugin = require('@loadable/webpack-plugin');
 
 const path = require('path');
 
 module.exports = {
-    entry: path.join(__dirname, 'src/index.tsx'),
+    entry: {
+        client: path.join(__dirname, 'src/index.tsx'),
+    },
     output: {
         path: path.join(__dirname, 'build'),
-        filename: 'bundle.js',
+        publicPath: '/',
+        filename: 'client.js',
+        chunkFilename: '[name].[chunkhash].js',
+    },
+    optimization: {
+        chunkIds: 'named',
+        splitChunks: {
+            name: 'vendor',
+            chunks: 'initial',
+            cacheGroups: {
+                default: false,
+                vendors: false,
+                monaco: {
+                    name: 'monaco',
+                    chunks: 'all',
+                    priority: 25,
+                    test: /monaco/
+                },
+                vendor: {
+                    name: 'vendor',
+                    chunks: 'all',
+                    test: /node_modules/,
+                    priority: 20
+                },
+                common: {
+                    name: 'common',
+                    minChunks: 2,
+                    chunks: 'all',
+                    priority: 10,
+                    reuseExistingChunk: true,
+                    enforce: true
+                },
+            },
+        },
     },
     module: {
         rules: [
@@ -43,7 +80,11 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: [
                     {
-                        loader: 'ts-loader'
+                        loader: 'ts-loader',
+                        options: {
+                            transpileOnly: true,
+                            getCustomTransformers: () => ({ before: [loadableTransformer] }),
+                        },
                     },
                 ],
                 exclude: /node_modules/,
@@ -89,5 +130,7 @@ module.exports = {
             },
         }),
         new CleanWebpackPlugin(),
+        new LoadablePlugin(),
+        new webpack.DefinePlugin({ __isBrowser__: "true" }),
     ],
 };

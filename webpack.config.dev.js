@@ -22,7 +22,6 @@ module.exports = env => {
     return merge(common, {
         mode: 'development',
         stats: 'verbose',
-        entry: path.join(__dirname, 'src/index.tsx'),
         module: {
             rules: [
                 {
@@ -37,9 +36,6 @@ module.exports = env => {
             new webpack.HotModuleReplacementPlugin(),
         ],
         devtool: 'source-map',
-        resolve: {
-            extensions: ['.js', '.ts', '.tsx']
-        },
         devServer: {
             clientLogLevel: 'debug',
             contentBase: path.join(__dirname, 'assets'),
@@ -50,6 +46,7 @@ module.exports = env => {
             open: false,
             port: 3000,
             stats: 'normal',
+            // writeToDisk: true,
             proxy: {
                 '/api/websocket': {
                     target: proxyTarget,

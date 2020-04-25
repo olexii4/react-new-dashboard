@@ -19,20 +19,10 @@ const common = require('./webpack.config.common.js');
 
 module.exports = merge(common, {
     mode: 'production',
-    entry: [
-        './src/index.tsx'
-    ],
-    output: {
-        path: path.resolve(__dirname, 'build'),
-        filename: 'bundle.js'
-    },
     plugins: [
         new webpack.ProgressPlugin(),
         new CopyPlugin([
             { from: path.join(__dirname, 'assets'), to: 'assets' },
         ]),
     ],
-    resolve: {
-        extensions: ['.js', '.ts', '.tsx']
-    },
 });

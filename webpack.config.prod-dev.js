@@ -16,7 +16,7 @@ module.exports = env => {
     const proxyTarget = env && env.server ? env.server : 'https://che.openshift.io/';
 
     return {
-        entry: path.join(__dirname, 'build/bundle.js'),
+        entry: path.join(__dirname, 'build/client.js'),
         devServer: {
             contentBase: [
                 path.join(__dirname, 'build'),
