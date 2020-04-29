@@ -13,48 +13,48 @@
 const path = require('path');
 
 module.exports = env => {
-    const proxyTarget = env && env.server ? env.server : 'https://che.openshift.io/';
+  const proxyTarget = env && env.server ? env.server : 'https://che.openshift.io/';
 
-    return {
-        entry: path.join(__dirname, 'build/client.js'),
-        devServer: {
-            contentBase: [
-                path.join(__dirname, 'build'),
-            ],
-            clientLogLevel: 'debug',
-            contentBasePublicPath: '/',
-            disableHostCheck: true,
-            host: 'localhost',
-            open: false,
-            port: 3030,
-            stats: 'normal',
-            proxy: {
-                '/api/websocket': {
-                    target: proxyTarget,
-                    ws: true,
-                    secure: false,
-                    changeOrigin: true,
-                    headers: {
-                        origin: proxyTarget
-                    }
-                },
-                '/api': {
-                    target: proxyTarget,
-                    secure: false,
-                    changeOrigin: true,
-                    headers: {
-                        origin: proxyTarget
-                    },
-                },
-                '/workspace-loader': {
-                    target: proxyTarget,
-                    secure: false,
-                    changeOrigin: true,
-                    headers: {
-                        origin: proxyTarget
-                    }
-                },
-            },
-        }
-    };
+  return {
+    entry: path.join(__dirname, 'build/client.js'),
+    devServer: {
+      contentBase: [
+        path.join(__dirname, 'build'),
+      ],
+      clientLogLevel: 'debug',
+      contentBasePublicPath: '/',
+      disableHostCheck: true,
+      host: 'localhost',
+      open: false,
+      port: 3030,
+      stats: 'normal',
+      proxy: {
+        '/api/websocket': {
+          target: proxyTarget,
+          ws: true,
+          secure: false,
+          changeOrigin: true,
+          headers: {
+            origin: proxyTarget
+          }
+        },
+        '/api': {
+          target: proxyTarget,
+          secure: false,
+          changeOrigin: true,
+          headers: {
+            origin: proxyTarget
+          },
+        },
+        '/workspace-loader': {
+          target: proxyTarget,
+          secure: false,
+          changeOrigin: true,
+          headers: {
+            origin: proxyTarget
+          }
+        },
+      },
+    }
+  };
 };

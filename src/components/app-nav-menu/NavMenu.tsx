@@ -18,7 +18,9 @@ import {
   PageSidebar,
   Toolbar,
   ToolbarGroup,
-  ToolbarItem
+  ToolbarItem,
+  PageSection,
+  PageSectionVariants
 } from '@patternfly/react-core';
 
 import { container } from '../../inversify.config';
@@ -50,7 +52,7 @@ export class NavMenu extends React.PureComponent<any, any> {
 
     const currentTheme = window.sessionStorage.getItem('theme');
     const theme = currentTheme ? currentTheme : DARK;
-    this.state = { isDropdownOpen: false, activeItem: '/getstarted', isNavOpen: true, theme };
+    this.state = { isDropdownOpen: false, activeItem: '/', isNavOpen: true, theme };
 
     const keycloak = container.get(Keycloak);
 
@@ -164,7 +166,11 @@ export class NavMenu extends React.PureComponent<any, any> {
 
     const Sidebar = <PageSidebar nav={PageNav} isNavOpen={isNavOpen} theme={theme} />;
 
-    return (<Page header={Header} sidebar={Sidebar}> {this.props.children} </Page>);
+    return (<Page header={Header} sidebar={Sidebar}>
+      <PageSection variant={PageSectionVariants.default} noPadding={true}>
+        {this.props.children}
+      </PageSection>
+    </Page>);
   }
 
   buildAvatar(): React.ReactElement {

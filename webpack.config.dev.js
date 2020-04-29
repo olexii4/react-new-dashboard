@@ -17,63 +17,63 @@ const webpack = require('webpack');
 const common = require('./webpack.config.common');
 
 module.exports = env => {
-    const proxyTarget = env && env.server ? env.server : 'https://che.openshift.io/';
+  const proxyTarget = env && env.server ? env.server : 'https://che.openshift.io/';
 
-    return merge(common, {
-        mode: 'development',
-        stats: 'verbose',
-        module: {
-            rules: [
-                {
-                    enforce: 'pre',
-                    test: /\.(tsx|ts|jsx|js)$/,
-                    loader: 'source-map-loader',
-                    exclude: path.resolve(__dirname, 'node_modules'),
-                },
-            ]
+  return merge(common, {
+    mode: 'development',
+    stats: 'verbose',
+    module: {
+      rules: [
+        {
+          enforce: 'pre',
+          test: /\.(tsx|ts|jsx|js)$/,
+          loader: 'source-map-loader',
+          exclude: path.resolve(__dirname, 'node_modules'),
         },
-        plugins: [
-            new webpack.HotModuleReplacementPlugin(),
-        ],
-        devtool: 'source-map',
-        devServer: {
-            clientLogLevel: 'debug',
-            contentBase: path.join(__dirname, 'assets'),
-            contentBasePublicPath: '/assets/',
-            disableHostCheck: true,
-            host: 'localhost',
-            hot: true,
-            open: false,
-            port: 3000,
-            stats: 'normal',
-            // writeToDisk: true,
-            proxy: {
-                '/api/websocket': {
-                    target: proxyTarget,
-                    ws: true,
-                    secure: false,
-                    changeOrigin: true,
-                    headers: {
-                        origin: proxyTarget
-                    }
-                },
-                '/api': {
-                    target: proxyTarget,
-                    secure: false,
-                    changeOrigin: true,
-                    headers: {
-                        origin: proxyTarget
-                    },
-                },
-                '/workspace-loader': {
-                    target: proxyTarget,
-                    secure: false,
-                    changeOrigin: true,
-                    headers: {
-                        origin: proxyTarget
-                    }
-                },
-            },
-        }
-    });
+      ]
+    },
+    plugins: [
+      new webpack.HotModuleReplacementPlugin(),
+    ],
+    devtool: 'source-map',
+    devServer: {
+      clientLogLevel: 'debug',
+      contentBase: path.join(__dirname, 'assets'),
+      contentBasePublicPath: '/assets/',
+      disableHostCheck: true,
+      host: 'localhost',
+      hot: true,
+      open: false,
+      port: 3000,
+      stats: 'normal',
+      // writeToDisk: true,
+      proxy: {
+        '/api/websocket': {
+          target: proxyTarget,
+          ws: true,
+          secure: false,
+          changeOrigin: true,
+          headers: {
+            origin: proxyTarget
+          }
+        },
+        '/api': {
+          target: proxyTarget,
+          secure: false,
+          changeOrigin: true,
+          headers: {
+            origin: proxyTarget
+          },
+        },
+        '/workspace-loader': {
+          target: proxyTarget,
+          secure: false,
+          changeOrigin: true,
+          headers: {
+            origin: proxyTarget
+          }
+        },
+      },
+    }
+  });
 };

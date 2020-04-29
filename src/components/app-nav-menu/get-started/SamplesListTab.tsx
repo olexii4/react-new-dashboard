@@ -22,8 +22,6 @@ import * as DevfilesRegistryStore from '../../../store/DevfilesRegistry';
 import * as WorkspacesStore from '../../../store/Workspaces';
 import CheProgress from '../../app-common/progress/progress';
 
-import './samples-list.styl';
-
 // At runtime, Redux will merge together...
 type DevfilesRegistryProps =
   {
@@ -33,7 +31,7 @@ type DevfilesRegistryProps =
   & WorkspacesStore.IActionCreators // ... plus action creators we've requested
   & { history: any };
 
-export class SamplesList extends React.PureComponent<DevfilesRegistryProps, { alertVisible: boolean }> {
+export class SamplesListTab extends React.PureComponent<DevfilesRegistryProps, { alertVisible: boolean }> {
   private debounce: Debounce;
   private alert: { variant?: 'success' | 'danger'; title?: string } = {};
   private showAlert: (variant: 'success' | 'danger', title: string, timeDelay?: number) => void;
@@ -104,7 +102,7 @@ export class SamplesList extends React.PureComponent<DevfilesRegistryProps, { al
           </TextContent>
         </PageSection>
         <CheProgress isLoading={this.props.workspaces.isLoading} />
-        <PageSection>
+        <PageSection variant={PageSectionVariants.default}>
           <Gallery gutter='md'>
             {data.map((data: { devfiles: che.DevfileMetaData[]; registryUrl: string }, index: number) => (
               data.devfiles.map((devfile: che.DevfileMetaData, key: number) => (
@@ -137,4 +135,4 @@ export default connect(
   }, // Selects which state properties are merged into the component's props(devfilesRegistry and workspaces)
   WorkspacesStore.actionCreators // Selects which action creators are merged into the component's props
 
-)(SamplesList);
+)(SamplesListTab);

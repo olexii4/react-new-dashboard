@@ -18,11 +18,11 @@ const webpack = require('webpack');
 const common = require('./webpack.config.common.js');
 
 module.exports = merge(common, {
-    mode: 'production',
-    plugins: [
-        new webpack.ProgressPlugin(),
-        new CopyPlugin([
-            { from: path.join(__dirname, 'assets'), to: 'assets' },
-        ]),
-    ],
+  mode: 'production',
+  plugins: [
+    new webpack.ProgressPlugin(),
+    new CopyPlugin([
+      { from: path.join(__dirname, 'assets'), to: 'assets' },
+    ]),
+  ],
 });
