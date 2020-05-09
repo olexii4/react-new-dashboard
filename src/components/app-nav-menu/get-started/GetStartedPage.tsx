@@ -39,7 +39,6 @@ export class GetStartedPage extends React.Component<GetStartedPageProps, GetStar
     // Toggle currently active tab
     this.handleTabClick = this.handleTabClick.bind(this);
 
-    // console.log('>>> this.props.branding.branding', this.props.branding.branding);
     const productName = (this.props.branding.branding.branding as any).name;
     const titles = [
       `Getting Started with ${productName}`,

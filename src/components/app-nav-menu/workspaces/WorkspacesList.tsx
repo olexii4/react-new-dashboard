@@ -17,9 +17,11 @@ import './workspaces-list.styl';
 const SECTION_THEME = PageSectionVariants.light;
 
 // At runtime, Redux will merge together...
-type WorkspacesProps =
-  { workspaces: WorkspacesStore.WorkspacesState; branding: { branding: BrandingState } } // ... state we've requested from the Redux store
-  & WorkspacesStore.IActionCreators // ... plus action creators we've requested
+type WorkspacesProps = {
+    workspaces: WorkspacesStore.WorkspacesState;
+    branding: { branding: BrandingState };
+  } // ... state we've requested from the Redux store
+  & WorkspacesStore.ActionCreators // ... plus action creators we've requested
   & { history: any };
 
 export class WorkspacesList extends React.PureComponent<WorkspacesProps> {

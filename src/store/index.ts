@@ -1,5 +1,6 @@
 import * as Workspaces from './Workspaces';
 import * as DevfilesRegistry from './DevfilesRegistry';
+import * as Devfiles from './Devfiles';
 import brandingReducer from './Branding';
 import userReducer from './User';
 
@@ -7,6 +8,7 @@ import userReducer from './User';
 export interface AppState {
   workspaces: Workspaces.WorkspacesState;
   devfilesRegistry: DevfilesRegistry.DevfilesState;
+  devfiles: Devfiles.DevfileState;
   branding: any;
   user: any;
 }
@@ -14,6 +16,7 @@ export interface AppState {
 export const reducers = {
   workspaces: Workspaces.reducer,
   devfilesRegistry: DevfilesRegistry.reducer,
+  devfiles: Devfiles.reducer,
   branding: brandingReducer,
   user: userReducer
 };

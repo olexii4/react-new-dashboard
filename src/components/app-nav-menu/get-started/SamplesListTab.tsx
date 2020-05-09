@@ -3,17 +3,8 @@ import { connect } from 'react-redux';
 import {
   Alert,
   AlertActionCloseButton,
-  Brand,
-  Card,
-  CardBody,
-  CardHead,
-  CardHeader,
-  CardHeadMain,
-  Gallery,
   PageSection,
   PageSectionVariants,
-  Text,
-  TextContent,
 } from '@patternfly/react-core';
 import { AppState } from '../../../store';
 import { container } from '../../../inversify.config';
@@ -21,6 +12,10 @@ import { Debounce } from '../../../services/debounce/Debounce';
 import * as DevfilesRegistryStore from '../../../store/DevfilesRegistry';
 import * as WorkspacesStore from '../../../store/Workspaces';
 import CheProgress from '../../app-common/progress/progress';
+import { SamplesListHeader } from './SamplesListHeader';
+import { SamplesListToolbar } from './SamplesListToolbar';
+import SamplesListGallery from './SamplesListGallery';
+import { load } from 'js-yaml';
 
 // At runtime, Redux will merge together...
 type DevfilesRegistryProps =
@@ -28,21 +23,40 @@ type DevfilesRegistryProps =
     devfilesRegistry: DevfilesRegistryStore.DevfilesState;
     workspaces: WorkspacesStore.WorkspacesState;
   }// ... state we've requested from the Redux store
-  & WorkspacesStore.IActionCreators // ... plus action creators we've requested
+  & WorkspacesStore.ActionCreators // ... plus action creators we've requested
   & { history: any };
+type SamplesListTabState = {
+  alertVisible: boolean;
+  devfiles: che.DevfileMetaData[];
+  filtered: che.DevfileMetaData[] | undefined;
+  temporary: boolean;
+};
 
-export class SamplesListTab extends React.PureComponent<DevfilesRegistryProps, { alertVisible: boolean }> {
+export class SamplesListTab extends React.PureComponent<DevfilesRegistryProps, SamplesListTabState> {
   private debounce: Debounce;
   private alert: { variant?: 'success' | 'danger'; title?: string } = {};
   private showAlert: (variant: 'success' | 'danger', title: string, timeDelay?: number) => void;
   private hideAlert: () => void;
+
+  private onSearchValueChanged: (filtered: che.DevfileMetaData[]) => void;
+  private onTemporaryStorageChanged: (temporary: boolean) => void;
+  private onSampleCardClicked: (devfile: string, stackName: string) => void;
+
+  private buildDevfilesList: (data: any) => che.DevfileMetaData[];
+  private devfiles: che.DevfileMetaData[] = [];
 
   constructor(props: DevfilesRegistryProps) {
     super(props);
 
     this.debounce = container.get(Debounce);
 
-    this.state = { alertVisible: false };
+    this.state = {
+      alertVisible: false,
+      filtered: undefined,
+      devfiles: [],
+      temporary: false,
+    };
+
     this.showAlert = (variant: 'success' | 'danger', title: string, timeDelay?: number): void => {
       this.alert = { variant, title };
       this.setState({ alertVisible: true });
@@ -55,34 +69,71 @@ export class SamplesListTab extends React.PureComponent<DevfilesRegistryProps, {
         this.hideAlert();
       }
     });
+
+    // todo provide proper interface for allRegistriesData
+    this.buildDevfilesList = (allRegistriesData: Array<{ devfiles: che.DevfileMetaData[]; registryUrl: string }>): che.DevfileMetaData[] => {
+      if (this.devfiles.length > 0) {
+        return this.devfiles;
+      }
+      this.devfiles = allRegistriesData
+        .reduce((allDevfiles, registryData) => {
+          registryData.devfiles.forEach(devfile => {
+            devfile.icon = new URL(devfile.icon, registryData.registryUrl).toString();
+            devfile.links.self = new URL(devfile.links.self, registryData.registryUrl).toString();
+          });
+          allDevfiles = allDevfiles.concat(registryData.devfiles);
+          return allDevfiles;
+        }, [] as che.DevfileMetaData[]);
+      return this.devfiles;
+    };
+
+    this.onSearchValueChanged = (filtered: che.DevfileMetaData[]): void => {
+      this.setState({ filtered, });
+    }
+    this.onTemporaryStorageChanged = (temporary): void => {
+      this.setState({ temporary, })
+    }
+    this.onSampleCardClicked = (devfile: string, stackName: string): void => {
+      this.createWorkspace(devfile, stackName);
+    }
+  }
+
+  private async createWorkspace(devfile: string, stackName: string): Promise<void> {
+    if (this.debounce.hasDelay()) {
+      return;
+    }
+    const attr = { stackName };
+
+    const devfileObj: che.WorkspaceDevfile = load(devfile);
+    const workspace = await this.props.createWorkspaceFromDevfile(
+      devfileObj,
+      undefined,
+      undefined,
+      attr,
+    );
+
+    const workspaceName = workspace.devfile.metadata.name;
+    this.showAlert('success', `Workspace ${workspaceName} has been created`, 1500);
+    // force start for the new workspace
+    try {
+      await this.props.startWorkspace(`${workspace.id}`);
+      this.props.history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
+    } catch (error) {
+      const message = error.data && error.data.message
+        ? error.data.message
+        : 'Workspace ${workspaceName} failed to start.';
+        this.showAlert('danger', message, 5000);
+    }
+    this.debounce.setDelay();
   }
 
   public render(): React.ReactElement {
     const { alertVisible } = this.state;
-    const { data } = this.props.devfilesRegistry;
 
-    const createWorkspace = (registryUrl: string, devfile: che.DevfileMetaData): void => {
-      if (this.debounce.hasDelay() || !devfile.links || !devfile.links.self) {
-        return;
-      }
-      const devfileUrl = registryUrl + devfile.links.self;
-      const attr = { stackName: devfile.displayName };
-      this.props.createWorkspace(devfileUrl, attr).then((workspace: che.Workspace) => {
-        const workspaceName = workspace.devfile.metadata.name;
-        this.showAlert('success', `Workspace ${workspaceName} has been created`, 1500);
-        // force start for the new workspace
-        this.props.startWorkspace(`${workspace.id}`).then(() => {
-          this.props.history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
-        }).catch((error: { data?: { message?: string } }) => {
-          const message = error.data && error.data.message ? error.data.message : 'Unknown error';
-          setTimeout(() => {
-            this.hideAlert();
-            this.showAlert('danger', message);
-          }, 1000);
-        });
-      });
-      this.debounce.setDelay();
-    };
+    const devfiles = this.buildDevfilesList(this.props.devfilesRegistry.data);
+    const filtered = !this.state.filtered ? devfiles : this.state.filtered;
+    const isLoading = this.props.workspaces.isLoading;
+    const persistVolumesDefault = this.props.workspaces.settings["che.workspace.persist_volumes.default"];
 
     return (
       <React.Fragment>
@@ -93,35 +144,23 @@ export class SamplesListTab extends React.PureComponent<DevfilesRegistryProps, {
             action={<AlertActionCloseButton onClose={this.hideAlert} />}
           />
         )}
-        <PageSection variant={PageSectionVariants.light}>
-          <TextContent>
-            <Text component='h1'>Select a Sample</Text>
-            <Text component='p'>
-              Select a sample to create your first workspace.<br />
-            </Text>
-          </TextContent>
+        <PageSection
+          variant={PageSectionVariants.light}
+          className={'pf-u-pt-xs'}>
+          <SamplesListHeader />
+          <SamplesListToolbar
+            persistVolumesDefault={persistVolumesDefault}
+            onTemporaryStorageChange={this.onTemporaryStorageChanged}
+            devfiles={devfiles}
+            onSearchValueChange={this.onSearchValueChanged}
+          ></SamplesListToolbar>
         </PageSection>
-        <CheProgress isLoading={this.props.workspaces.isLoading} />
+        <CheProgress isLoading={isLoading} />
         <PageSection variant={PageSectionVariants.default}>
-          <Gallery gutter='md'>
-            {data.map((data: { devfiles: che.DevfileMetaData[]; registryUrl: string }, index: number) => (
-              data.devfiles.map((devfile: che.DevfileMetaData, key: number) => (
-                <Card isHoverable isCompact isSelectable
-                  key={`${index}_${key}`}
-                  onClick={(): void => createWorkspace(data.registryUrl, devfile)}>
-                  <CardHead>
-                    <CardHeadMain>
-                      <Brand src={`${data.registryUrl}${devfile.icon}`}
-                        alt={devfile.displayName}
-                        style={{ height: '64px' }} />
-                    </CardHeadMain>
-                  </CardHead>
-                  <CardHeader>{devfile.displayName}</CardHeader>
-                  <CardBody>{devfile.description}</CardBody>
-                </Card>
-              ))
-            ))}
-          </Gallery>
+          <SamplesListGallery
+            devfiles={filtered}
+            onCardClick={this.onSampleCardClicked}
+          ></SamplesListGallery>
         </PageSection>
       </React.Fragment>
     );
@@ -130,9 +169,8 @@ export class SamplesListTab extends React.PureComponent<DevfilesRegistryProps, {
 
 export default connect(
   (state: AppState) => {
-    const { devfilesRegistry, workspaces } = state;
-    return { devfilesRegistry, workspaces };
+    const { devfilesRegistry, devfiles, workspaces } = state;
+    return { devfilesRegistry, devfiles, workspaces };
   }, // Selects which state properties are merged into the component's props(devfilesRegistry and workspaces)
-  WorkspacesStore.actionCreators // Selects which action creators are merged into the component's props
-
+  WorkspacesStore.actionCreators, // Selects which action creators are merged into the component's props
 )(SamplesListTab);

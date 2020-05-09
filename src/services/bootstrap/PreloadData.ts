@@ -61,6 +61,8 @@ export class PreloadData {
   private updateWorkspaces(): void {
     const requestWorkspaces = WorkspacesStore.actionCreators.requestWorkspaces;
     requestWorkspaces()(this.store.dispatch, () => ({ workspaces: { workspaces: [] } } as any));
+    const requestSettings = WorkspacesStore.actionCreators.requestSettings;
+    requestSettings()(this.store.dispatch, () => ({ workspaces: { settings: {} } }));
   }
 
   private updateDevfilesRegistry(): void {

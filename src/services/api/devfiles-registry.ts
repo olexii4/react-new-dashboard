@@ -19,3 +19,9 @@ export const fetchDevfiles = (): Promise<{ devfiles: che.DevfileMetaData[]; regi
     return Promise.reject(error.response);
   });
 };
+
+export const fetchDevfile = (url: string): Promise<che.WorkspaceDevfile> => {
+  return axios.get(url)
+    .then(response => response.data)
+    .catch(error => Promise.reject(new Error(error.response)));
+};

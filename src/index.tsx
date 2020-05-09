@@ -8,6 +8,8 @@ import configureStore from './store/configureStore';
 import App from './components/App';
 import { PreloadData } from './services/bootstrap/PreloadData';
 
+import '../node_modules/@patternfly/patternfly/patternfly-addons.css';
+
 const history = createHashHistory();
 // get the application-wide store instance, with state from the server where available
 const store = configureStore(history);

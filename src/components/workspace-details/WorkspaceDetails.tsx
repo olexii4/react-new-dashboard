@@ -24,7 +24,7 @@ const SECTION_THEME = PageSectionVariants.light;
 
 type WorkspaceDetailsProps =
   WorkspacesStore.WorkspacesState // ... state we've requested from the Redux store
-  & WorkspacesStore.IActionCreators // ... plus action creators we've requested
+  & WorkspacesStore.ActionCreators // ... plus action creators we've requested
   & { history: any } // ... plus history
   & RouteComponentProps<{ namespace: string; workspaceName: string }>; // incoming parameters
 
