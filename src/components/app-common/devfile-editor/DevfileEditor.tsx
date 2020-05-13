@@ -229,7 +229,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
 
   private initLanguageServerValidation(editor: Editor): void {
     const model = editor.getModel();
-    let validationTimer: any;
+    let validationTimer: number;
 
     model.onDidChangeContent(() => {
       const document = this.createDocument(model);
@@ -242,7 +242,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
           const markers = this.p2m.asDiagnostics(diagnostics);
           let errorMessage = '';
           if (markers && markers[0]) {
-            const {message, startLineNumber, startColumn} = (markers[0] as any);
+            const {message, startLineNumber, startColumn} = markers[0];
             if (startLineNumber && startColumn) {
               errorMessage += `line[${startLineNumber}] column[${startColumn}]: `
             }
@@ -252,7 +252,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
             this.setState({ errorMessage: `Error. ${errorMessage}` });
             this.onChange(editor.getValue(), false);
           }
-          monaco.editor.setModelMarkers(model, 'default', markers as any);
+          monaco.editor.setModelMarkers(model, 'default', markers || []);
         });
       })
     });
