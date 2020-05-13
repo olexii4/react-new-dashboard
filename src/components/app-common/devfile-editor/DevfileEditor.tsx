@@ -4,10 +4,10 @@ import { AppState } from '../../../store';
 import * as DevfilesRegistry from '../../../store/DevfilesRegistry';
 import { BrandingState } from '../../../store/Branding';
 import { DisposableCollection } from '../../../services/disposable';
-import monacoConversion from 'monaco-languageclient/lib/monaco-converter';
+import * as monacoConversion from 'monaco-languageclient/lib/monaco-converter';
 import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
 import { language, conf } from 'monaco-languages/release/esm/yaml/yaml';
-import yamlLanguageServer from 'yaml-language-server';
+import * as yamlLanguageServer from 'yaml-language-server';
 import { registerCustomThemes, DEFAULT_CHE_THEME } from './monaco-theme-register';
 import { load, dump } from 'js-yaml';
 import $ from 'jquery';
@@ -22,7 +22,7 @@ interface Editor {
 const EDITOR_THEME = DEFAULT_CHE_THEME;
 const LANGUAGE_ID = 'yaml';
 const YAML_SERVICE = 'yamlService';
-const MONACO_CONFIG = { language: 'yaml', wordWrap: 'on', lineNumbers: 'on', matchBrackets: true, readOnly: false };
+const MONACO_CONFIG = { language: 'yaml', wordWrap: 'on', lineNumbers: 'on', scrollBeyondLastLine: false };
 
 type Props = { devfilesRegistry: DevfilesRegistry.DevfilesState; branding: { branding: BrandingState } } // Redux store
   & {
@@ -240,7 +240,14 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
       validationTimer = setTimeout(() => {
         this.yamlService.doValidation(document, false).then(diagnostics => {
           const markers = this.p2m.asDiagnostics(diagnostics);
-          const errorMessage = markers && markers[0] ? (markers[0] as any).message : '';
+          let errorMessage = '';
+          if (markers && markers[0]) {
+            const {message, startLineNumber, startColumn} = (markers[0] as any);
+            if (startLineNumber && startColumn) {
+              errorMessage += `line[${startLineNumber}] column[${startColumn}]: `
+            }
+            errorMessage += `Error. ${message}`;
+          }
           if (errorMessage) {
             this.setState({ errorMessage: `Error. ${errorMessage}` });
             this.onChange(editor.getValue(), false);
