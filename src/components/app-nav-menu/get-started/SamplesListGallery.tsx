@@ -1,61 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Gallery } from '@patternfly/react-core';
 import { AppState } from '../../../store';
-import * as DevfileStore from '../../../store/Devfiles';
-import {
-  Brand,
-  Card,
-  CardBody,
-  CardHead,
-  CardHeader,
-  CardHeadMain,
-  Gallery,
-} from '@patternfly/react-core';
+import * as DevfilesStore from '../../../store/Devfiles';
+import * as DevfileFiltersStore from '../../../store/DevfileFilters';
+import * as DevfileMetadataStore from '../../../store/DevfileMetadata';
+import { SampleCard } from './SampleCard';
 
 type SamplesListGalleryProps = {
-  devfiles: che.DevfileMetaData[];
+  metadata: DevfileMetadataStore.State;
+  metadataFilter: DevfileFiltersStore.MetadataFilterState;
   onCardClick: (devfile: string, stackName: string) => void;
-  devfileStore: DevfileStore.DevfileState;
-} & DevfileStore.ActionCreators;
+} & DevfilesStore.ActionCreators;
 
 export class SamplesListGallery extends React.PureComponent<SamplesListGalleryProps> {
 
-  private buildCardsList: () => React.ReactElement[];
-
-  constructor(props: SamplesListGalleryProps) {
-    super(props);
-
-    const handleCardClick = async (devfileMeta: che.DevfileMetaData): Promise<void> => {
-      const devfile = await this.props.requestDevfile(devfileMeta.links.self);
-      this.props.onCardClick(devfile, devfileMeta.displayName);
-    };
-    this.buildCardsList = (): React.ReactElement[] => {
-      return this.props.devfiles.map(devfile => {
-        return (
-          <Card
-            isHoverable
-            isCompact
-            isSelectable
-            key={devfile.displayName}
-            onClick={(): Promise<void> => handleCardClick(devfile)}>
-            <CardHead>
-              <CardHeadMain>
-                <Brand
-                  src={devfile.icon}
-                  alt={devfile.displayName}
-                  style={{ height: '64px' }} />
-              </CardHeadMain>
-            </CardHead>
-            <CardHeader>{devfile.displayName}</CardHeader>
-            <CardBody>{devfile.description}</CardBody>
-          </Card>
-        );
-      });
-    }
-  }
-
   render(): React.ReactElement {
-    const cards = this.buildCardsList();
+    const metadata = this.props.metadataFilter.found;
+    const cards = this.buildCardsList(metadata);
     return (
       <Gallery gutter='md'>
         {cards}
@@ -63,11 +25,27 @@ export class SamplesListGallery extends React.PureComponent<SamplesListGalleryPr
     );
   }
 
+  private async fetchDevfile(meta: che.DevfileMetaData): Promise<void> {
+    const devfile = await this.props.requestDevfile(meta.links.self);
+    this.props.onCardClick(devfile, meta.displayName);
+  }
+
+  private buildCardsList(metadata: che.DevfileMetaData[]): React.ReactElement[] {
+    return metadata.map(meta => (
+      <SampleCard
+        key={meta.links.self}
+        metadata={meta}
+        onClick={(): Promise<void> => this.fetchDevfile(meta)}
+      />
+    ));
+  }
+
 }
 
 export default connect(
-  (state: AppState) => {
-    return { devfileStore: state.devfiles };
-  },
-  DevfileStore.actionCreators
+  (state: AppState) => ({
+    metadataFilter: state.devfileMetadataFilter,
+  }), {
+  ...DevfilesStore.actionCreators,
+}
 )(SamplesListGallery);

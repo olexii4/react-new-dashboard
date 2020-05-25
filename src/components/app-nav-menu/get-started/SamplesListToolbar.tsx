@@ -1,6 +1,6 @@
-import React, { FormEvent } from 'react';
+import { connect } from 'react-redux';
+import React from 'react';
 import Pluralize from 'react-pluralize';
-import { TemporaryStorageSwitch } from './TemporaryStorageSwitch';
 import {
   TextContent,
   Flex,
@@ -8,61 +8,60 @@ import {
   FlexModifiers,
   Text,
   TextInput,
+  TextInputProps,
 } from '@patternfly/react-core';
+import { TemporaryStorageSwitch } from './TemporaryStorageSwitch';
+import * as DevfileFiltersStore from '../../../store/DevfileFilters';
+import { AppState } from '../../../store';
 
 type SamplesListToolbarProps = {
   persistVolumesDefault: string;
   onTemporaryStorageChange: (temporary: boolean) => void;
-  devfiles: che.DevfileMetaData[];
-  onSearchValueChange: (filtered: che.DevfileMetaData[]) => void;
-};
+  metadataFilter: DevfileFiltersStore.MetadataFilterState;
+} & DevfileFiltersStore.ActionCreators;
 type SamplesListToolbarState = {
-  found: number;
   searchValue: string;
 }
 
 export class SamplesListToolbar extends React.PureComponent<SamplesListToolbarProps, SamplesListToolbarState> {
-  handleTextInputChange: (value: string, event: FormEvent<HTMLInputElement>) => void;
-  buildSearchBox: Function;
+  handleTextInputChange: TextInputProps["onChange"];
+  buildSearchBox: (searchValue: string) => React.ReactElement;
 
   constructor(props) {
     super(props);
 
     this.state = {
-      found: -1,
       searchValue: '',
     };
 
-    this.handleTextInputChange = (value: string): void => {
-      this.setState({ searchValue: value });
-      value = value.toLowerCase();
-
-      const filtered = this.props.devfiles.filter(devfile =>
-        devfile.displayName.toLowerCase().includes(value)
-        || devfile.description?.toLowerCase().includes(value));
-
-      this.setState({ found: filtered.length });
-      this.props.onSearchValueChange(filtered);
+    this.handleTextInputChange = (searchValue): void => {
+      this.setState({ searchValue });
+      this.props.setFilter(searchValue);
     };
-    this.buildSearchBox = (): React.ReactElement => {
-      const value = this.state.searchValue;
-      return (
-        <TextInput value={value ? value : ''} type="search" onChange={this.handleTextInputChange} aria-label="Filter samples list" placeholder="Filter by"/>
-      );
-    };
+    this.buildSearchBox = (searchValue: string): React.ReactElement => (
+      <TextInput value={searchValue} type="search" onChange={this.handleTextInputChange} aria-label="Filter samples list" placeholder="Filter by" />
+    );
+
+  }
+
+  componentWillUnmount(): void {
+    this.props.showAll();
   }
 
   render(): React.ReactElement {
-    const found = this.state.found > -1 ? this.state.found : this.props.devfiles.length;
+    const searchValue = this.props.metadataFilter.filter?.search || '';
+    const foundCount = this.props.metadataFilter.found.length;
 
     return (
       <Flex className={'pf-u-m-md pf-u-mb-0 pf-u-mr-0'}>
         <FlexItem>
-          {this.buildSearchBox()}
+          {this.buildSearchBox(searchValue)}
         </FlexItem>
         <FlexItem>
           <TextContent>
-            <Text><Pluralize singular={'item'} count={found} zero={'Nothing found'}/></Text>
+            <Text>
+              {this.buildCount(foundCount, searchValue)}
+            </Text>
           </TextContent>
         </FlexItem>
         <FlexItem breakpointMods={[{ modifier: FlexModifiers["align-right"] }]}>
@@ -73,4 +72,18 @@ export class SamplesListToolbar extends React.PureComponent<SamplesListToolbarPr
       </Flex>
     );
   }
+
+  private buildCount(foundCount: number, searchValue: string): React.ReactElement {
+    return searchValue === ''
+      ? <span></span>
+      : (<Pluralize singular={'item'} count={foundCount} zero={'Nothing found'} />)
+  }
+
 }
+
+export default connect(
+  (state: AppState) => ({
+    metadataFilter: state.devfileMetadataFilter,
+  }),
+  DevfileFiltersStore.actionCreators
+)(SamplesListToolbar);

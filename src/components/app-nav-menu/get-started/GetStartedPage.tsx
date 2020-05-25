@@ -62,9 +62,6 @@ export class GetStartedPage extends React.Component<GetStartedPageProps, GetStar
     return (
       <React.Fragment>
         <PageSection variant={PageSectionVariants.light}>
-          {/* <TextContent>
-            <Text component='h1'>Select a Sample</Text>
-          </TextContent> */}
           <Title size="2xl">{title}</Title>
         </PageSection>
         <PageSection variant={PageSectionVariants.light} noPadding={true}>

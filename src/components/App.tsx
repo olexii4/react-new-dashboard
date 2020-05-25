@@ -18,30 +18,25 @@ const GetStartedPageLoadable = loadable({
   loader: () => import('./app-nav-menu/get-started/GetStartedPage'),
   loading: () => fallback,
 });
-const SamplesListTabLoadable = loadable({
-  loader: () => import('./app-nav-menu/get-started/SamplesListTab'),
-  loading: () => fallback,
-});
 const WorkspacesListLoadable = loadable({
-  loader: () => import('./app-nav-menu/workspaces/WorkspacesList'), 
+  loader: () => import('./app-nav-menu/workspaces/WorkspacesList'),
   loading: () => fallback,
 });
 const AdministrationLoadable = loadable({
-  loader: () => import('./app-nav-menu/administration/Administration'), 
+  loader: () => import('./app-nav-menu/administration/Administration'),
   loading: () => fallback,
 });
 const WorkspaceDetailsLoadable = loadable({
-  loader: () => import('./workspace-details/WorkspaceDetails'), 
+  loader: () => import('./workspace-details/WorkspaceDetails'),
   loading: () => fallback,
 });
 const IdeIframeLoadable = loadable({
-  loader: () => import('./ide-iframe/IdeIframe'), 
+  loader: () => import('./ide-iframe/IdeIframe'),
   loading: () => fallback,
 });
 
 const items: Item[] = [
   { to: '/', component: GetStartedPageLoadable, label: 'Get Started Page', ico: 'fa fa-plus' },
-  { to: '/getstarted', component: SamplesListTabLoadable, label: 'Get Started', ico: 'fa fa-plus' },
   { to: '/workspaces', component: WorkspacesListLoadable, label: 'Workspaces', ico: 'chefont cheico-workspace' },
   { to: '/administration', component: AdministrationLoadable, label: 'Administration', ico: 'material-design icon-ic_settings_24px' },
   { to: '/workspace/:namespace/:workspaceName/', component: WorkspaceDetailsLoadable },

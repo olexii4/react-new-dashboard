@@ -1,13 +1,15 @@
 import * as Workspaces from './Workspaces';
-import * as DevfilesRegistry from './DevfilesRegistry';
+import * as DevfilesMetadata from './DevfileMetadata';
 import * as Devfiles from './Devfiles';
+import * as DevfilesMetadataFilter from './DevfileFilters';
 import brandingReducer from './Branding';
 import userReducer from './User';
 
 // the top-level state object
 export interface AppState {
   workspaces: Workspaces.WorkspacesState;
-  devfilesRegistry: DevfilesRegistry.DevfilesState;
+  devfileMetadata: DevfilesMetadata.State;
+  devfileMetadataFilter: DevfilesMetadataFilter.MetadataFilterState;
   devfiles: Devfiles.DevfileState;
   branding: any;
   user: any;
@@ -15,10 +17,11 @@ export interface AppState {
 
 export const reducers = {
   workspaces: Workspaces.reducer,
-  devfilesRegistry: DevfilesRegistry.reducer,
+  devfileMetadata: DevfilesMetadata.reducer,
+  devfileMetadataFilter: DevfilesMetadataFilter.reducer,
   devfiles: Devfiles.reducer,
   branding: brandingReducer,
-  user: userReducer
+  user: userReducer,
 };
 
 // this type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are

@@ -1,12 +1,13 @@
 import { container } from '../../inversify.config';
 import { KeycloakSetup } from './KeycloakSetup';
 import { CheBranding } from './CheBranding';
-import { setBranding } from '../../store/Branding';
-import { setUser } from '../../store/User';
+import * as BrandingStore from '../../store/Branding';
+import * as UserStore from '../../store/User';
 import * as WorkspacesStore from '../../store/Workspaces';
-import * as DevfilesRegistry from '../../store/DevfilesRegistry';
-import { Keycloak, IKeycloakUserInfo } from '../keycloak/Keycloak';
-import * as $ from 'jquery';
+import * as DevfileMetadataStore from '../../store/DevfileMetadata';
+import * as DevfileMetadataFiltersStore from '../../store/DevfileFilters';
+import { Keycloak } from '../keycloak/Keycloak';
+import { Store } from 'redux';
 
 /**
  * This class prepares all init data.
@@ -16,9 +17,9 @@ export class PreloadData {
   private cheBranding: CheBranding;
   private keycloakSetup: KeycloakSetup;
   private keycloak: Keycloak;
-  private store: any;
+  private store: Store;
 
-  constructor(store: any) {
+  constructor(store: Store) {
     this.store = store;
     this.cheBranding = container.get(CheBranding);
     this.keycloakSetup = container.get(KeycloakSetup);
@@ -28,17 +29,19 @@ export class PreloadData {
   async init(): Promise<void> {
     this.setBranding();// default values for a loader
     this.updateBranding();
-    await this.updateUser().then(() => {
-      this.updateKeycloakUserInfo();
-      this.updateWorkspaces();
-      this.updateDevfilesRegistry();
-    });
+    await this.updateUser();
+    await this.updateKeycloakUserInfo();
 
+    const settings = await this.updateWorkspaceSettings();
+
+    this.updateWorkspaces();
+    await this.updateDevfilesMetadata(settings);
+    this.updateDevfileMetadataFilters();
   }
 
   private setBranding(): void {
     const branding = this.cheBranding.all;
-    this.store.dispatch(setBranding({ branding }));
+    this.store.dispatch(BrandingStore.setBranding({ branding }));
   }
 
   private updateBranding(): void {
@@ -49,34 +52,40 @@ export class PreloadData {
 
   private setUser(): void {
     const user = this.keycloakSetup.getUser();
-    this.store.dispatch(setUser({ user }));
+    this.store.dispatch(UserStore.setUser({ user }));
   }
 
-  private updateUser(): Promise<void> {
-    return this.keycloakSetup.resolve().then(() => {
-      this.setUser();
-    });
+  private async updateUser(): Promise<void> {
+    await this.keycloakSetup.resolve();
+    this.setUser();
   }
 
-  private updateWorkspaces(): void {
+  private async updateWorkspaces(): Promise<void> {
     const requestWorkspaces = WorkspacesStore.actionCreators.requestWorkspaces;
-    requestWorkspaces()(this.store.dispatch, () => ({ workspaces: { workspaces: [] } } as any));
+    await requestWorkspaces()(this.store.dispatch, this.store.getState);
+  }
+
+  private async updateWorkspaceSettings(): Promise<che.WorkspaceSettings> {
     const requestSettings = WorkspacesStore.actionCreators.requestSettings;
-    requestSettings()(this.store.dispatch, () => ({ workspaces: { settings: {} } }));
+    return requestSettings()(this.store.dispatch, this.store.getState);
   }
 
-  private updateDevfilesRegistry(): void {
-    const requestWorkspaces = DevfilesRegistry.actionCreators.requestDevfiles;
-    requestWorkspaces()(this.store.dispatch, () => ({ devfilesRegistry: { data: [] } } as any));
+  private async updateDevfilesMetadata(settings: che.WorkspaceSettings): Promise<void> {
+    const requestMetadata = DevfileMetadataStore.actionCreators.requestMetadata;
+    return requestMetadata(settings.cheWorkspaceDevfileRegistryUrl || '')(this.store.dispatch, this.store.getState);
   }
 
-  private updateKeycloakUserInfo(): void {
+  private updateDevfileMetadataFilters(): void {
+    const showAll = DevfileMetadataFiltersStore.actionCreators.showAll;
+    return showAll()(this.store.dispatch, this.store.getState);
+  }
+
+  private async updateKeycloakUserInfo(): Promise<void> {
     if (!KeycloakSetup.keycloakAuth.isPresent) {
       return;
     }
-    this.keycloak.fetchUserInfo().then((userInfo: IKeycloakUserInfo) => {
-      const user = $.extend(this.keycloakSetup.getUser(), userInfo);
-      this.store.dispatch(setUser({ user }));
-    });
+    const userInfo = await this.keycloak.fetchUserInfo();
+    const user = Object.assign({}, this.keycloakSetup.getUser(), userInfo);
+    this.store.dispatch(UserStore.setUser({ user }));
   }
 }

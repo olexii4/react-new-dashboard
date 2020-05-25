@@ -144,8 +144,6 @@ export const actionCreators: ActionCreators = {
       dispatch({ type: 'REQUEST_WORKSPACES' });
       return promise;
     }
-    // todo what is the error here?
-    // state isn't initialized?
     return Promise.reject(new Error('something went wrong with "Workspaces" state.'));
   },
   startWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {

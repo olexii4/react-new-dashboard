@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
-import * as DevfilesRegistry from '../../../store/DevfilesRegistry';
+import * as DevfileMetadataStore from '../../../store/DevfileMetadata';
 import { BrandingState } from '../../../store/Branding';
 import { DisposableCollection } from '../../../services/disposable';
 import * as monacoConversion from 'monaco-languageclient/lib/monaco-converter';
@@ -24,7 +24,7 @@ const LANGUAGE_ID = 'yaml';
 const YAML_SERVICE = 'yamlService';
 const MONACO_CONFIG = { language: 'yaml', wordWrap: 'on', lineNumbers: 'on', scrollBeyondLastLine: false };
 
-type Props = { devfilesRegistry: DevfilesRegistry.DevfilesState; branding: { branding: BrandingState } } // Redux store
+type Props = { devfileMetadata: DevfileMetadataStore.State; branding: { branding: BrandingState } } // Redux store
   & {
     devfile: che.WorkspaceDevfile;
     decorationPattern?: string;
@@ -82,7 +82,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
       schemas: [{
         uri: 'inmemory:yaml',
         fileMatch: ['*'],
-        schema: this.props.devfilesRegistry.data[0].jsonSchema || {}
+        schema: this.props.devfileMetadata.data[0].jsonSchema || {}
       }],
       hover: true,
       completion: true,
@@ -261,7 +261,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
 
 export default connect(
   (state: AppState) => {
-    const { devfilesRegistry, branding } = state;
-    return { devfilesRegistry, branding }; // Properties are merged into the component's props
+    const { devfileMetadata, branding } = state;
+    return { devfileMetadata, branding }; // Properties are merged into the component's props
   }
 )(DevfileEditor);

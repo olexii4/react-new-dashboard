@@ -1,7 +1,6 @@
 import axios from 'axios';
-import Qs from 'Qs';
+import * as Qs from 'qs';
 import { load } from 'js-yaml';
-
 
 const API_WORKSPACE = '/api/workspace';
 
