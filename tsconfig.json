@@ -15,7 +15,7 @@
       "dom"
     ],
     "skipLibCheck": true,
-    "types": ["reflect-metadata"],
+    "types": ["reflect-metadata", "jest"],
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -23,6 +23,7 @@
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
     "moduleResolution": "node",
+    "allowJs": true
   },
   "files": [
     "./src/typings/che.d.ts"
