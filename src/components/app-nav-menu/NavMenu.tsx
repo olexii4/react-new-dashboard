@@ -1,10 +1,10 @@
-import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
-import '@patternfly/react-core/dist/styles/base.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Gravatar from 'react-gravatar';
+import gravatarUrl from 'gravatar-url';
+import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
 import { css } from '@patternfly/react-styles';
 import {
+  Avatar,
   Brand,
   Dropdown,
   DropdownItem,
@@ -20,10 +20,11 @@ import {
   ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core';
+
 import { container } from '../../inversify.config';
-import './nav-menu.styl';
 import { Keycloak } from '../../services/keycloak/Keycloak';
 import WorkspaceIndicator from './workspaces/workspace-indicator/WorkspaceIndicator';
+import './nav-menu.styl';
 
 const DARK = 'dark';
 const LIGHT = 'light';
@@ -131,7 +132,7 @@ export class NavMenu extends React.PureComponent<any, any> {
 
     const UserDropdownItems = [
       <DropdownItem key='white' onClick={(): void => this.onTheme(LIGHT)} component='button'>Light theme</DropdownItem>,
-      <DropdownItem key='dark' onClick={(): void => this.onTheme(DARK)} component='button'>Dadark theme</DropdownItem>,
+      <DropdownItem key='dark' onClick={(): void => this.onTheme(DARK)} component='button'>Dark theme</DropdownItem>,
       <DropdownItem key='account_details'>Account details</DropdownItem>,
       <DropdownItem key='account_logout' onClick={this.onLogout} component='button'>Logout</DropdownItem>
     ];
@@ -147,7 +148,7 @@ export class NavMenu extends React.PureComponent<any, any> {
         </ToolbarGroup>
       </Toolbar>
     );
-    const Avatar = <Gravatar email={(this.props.user ? this.props.user.email : '')} className='pf-c-avatar' />;
+    const Avatar = this.buildAvatar();
     const Logo = <Brand src={`${this.props.logoURL}`} alt='' />;
     const Header = (
       <PageHeader
@@ -165,4 +166,11 @@ export class NavMenu extends React.PureComponent<any, any> {
 
     return (<Page header={Header} sidebar={Sidebar}> {this.props.children} </Page>);
   }
+
+  buildAvatar(): React.ReactElement {
+    const email = this.props.user?.email;
+    const imageUrl = gravatarUrl(email, { default: 'retro' });
+    return <Avatar src={imageUrl} alt='Avatar image' />;
+  }
+
 }

@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import configureStore from './store/configureStore';
 import { Provider } from 'react-redux';
-import App from './components/App';
 import { createHashHistory } from 'history';
+import '@patternfly/react-core/dist/styles/base.css';
+
+import configureStore from './store/configureStore';
+import App from './components/App';
 import { PreloadData } from './services/bootstrap/PreloadData';
 
 const history = createHashHistory();
