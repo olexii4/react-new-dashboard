@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import { connect } from 'react-redux';
 import {
   PageSection,
   PageSectionVariants,
@@ -8,7 +9,6 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { BrandingState } from '../../../store/Branding';
-import { connect } from 'react-redux';
 import { AppState } from '../../../store';
 
 const SamplesListTab = React.lazy(() => import('./SamplesListTab'));
@@ -21,7 +21,7 @@ type GetStartedPageState = {
   activeTabKey: string | number;
 }
 
-export class GetStartedPage extends React.Component<GetStartedPageProps, GetStartedPageState> {
+export class GetStartedPage extends React.PureComponent<GetStartedPageProps, GetStartedPageState> {
 
   private contentRef1: any;
   private contentRef2: any;
