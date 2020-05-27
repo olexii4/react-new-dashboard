@@ -10,15 +10,10 @@
     "removeComments": true,
     "sourceMap": true,
     "target": "es5",
-    "lib": [
-      "es2015",
-      "dom"
-    ],
+    "lib": ["es2015", "dom"],
     "skipLibCheck": true,
     "types": ["reflect-metadata", "jest"],
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
