@@ -17,7 +17,7 @@ type IRejectFn<T> = {
 
 export type IBranding = { [key: string]: string | Record<string, any> };
 
-const ASSET_PREFIX = '/assets/branding/';
+const ASSET_PREFIX = './assets/branding/';
 
 /**
  * This class is handling the branding data.

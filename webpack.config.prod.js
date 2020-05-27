@@ -25,4 +25,7 @@ module.exports = merge(common, {
       { from: path.join(__dirname, 'assets'), to: 'assets' },
     ]),
   ],
+  output: {
+    publicPath: './',
+  },
 });

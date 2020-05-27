@@ -49,7 +49,7 @@ module.exports = env => {
       disableHostCheck: true,
       host: 'localhost',
       hot: true,
-      open: false,
+      open: true,
       port: 3000,
       stats: 'errors-warnings',
       // writeToDisk: true,
