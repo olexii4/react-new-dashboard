@@ -1,25 +1,22 @@
 import * as Workspaces from './Workspaces';
-import * as DevfilesMetadata from './DevfileMetadata';
-import * as Devfiles from './Devfiles';
-import * as DevfilesMetadataFilter from './DevfileFilters';
+import * as DevfileRegistries from './DevfileRegistries';
+import * as DevfileMetadataFilter from './DevfileFilters';
 import brandingReducer from './Branding';
 import userReducer from './User';
 
 // the top-level state object
 export interface AppState {
   workspaces: Workspaces.WorkspacesState;
-  devfileMetadata: DevfilesMetadata.State;
-  devfileMetadataFilter: DevfilesMetadataFilter.MetadataFilterState;
-  devfiles: Devfiles.DevfileState;
+  devfileRegistries: DevfileRegistries.State;
+  devfileMetadataFilter: DevfileMetadataFilter.MetadataFilterState;
   branding: any;
   user: any;
 }
 
 export const reducers = {
   workspaces: Workspaces.reducer,
-  devfileMetadata: DevfilesMetadata.reducer,
-  devfileMetadataFilter: DevfilesMetadataFilter.reducer,
-  devfiles: Devfiles.reducer,
+  devfileRegistries: DevfileRegistries.reducer,
+  devfileMetadataFilter: DevfileMetadataFilter.reducer,
   branding: brandingReducer,
   user: userReducer,
 };

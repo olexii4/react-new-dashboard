@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
-import * as DevfileMetadataStore from '../../../store/DevfileMetadata';
+import * as DevfileRegistriesStore from '../../../store/DevfileRegistries';
 import { BrandingState } from '../../../store/Branding';
 import { DisposableCollection } from '../../../services/disposable';
 import * as monacoConversion from 'monaco-languageclient/lib/monaco-converter';
@@ -22,14 +22,22 @@ interface Editor {
 const EDITOR_THEME = DEFAULT_CHE_THEME;
 const LANGUAGE_ID = 'yaml';
 const YAML_SERVICE = 'yamlService';
-const MONACO_CONFIG = { language: 'yaml', wordWrap: 'on', lineNumbers: 'on', scrollBeyondLastLine: false };
+const MONACO_CONFIG: Monaco.IEditorConstructionOptions = {
+  language: 'yaml',
+  wordWrap: 'on',
+  lineNumbers: 'on',
+  scrollBeyondLastLine: false,
+};
 
-type Props = { devfileMetadata: DevfileMetadataStore.State; branding: { branding: BrandingState } } // Redux store
+type Props = {
+  devfileRegistries: DevfileRegistriesStore.State;
+  branding: { branding: BrandingState };
+} // Redux store
   & {
     devfile: che.WorkspaceDevfile;
     decorationPattern?: string;
     onChange?: (devfile: che.WorkspaceDevfile, isValid: boolean) => void;
-    setUpdateEditorCallback?: (Function) => void;
+    setUpdateEditorCallback?: (arg: any) => void;
   };
 
 class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }> {
@@ -82,7 +90,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
       schemas: [{
         uri: 'inmemory:yaml',
         fileMatch: ['*'],
-        schema: this.props.devfileMetadata.data[0].jsonSchema || {}
+        schema: this.props.devfileRegistries.schema || {}
       }],
       hover: true,
       completion: true,
@@ -261,7 +269,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
 
 export default connect(
   (state: AppState) => {
-    const { devfileMetadata, branding } = state;
-    return { devfileMetadata, branding }; // Properties are merged into the component's props
+    const { devfileRegistries, branding } = state;
+    return { devfileRegistries, branding }; // Properties are merged into the component's props
   }
 )(DevfileEditor);

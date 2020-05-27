@@ -2,16 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Gallery } from '@patternfly/react-core';
 import { AppState } from '../../../store';
-import * as DevfilesStore from '../../../store/Devfiles';
 import * as DevfileFiltersStore from '../../../store/DevfileFilters';
-import * as DevfileMetadataStore from '../../../store/DevfileMetadata';
+import * as DevfileRegistriesStore from '../../../store/DevfileRegistries'
 import { SampleCard } from './SampleCard';
 
 type SamplesListGalleryProps = {
-  metadata: DevfileMetadataStore.State;
   metadataFilter: DevfileFiltersStore.MetadataFilterState;
-  onCardClick: (devfile: string, stackName: string) => void;
-} & DevfilesStore.ActionCreators;
+  onCardClick: (devfileContent: string, stackName: string) => void;
+} & DevfileRegistriesStore.ActionCreators;
 
 export class SamplesListGallery extends React.PureComponent<SamplesListGalleryProps> {
 
@@ -46,6 +44,6 @@ export default connect(
   (state: AppState) => ({
     metadataFilter: state.devfileMetadataFilter,
   }), {
-  ...DevfilesStore.actionCreators,
+  ...DevfileRegistriesStore.actionCreators,
 }
 )(SamplesListGallery);

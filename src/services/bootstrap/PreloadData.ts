@@ -4,7 +4,7 @@ import { CheBranding } from './CheBranding';
 import * as BrandingStore from '../../store/Branding';
 import * as UserStore from '../../store/User';
 import * as WorkspacesStore from '../../store/Workspaces';
-import * as DevfileMetadataStore from '../../store/DevfileMetadata';
+import * as DevfileRegistriesStore from '../../store/DevfileRegistries';
 import * as DevfileMetadataFiltersStore from '../../store/DevfileFilters';
 import { Keycloak } from '../keycloak/Keycloak';
 import { Store } from 'redux';
@@ -32,11 +32,13 @@ export class PreloadData {
     await this.updateUser();
     await this.updateKeycloakUserInfo();
 
-    const settings = await this.updateWorkspaceSettings();
-
     this.updateWorkspaces();
-    await this.updateDevfilesMetadata(settings);
+
+    const settings = await this.updateWorkspaceSettings();
+    await this.updateRegistriesMetadata(settings);
+
     this.updateDevfileMetadataFilters();
+    this.updateDevfileSchema();
   }
 
   private setBranding(): void {
@@ -61,23 +63,28 @@ export class PreloadData {
   }
 
   private async updateWorkspaces(): Promise<void> {
-    const requestWorkspaces = WorkspacesStore.actionCreators.requestWorkspaces;
+    const { requestWorkspaces } = WorkspacesStore.actionCreators;
     await requestWorkspaces()(this.store.dispatch, this.store.getState);
   }
 
   private async updateWorkspaceSettings(): Promise<che.WorkspaceSettings> {
-    const requestSettings = WorkspacesStore.actionCreators.requestSettings;
+    const { requestSettings } = WorkspacesStore.actionCreators;
     return requestSettings()(this.store.dispatch, this.store.getState);
   }
 
-  private async updateDevfilesMetadata(settings: che.WorkspaceSettings): Promise<void> {
-    const requestMetadata = DevfileMetadataStore.actionCreators.requestMetadata;
-    return requestMetadata(settings.cheWorkspaceDevfileRegistryUrl || '')(this.store.dispatch, this.store.getState);
+  private async updateRegistriesMetadata(settings: che.WorkspaceSettings): Promise<void> {
+    const { requestRegistriesMetadata } = DevfileRegistriesStore.actionCreators;
+    return requestRegistriesMetadata(settings.cheWorkspaceDevfileRegistryUrl || '')(this.store.dispatch, this.store.getState);
   }
 
   private updateDevfileMetadataFilters(): void {
-    const showAll = DevfileMetadataFiltersStore.actionCreators.showAll;
+    const { showAll } = DevfileMetadataFiltersStore.actionCreators;
     return showAll()(this.store.dispatch, this.store.getState);
+  }
+
+  private async updateDevfileSchema(): Promise<void> {
+    const { requestJsonSchema } = DevfileRegistriesStore.actionCreators;
+    return requestJsonSchema()(this.store.dispatch, this.store.getState);
   }
 
   private async updateKeycloakUserInfo(): Promise<void> {

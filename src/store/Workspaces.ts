@@ -1,7 +1,6 @@
 import { Action, Reducer } from 'redux';
 import { AppThunkAction } from './';
 import {
-  createWorkspace,
   createWorkspaceFromDevfile,
   deleteWorkspace,
   fetchSettings,
@@ -9,7 +8,7 @@ import {
   startWorkspace,
   stopWorkspace,
   updateWorkspace,
-} from '../services/api/workspaces';
+} from '../services/api/workspace';
 import { container } from '../inversify.config';
 import { CheJsonRpcApi } from '../services/json-rpc/JsonRpcApiFactory';
 import { CheBranding } from '../services/bootstrap/CheBranding';
@@ -86,7 +85,6 @@ export type ActionCreators = {
   stopWorkspace: (workspaceId: string) => any;
   deleteWorkspace: (workspaceId: string) => any;
   updateWorkspace: (workspace: che.Workspace) => any;
-  createWorkspace: (devfileUrl: string, attributes: { [param: string]: string }) => any;
   createWorkspaceFromDevfile: (
     devfile: che.WorkspaceDevfile,
     cheNamespace: string | undefined,
@@ -201,35 +199,6 @@ export const actionCreators: ActionCreators = {
       const promise = updateWorkspace(workspace);
       promise.then(workspace => {
         dispatch({ type: 'UPDATE_WORKSPACE', workspace });
-      }).catch(error => {
-        dispatch({ type: 'RECEIVE_ERROR' });
-        return Promise.reject(error);
-      });
-      dispatch({ type: 'REQUEST_WORKSPACES' });
-      return promise;
-    }
-    return Promise.reject();
-  },
-  createWorkspace: (devfileUrl: string, attr: { [param: string]: string }): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
-    // Lazy initialization of jsonRpcMasterApi
-    if (!jsonRpcMasterApi) {
-      jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
-    }
-
-    const appState = getState();
-    if (appState && appState.workspaces) {
-      const promise = createWorkspace(devfileUrl, attr);
-      promise.then(workspace => {
-        if (workspace) {
-          dispatch({ type: 'ADD_WORKSPACE', workspace });
-          jsonRpcMasterApi.subscribeWorkspaceStatus(workspace.id as string, (message: any) => {
-            const status = message.error ? 'ERROR' : message.status;
-            if (WorkspaceStatus[status]) {
-              workspace.status = status;
-              dispatch({ type: 'UPDATE_WORKSPACE', workspace });
-            }
-          });
-        }
       }).catch(error => {
         dispatch({ type: 'RECEIVE_ERROR' });
         return Promise.reject(error);

@@ -64,20 +64,20 @@ export class SamplesListTab extends React.PureComponent<DevfilesMetadataProps, S
     this.onTemporaryStorageChanged = (temporary): void => {
       this.setState({ temporary, })
     }
-    this.onSampleCardClicked = (devfile: string, stackName: string): void => {
-      this.createWorkspace(devfile, stackName);
+    this.onSampleCardClicked = (devfileContent: string, stackName: string): void => {
+      this.createWorkspace(devfileContent, stackName);
     }
   }
 
-  private async createWorkspace(devfile: string, stackName: string): Promise<void> {
+  private async createWorkspace(devfileContent: string, stackName: string): Promise<void> {
     if (this.debounce.hasDelay()) {
       return;
     }
     const attr = { stackName };
 
-    const devfileObj: che.WorkspaceDevfile = load(devfile);
+    const devfile: che.WorkspaceDevfile = load(devfileContent);
     const workspace = await this.props.createWorkspaceFromDevfile(
-      devfileObj,
+      devfile,
       undefined,
       undefined,
       attr,

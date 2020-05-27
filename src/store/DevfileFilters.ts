@@ -35,12 +35,12 @@ export const actionCreators: ActionCreators = {
   showAll: (): AppThunkAction<KnownAction> =>
     (dispatch, getState): MetadataFilter => {
       const appState: AppState = getState();
-      if (!appState || !appState.devfileMetadata) {
+      if (!appState || !appState.devfileRegistries) {
         // todo throw a nice error
         throw Error('something unexpected happened.');
       }
 
-      const found = appState.devfileMetadata.metadata;
+      const found = appState.devfileRegistries.metadata;
       const filter: MetadataFilter = { search: undefined };
 
       dispatch({
@@ -58,12 +58,12 @@ export const actionCreators: ActionCreators = {
   setFilter: (searchValue: string): AppThunkAction<KnownAction> =>
     (dispatch, getState): MetadataFilter => {
       const appState: AppState = getState();
-      if (!appState || !appState.devfileMetadata) {
+      if (!appState || !appState.devfileRegistries) {
         // todo throw a nice error
         throw Error('something unexpected happened.');
       }
 
-      const allMetadata = appState.devfileMetadata.metadata;
+      const allMetadata = appState.devfileRegistries.metadata;
       const filter = {
         search: searchValue,
       };
