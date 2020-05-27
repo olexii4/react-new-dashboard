@@ -24,7 +24,10 @@
     "strictPropertyInitialization": false,
     "moduleResolution": "node",
   },
+  "files": [
+    "./src/typings/che.d.ts"
+  ],
   "include": [
-    "./src/**/*"
+    "./src/index.tsx"
   ]
 }

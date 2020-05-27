@@ -13,6 +13,7 @@
 const merge = require('webpack-merge');
 const path = require('path');
 const webpack = require('webpack');
+const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 
 const common = require('./webpack.config.common');
 
@@ -21,20 +22,25 @@ module.exports = env => {
 
   return merge(common, {
     mode: 'development',
-    stats: 'verbose',
     module: {
       rules: [
         {
           enforce: 'pre',
           test: /\.(tsx|ts|jsx|js)$/,
           loader: 'source-map-loader',
-          exclude: path.resolve(__dirname, 'node_modules'),
+          include: path.resolve(__dirname, 'src'),
         },
       ]
     },
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
+      new CleanTerminalPlugin(),
     ],
+    optimization: {
+      removeAvailableModules: false,
+      removeEmptyChunks: false,
+      splitChunks: false,
+    },
     devtool: 'source-map',
     devServer: {
       clientLogLevel: 'debug',
@@ -45,7 +51,7 @@ module.exports = env => {
       hot: true,
       open: false,
       port: 3000,
-      stats: 'normal',
+      stats: 'errors-warnings',
       // writeToDisk: true,
       proxy: {
         '/api/websocket': {
@@ -74,6 +80,10 @@ module.exports = env => {
           }
         },
       },
-    }
+    },
+    watchOptions: {
+      aggregateTimeout: 1000,
+      ignored: /node_modules/,
+    },
   });
 };

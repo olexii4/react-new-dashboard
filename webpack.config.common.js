@@ -66,6 +66,7 @@ module.exports = {
       {
         test: /\.tsx?$/,
         enforce: 'pre',
+        include: path.join(__dirname, 'src'),
         use: [
           {
             options: {
@@ -78,11 +79,11 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
+        include: path.join(__dirname, 'src'),
         use: [
           {
             loader: 'ts-loader',
             options: {
-              transpileOnly: true,
               getCustomTransformers: () => ({ before: [loadableTransformer] }),
             },
           },
