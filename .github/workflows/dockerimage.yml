@@ -6,7 +6,7 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 #
-name: Docker Image CI
+name: Next Dockerimage
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      IMAGE_FULL: quay.io/eclipse/che-dashboard-next:next
+      IMAGE_FULL: quay.io/che-incubator/che-dashboard-next:next
 
     steps:
     - uses: actions/checkout@v2
@@ -28,4 +28,3 @@ jobs:
       run: docker login -u "${{ secrets.QUAY_USERNAME }}" -p "${{ secrets.QUAY_PASSWORD }}" quay.io
     - name: Push the Docker image
       run: docker push ${IMAGE_FULL}
-      
