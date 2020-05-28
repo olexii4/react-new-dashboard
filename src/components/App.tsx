@@ -1,57 +1,51 @@
-import React from 'react';
-import { Redirect, Route } from 'react-router';
+import React, { Suspense } from 'react';
+import { Redirect, Route, Switch } from 'react-router';
 import { ConnectedRouter as Router } from 'connected-react-router';
 import Layout from './app-nav-menu/Layout';
-import loadable from 'react-loadable';
 
 import './app.styl';
 
-type Item = {
+type RouteItem = {
   to: string;
   component: React.ComponentClass<any, any> | React.FunctionComponent<any>;
   label?: string;
   ico?: string;
 };
 
+// todo improve fallback
 const fallback = <div>loading....</div>;
-const GetStartedPageLoadable = loadable({
-  loader: () => import('./app-nav-menu/get-started/GetStartedPage'),
-  loading: () => fallback,
-});
-const WorkspacesListLoadable = loadable({
-  loader: () => import('./app-nav-menu/workspaces/WorkspacesList'),
-  loading: () => fallback,
-});
-const AdministrationLoadable = loadable({
-  loader: () => import('./app-nav-menu/administration/Administration'),
-  loading: () => fallback,
-});
-const WorkspaceDetailsLoadable = loadable({
-  loader: () => import('./workspace-details/WorkspaceDetails'),
-  loading: () => fallback,
-});
-const IdeIframeLoadable = loadable({
-  loader: () => import('./ide-iframe/IdeIframe'),
-  loading: () => fallback,
-});
+const GetStartedPage = React.lazy(() => import('./app-nav-menu/get-started/GetStartedPage'));
+const WorkspacesList = React.lazy(() => import('./app-nav-menu/workspaces/WorkspacesList'));
+const Administration = React.lazy(() => import('./app-nav-menu/administration/Administration'));
+const WorkspaceDetails = React.lazy(() => import('./workspace-details/WorkspaceDetails'));
+const IdeIframe = React.lazy(() => import('./ide-iframe/IdeIframe'));
 
-const items: Item[] = [
-  { to: '/', component: GetStartedPageLoadable, label: 'Get Started Page', ico: 'fa fa-plus' },
-  { to: '/workspaces', component: WorkspacesListLoadable, label: 'Workspaces', ico: 'chefont cheico-workspace' },
-  { to: '/administration', component: AdministrationLoadable, label: 'Administration', ico: 'material-design icon-ic_settings_24px' },
-  { to: '/workspace/:namespace/:workspaceName/', component: WorkspaceDetailsLoadable },
-  { to: '/ide/:namespace/:workspaceName/', component: IdeIframeLoadable },
+const items: RouteItem[] = [
+  { to: '/', component: GetStartedPage, label: 'Get Started Page', ico: 'fa fa-plus' },
+  { to: '/workspaces', component: WorkspacesList, label: 'Workspaces', ico: 'chefont cheico-workspace' },
+  { to: '/administration', component: Administration, label: 'Administration', ico: 'material-design icon-ic_settings_24px' },
+  { to: '/workspace/:namespace/:workspaceName/', component: WorkspaceDetails },
+  { to: '/ide/:namespace/:workspaceName/', component: IdeIframe },
 ];
 
 const LayoutComponent = (props: { history: any }): React.ReactElement => {
-  return (<Router history={props.history}>
-    <Layout items={items.map(item => ({ to: item.to, label: item.label, ico: item.ico }))}>
-      {items.map((item: Item, index: number) => (
-        <Route key={`app_route_${index + 1}`} path={item.to} exact component={item.component} />
-      ))}
-      <Redirect path='*' to='/' />
-    </Layout>
-  </Router>);
+  const navItems = items.map(item => ({ to: item.to, label: item.label, ico: item.ico }));
+  const routes = items.map((item: RouteItem, index: number) => (
+    <Route key={`app_route_${index + 1}`} path={item.to} exact component={item.component} />
+  ));
+
+  return (
+    <Router history={props.history}>
+      <Layout items={navItems}>
+        <Switch>
+          <Suspense fallback={fallback}>
+            {routes}
+            <Redirect path='*' to='/' />
+          </Suspense>
+        </Switch>
+      </Layout>
+    </Router>
+  );
 };
 
 LayoutComponent.displayName = 'LayoutComponent';

@@ -12,11 +12,9 @@
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { loadableTransformer } = require('loadable-ts-transformer');
 const stylus_plugin = require('poststylus');
 const stylusLoader = require('stylus-loader');
 const webpack = require('webpack');
-const LoadablePlugin = require('@loadable/webpack-plugin');
 
 const path = require('path');
 
@@ -83,9 +81,6 @@ module.exports = {
         use: [
           {
             loader: 'ts-loader',
-            options: {
-              getCustomTransformers: () => ({ before: [loadableTransformer] }),
-            },
           },
         ],
         exclude: /node_modules/,
@@ -131,7 +126,6 @@ module.exports = {
       },
     }),
     new CleanWebpackPlugin(),
-    new LoadablePlugin(),
     new webpack.DefinePlugin({ __isBrowser__: "true" }),
   ],
 };

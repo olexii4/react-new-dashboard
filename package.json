@@ -59,7 +59,6 @@
     "qs": "^6.9.4",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-loadable": "^5.5.0",
     "react-pluralize": "^1.6.3",
     "react-redux": "^7.1.3",
     "react-router": "^5.1.2",
@@ -75,7 +74,6 @@
   },
   "devDependencies": {
     "@eclipse-che/api": "^7.5.0-SNAPSHOT",
-    "@loadable/webpack-plugin": "^5.12.0",
     "@testing-library/dom": "^7.5.9",
     "@testing-library/react": "^10.0.4",
     "@types/axios": "^0.14.0",
@@ -112,7 +110,6 @@
     "husky": "^4.2.5",
     "jest": "^26.0.1",
     "lint-staged": "^10.1.4",
-    "loadable-ts-transformer": "^1.0.0-alpha.3",
     "poststylus": "^1.0.0",
     "regenerator-runtime": "^0.13.3",
     "source-map-loader": "^0.2.4",
