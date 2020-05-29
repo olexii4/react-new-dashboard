@@ -28,7 +28,7 @@ type SamplesListTabState = {
   temporary: boolean;
 };
 
-export class SamplesListTab extends React.PureComponent<DevfilesMetadataProps, SamplesListTabState> {
+export class SamplesListTab extends React.Component<DevfilesMetadataProps, SamplesListTabState> {
   private debounce: Debounce;
   private alert: { variant?: 'success' | 'danger'; title?: string } = {};
   private showAlert: (variant: 'success' | 'danger', title: string, timeDelay?: number) => void;
@@ -92,7 +92,7 @@ export class SamplesListTab extends React.PureComponent<DevfilesMetadataProps, S
     } catch (error) {
       const message = error.data && error.data.message
         ? error.data.message
-        : 'Workspace ${workspaceName} failed to start.';
+        : `Workspace ${workspaceName} failed to start.`;
         this.showAlert('danger', message, 5000);
     }
     this.debounce.setDelay();
@@ -102,7 +102,7 @@ export class SamplesListTab extends React.PureComponent<DevfilesMetadataProps, S
     const { alertVisible } = this.state;
 
     const isLoading = this.props.workspaces.isLoading;
-    const persistVolumesDefault = this.props.workspaces.settings["che.workspace.persist_volumes.default"];
+    const persistVolumesDefault = this.props.workspaces.settings['che.workspace.persist_volumes.default'];
 
     return (
       <React.Fragment>

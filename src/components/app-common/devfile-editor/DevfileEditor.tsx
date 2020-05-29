@@ -215,13 +215,30 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
       provideCompletionItems(model: monaco.editor.ITextModel, position: monaco.Position) {
         const document = createDocument(model);
         return yamlService.doComplete(document, m2p.asPosition(position.lineNumber, position.column), true)
-          .then(list => p2m.asCompletionResult(list, {} as any));
+          .then(list => {
+            const completionResult: any = p2m.asCompletionResult(list, {} as any);
+            if (!completionResult || !completionResult.items) {
+              return completionResult;
+            }
+            // convert completionResult into suggestions
+            const defaultInsertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
+            const suggestions = completionResult.items.map(item => {
+              return {
+                label: item.label,
+                kind: item.kind,
+                documentation: item.documentation,
+                insertText: item.insertText && item.insertText.value ? item.insertText.value : item.insertText,
+                insertTextRules: item.insertTextRules ? item.insertTextRules : defaultInsertTextRules
+              };
+            });
+            return { suggestions };
+          });
       },
       resolveCompletionItem(item: monaco.languages.CompletionItem) {
         return yamlService.doResolve(m2p.asCompletionItem(item))
           .then(result => p2m.asCompletionItem(result, {} as any));
       },
-    } as monaco.languages.CompletionItemProvider);
+    } as any);
     languages.registerDocumentSymbolProvider(LANGUAGE_ID, {
       provideDocumentSymbols(model: any) {
         return p2m.asSymbolInformations(yamlService.findDocumentSymbols(createDocument(model)));
