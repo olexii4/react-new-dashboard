@@ -75,20 +75,20 @@ export const BRANDING_DEFAULT: IBranding = {
       'Blank'
     ],
     defaultStack: 'java-mysql',
-    creationLink: '/create-workspace'
+    creationLink: '/getstarted'
   },
   cli: {
     configName: 'che.env',
     name: 'CHE'
   },
   docs: {
-    devfile: '/docs/che-7/using-developer-environments-workspaces.html#making-a-workspace-portable-using-a-devfile_using-developer-environments-workspaces',
-    workspace: '/docs/che-7/workspaces-overview/',
-    factory: '/docs/factories-getting-started.html',
-    organization: '/docs/organizations.html',
-    converting: '/docs/che-7/converting-a-che-6-workspace-to-a-che-7-devfile/',
-    certificate: '/docs/che-7/setup-che-in-tls-mode-with-self-signed-certificate/',
-    general: '/docs/che-7'
+    devfile: 'https://www.eclipse.org/che/docs/che-7/using-developer-environments-workspaces.html#making-a-workspace-portable-using-a-devfile_using-developer-environments-workspaces',
+    workspace: 'https://www.eclipse.org/che/docs/che-7/workspaces-overview/',
+    factory: 'https://www.eclipse.org/che/docs/factories-getting-started.html',
+    organization: 'https://www.eclipse.org/che/docs/organizations.html',
+    converting: 'https://www.eclipse.org/che/docs/che-7/converting-a-che-6-workspace-to-a-che-7-devfile/',
+    certificate: 'https://www.eclipse.org/che/docs/che-7/setup-che-in-tls-mode-with-self-signed-certificate/',
+    general: 'https://www.eclipse.org/che/docs/che-7'
   },
   configuration: {
     menu: {
