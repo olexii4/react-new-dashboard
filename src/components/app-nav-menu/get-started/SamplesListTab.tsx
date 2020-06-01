@@ -88,7 +88,9 @@ export class SamplesListTab extends React.Component<DevfilesMetadataProps, Sampl
     // force start for the new workspace
     try {
       await this.props.startWorkspace(`${workspace.id}`);
-      this.props.history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
+      // TODO Find why 'history.push' doesn't work
+      // this.props.history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
+      window.location.hash += `ide/${workspace.namespace}/${workspace.devfile.metadata.name}`; // temporary solution
     } catch (error) {
       const message = error.data && error.data.message
         ? error.data.message
