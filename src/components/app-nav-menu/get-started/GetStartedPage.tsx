@@ -84,7 +84,7 @@ export class GetStartedPage extends React.PureComponent<GetStartedPageProps, Get
             ref={this.contentRef1}
             aria-label="Tab item 1">
             <Suspense fallback={<div>Loading...</div>}>
-              <SamplesListTab history={history} />
+              <SamplesListTab history={this.props.history} />
             </Suspense>
           </TabContent>
           <TabContent eventKey={1}

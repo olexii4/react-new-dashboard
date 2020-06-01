@@ -144,22 +144,21 @@ export const actionCreators: ActionCreators = {
     }
     return Promise.reject(new Error('something went wrong with "Workspaces" state.'));
   },
-  startWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
+  startWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<che.Workspace> => {
     const appState = getState();
-    if (appState && appState.workspaces) {
-      const promise = startWorkspace(workspaceId);
-      promise.then(workspace => {
-        if (workspace) {
-          dispatch({ type: 'UPDATE_WORKSPACE', workspace });
-        }
-      }).catch(error => {
-        dispatch({ type: 'RECEIVE_ERROR' });
-        return Promise.reject(error);
-      });
-      dispatch({ type: 'REQUEST_WORKSPACES' });
-      return promise;
+    if (!appState || !appState.workspaces) {
+      throw new Error('Cannot start a workspace. Application store is not ready yet.');
     }
-    return Promise.reject();
+
+    try {
+      dispatch({ type: 'REQUEST_WORKSPACES' });
+      const workspace = await startWorkspace(workspaceId);
+      dispatch({ type: 'UPDATE_WORKSPACE', workspace });
+      return workspace;
+    } catch (e) {
+      dispatch({ type: 'RECEIVE_ERROR' });
+      throw new Error(`Failed to start the workspace, ID: ${workspaceId}, ` + e);
+    }
   },
   stopWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
     const appState = getState();

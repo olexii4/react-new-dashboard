@@ -4,6 +4,7 @@ import { load } from 'js-yaml';
 import {
   Alert,
   AlertActionCloseButton,
+  AlertVariant,
   PageSection,
   PageSectionVariants,
 } from '@patternfly/react-core';
@@ -15,6 +16,8 @@ import CheProgress from '../../app-common/progress/progress';
 import { SamplesListHeader } from './SamplesListHeader';
 import SamplesListToolbar from './SamplesListToolbar';
 import SamplesListGallery from './SamplesListGallery';
+
+import './SamplesListTab.styl';
 
 // At runtime, Redux will merge together...
 type DevfilesMetadataProps =
@@ -30,8 +33,8 @@ type SamplesListTabState = {
 
 export class SamplesListTab extends React.Component<DevfilesMetadataProps, SamplesListTabState> {
   private debounce: Debounce;
-  private alert: { variant?: 'success' | 'danger'; title?: string } = {};
-  private showAlert: (variant: 'success' | 'danger', title: string, timeDelay?: number) => void;
+  private alert: { variant?: AlertVariant; title?: string } = {};
+  private showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
   private hideAlert: () => void;
 
   private onTemporaryStorageChanged: (temporary: boolean) => void;
@@ -48,7 +51,7 @@ export class SamplesListTab extends React.Component<DevfilesMetadataProps, Sampl
       temporary: false,
     };
 
-    this.showAlert = (variant: 'success' | 'danger', title: string, timeDelay?: number): void => {
+    this.showAlert = (variant: AlertVariant, title: string, timeDelay?: number): void => {
       this.alert = { variant, title };
       this.setState({ alertVisible: true });
       this.debounce.setDelay(timeDelay);
@@ -84,18 +87,16 @@ export class SamplesListTab extends React.Component<DevfilesMetadataProps, Sampl
     );
 
     const workspaceName = workspace.devfile.metadata.name;
-    this.showAlert('success', `Workspace ${workspaceName} has been created`, 1500);
+    this.showAlert(AlertVariant.success, `Workspace ${workspaceName} has been created`, 1500);
     // force start for the new workspace
     try {
       await this.props.startWorkspace(`${workspace.id}`);
-      // TODO Find why 'history.push' doesn't work
-      // this.props.history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
-      window.location.hash += `ide/${workspace.namespace}/${workspace.devfile.metadata.name}`; // temporary solution
+      this.props.history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
     } catch (error) {
       const message = error.data && error.data.message
         ? error.data.message
         : `Workspace ${workspaceName} failed to start.`;
-        this.showAlert('danger', message, 5000);
+      this.showAlert(AlertVariant.danger, message, 5000);
     }
     this.debounce.setDelay();
   }

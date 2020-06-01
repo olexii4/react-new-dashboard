@@ -26,7 +26,7 @@ module.exports = env => {
       disableHostCheck: true,
       host: 'localhost',
       open: false,
-      port: 3030,
+      port: 3000,
       stats: 'normal',
       proxy: {
         '/api/websocket': {
