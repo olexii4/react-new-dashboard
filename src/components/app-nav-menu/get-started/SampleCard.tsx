@@ -47,7 +47,7 @@ export class SampleCard extends React.PureComponent<SampleCardProps> {
         src={metadata.icon}
         alt={metadata.displayName}
         style={{ height: '64px' }} />)
-      : (<div className="blank-icon">
+      : (<div className='blank-icon'>
         <div className='chefont cheico-type-blank'></div>
       </div>);
   }

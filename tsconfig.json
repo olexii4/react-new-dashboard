@@ -9,11 +9,11 @@
     "preserveConstEnums": true,
     "removeComments": true,
     "sourceMap": true,
-    "target": "es5",
-    "lib": ["es2015", "dom"],
+    "target": "ES2018",
+    "lib": ["ES2018", "dom"],
     "skipLibCheck": true,
     "types": ["reflect-metadata", "jest"],
-    "typeRoots": ["node_modules/@types"],
+    "typeRoots": ["node_modules/@types", "./src/typings"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
@@ -24,6 +24,6 @@
     "./src/typings/che.d.ts"
   ],
   "include": [
-    "./src/index.tsx"
+    "./src/**/*.tsx"
   ]
 }
