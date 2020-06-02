@@ -30,15 +30,15 @@ describe('Get Started page', () => {
   });
 
   it('should have correct masthead when Get Started tab is active', () => {
-    const getStartedTab = screen.getByText('Get Started');
-    getStartedTab.click();
+    const getStartedTabButton = screen.getByRole('button', { name: 'Get Started' });
+    getStartedTabButton.click();
 
     expect(masthead.textContent?.startsWith('Getting Started with'));
   });
 
   it('should have correct masthead when Custom Workspace tab is active', () => {
-    const customWorkspaceTab = screen.getByText('Custom Workspace');
-    customWorkspaceTab.click();
+    const customWorkspaceTabButton = screen.getByRole('button', { name: 'Custom Workspace' });
+    customWorkspaceTabButton.click();
 
     expect(masthead.textContent?.startsWith('Create Custom Workspace'));
   });
