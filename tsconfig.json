@@ -18,7 +18,8 @@
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
     "moduleResolution": "node",
-    "allowJs": true
+    "allowJs": true,
+    "resolveJsonModule": true
   },
   "files": [
     "./src/typings/che.d.ts"

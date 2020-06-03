@@ -1,0 +1,92 @@
+import React from 'react';
+import { Store } from 'redux';
+import thunk from 'redux-thunk';
+import createMockStore from 'redux-mock-store';
+import { render, screen, RenderResult, fireEvent } from '@testing-library/react';
+import mockAxios from 'axios';
+import SamplesListGallery from '../SamplesListGallery';
+import { Provider } from 'react-redux';
+import { AppState } from '../../../../store';
+import mockMetadata from './devfileMetadata.json';
+
+describe('Samples List Gallery', () => {
+
+  function renderGallery(
+    store: Store,
+    onCardClicked: () => void = (): void => undefined
+  ): RenderResult {
+    return render(
+      <Provider store={store}>
+        <SamplesListGallery onCardClick={onCardClicked} />
+      </Provider>
+    );
+  }
+
+  it('should render cards with metadata', () => {
+    // eslint-disable-next-line
+    const store = createFakeStoreWithMetadata();
+    renderGallery(store);
+
+    const cards = screen.getAllByRole('article');
+    expect(cards.length).toEqual(26);
+  });
+
+  it('should handle "onCardClick" event', async () => {
+
+    let resolveFn: {
+      (): void;
+      (value?: unknown): void;
+    };
+    const onCardClickedPromise = new Promise(resolve => resolveFn = resolve );
+    const onCardClicked = jest.fn(() => resolveFn() );
+
+    // eslint-disable-next-line
+    const store = createFakeStoreWithMetadata();
+    renderGallery(store, onCardClicked);
+
+    (mockAxios.get as any).mockResolvedValueOnce({
+      data: {},
+    });
+
+    const cardHeader = screen.getByText('Go');
+    fireEvent.click(cardHeader);
+
+    await onCardClickedPromise;
+    expect(onCardClicked).toHaveBeenCalled();
+
+  });
+
+  it('should render empty state', () => {
+    // eslint-disable-next-line
+    const store = createFakeStoreWithoutMetadata();
+    renderGallery(store);
+
+    const emptyStateTitle = screen.getByRole('heading', { name: 'No results found' });
+    expect(emptyStateTitle).toBeTruthy();
+  });
+
+});
+
+function createFakeStore(metadata?: che.DevfileMetaData[]): Store {
+  const initialState: AppState = {
+    workspaces: {} as any,
+    branding: {} as any,
+    devfileMetadataFilter: {
+      filter: undefined,
+      found: metadata || []
+    },
+    devfileRegistries: {} as any,
+    user: {} as any,
+  };
+  const middleware = [thunk];
+  const mockStore = createMockStore(middleware);
+  return mockStore(initialState);
+}
+
+function createFakeStoreWithoutMetadata(): Store {
+  return createFakeStore();
+}
+
+function createFakeStoreWithMetadata(): Store {
+  return createFakeStore(mockMetadata);
+}
