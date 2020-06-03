@@ -1,9 +1,9 @@
 import React from 'react';
 import { createHashHistory } from 'history';
 import { render, screen } from '@testing-library/react';
-import { GetStartedPage } from './GetStartedPage';
+import { GetStartedPage } from '../GetStartedPage';
 
-jest.mock('./SamplesListTab', () => {
+jest.mock('../SamplesListTab', () => {
   return function DummyTab(): React.ReactElement {
       return <span>Samples List Tab Content</span>;
   };
