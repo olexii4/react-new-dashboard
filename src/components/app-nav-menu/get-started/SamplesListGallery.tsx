@@ -1,26 +1,43 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Gallery } from '@patternfly/react-core';
+import {
+  Button,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStatePrimary,
+  EmptyStateVariant,
+  Gallery,
+  Title,
+} from '@patternfly/react-core';
 import { AppState } from '../../../store';
 import * as DevfileFiltersStore from '../../../store/DevfileFilters';
 import * as DevfileRegistriesStore from '../../../store/DevfileRegistries'
 import { SampleCard } from './SampleCard';
+import { SearchIcon } from '@patternfly/react-icons';
 
 type SamplesListGalleryProps = {
   metadataFilter: DevfileFiltersStore.MetadataFilterState;
   onCardClick: (devfileContent: string, stackName: string) => void;
-} & DevfileRegistriesStore.ActionCreators;
+}
+  & DevfileRegistriesStore.ActionCreators
+  & DevfileFiltersStore.ActionCreators;
 
 export class SamplesListGallery extends React.PureComponent<SamplesListGalleryProps> {
 
   render(): React.ReactElement {
     const metadata = this.props.metadataFilter.found;
     const cards = this.buildCardsList(metadata);
-    return (
-      <Gallery gutter='md'>
-        {cards}
-      </Gallery>
-    );
+
+    if (cards.length) {
+      return (
+        <Gallery gutter='md'>
+          {cards}
+        </Gallery>
+      );
+    }
+
+    return this.buildEmptyState();
   }
 
   private async fetchDevfile(meta: che.DevfileMetaData): Promise<void> {
@@ -28,7 +45,7 @@ export class SamplesListGallery extends React.PureComponent<SamplesListGalleryPr
     this.props.onCardClick(devfile, meta.displayName);
   }
 
-  private buildCardsList(metadata: che.DevfileMetaData[]): React.ReactElement[] {
+  private buildCardsList(metadata: che.DevfileMetaData[] = []): React.ReactElement[] {
     return metadata.map(meta => (
       <SampleCard
         key={meta.links.self}
@@ -38,6 +55,27 @@ export class SamplesListGallery extends React.PureComponent<SamplesListGalleryPr
     ));
   }
 
+  private buildEmptyState(): React.ReactElement {
+    return (
+      <EmptyState variant={EmptyStateVariant.full}>
+        <EmptyStateIcon icon={SearchIcon} />
+        <Title size='lg'>
+          No results found
+          </Title>
+        <EmptyStateBody>
+          No results match the filter criteria. Clear filter to show results.
+          </EmptyStateBody>
+        <EmptyStatePrimary>
+          <Button
+            variant='link'
+            onClick={(): void => this.props.showAll()}>
+            Clear filter
+            </Button>
+        </EmptyStatePrimary>
+      </EmptyState>
+    );
+  }
+
 }
 
 export default connect(
@@ -45,5 +83,6 @@ export default connect(
     metadataFilter: state.devfileMetadataFilter,
   }), {
   ...DevfileRegistriesStore.actionCreators,
+  ...DevfileFiltersStore.actionCreators,
 }
 )(SamplesListGallery);
