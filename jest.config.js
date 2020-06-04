@@ -17,4 +17,5 @@ module.exports = {
       'tsConfig': 'tsconfig.test.json'
     }
   },
+  maxWorkers: 4,
 }

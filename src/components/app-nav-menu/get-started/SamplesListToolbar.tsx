@@ -76,7 +76,12 @@ export class SamplesListToolbar extends React.PureComponent<SamplesListToolbarPr
   private buildCount(foundCount: number, searchValue: string): React.ReactElement {
     return searchValue === ''
       ? <span></span>
-      : (<Pluralize singular={'item'} count={foundCount} zero={'Nothing found'} />)
+      : (<Pluralize
+        singular={'item'}
+        count={foundCount}
+        zero={'Nothing found'}
+        data-testid='toolbar-results-count'
+      />)
   }
 
 }
