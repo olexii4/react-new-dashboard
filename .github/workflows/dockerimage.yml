@@ -21,7 +21,8 @@ jobs:
       IMAGE_FULL: quay.io/che-incubator/che-dashboard-next:next
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout che-dashboard-next source code
+      uses: actions/checkout@v2
     - name: Build the Docker image
       run: docker build . --file apache.Dockerfile --tag ${IMAGE_FULL}
     - name: Docker Login
