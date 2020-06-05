@@ -1,4 +1,4 @@
-### Product dependencies
+### Production dependencies
 
 | Packages | Resolved CQs |
 | --- | --- |
