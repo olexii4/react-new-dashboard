@@ -1,3 +1,15 @@
+/*
+ * Copyright (c) 2018-2020 Red Hat, Inc.
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   Red Hat, Inc. - initial API and implementation
+ */
+
 import React, { Suspense } from 'react';
 import { connect } from 'react-redux';
 import {
@@ -54,7 +66,7 @@ export class GetStartedPage extends React.PureComponent<GetStartedPageProps, Get
     this.setState({
       activeTabKey: tabIndex
     });
-  };
+  }
 
   render(): React.ReactNode {
     const activeTabKey = this.state.activeTabKey;

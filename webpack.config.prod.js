@@ -1,8 +1,8 @@
 /*******************************************************************************
- * Copyright (c) 2018-2018 Red Hat, Inc.
- * This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
- * which is available at http://www.eclipse.org/legal/epl-2.0.html
+ * Copyright (c) 2018-2020 Red Hat, Inc.
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
  *
@@ -21,9 +21,11 @@ module.exports = merge(common, {
   mode: 'production',
   plugins: [
     new webpack.ProgressPlugin(),
-    new CopyPlugin([
-      { from: path.join(__dirname, 'assets'), to: 'assets' },
-    ]),
+    new CopyPlugin({
+      patterns: [
+        {from: path.join(__dirname, 'assets'), to: 'assets'},
+      ]
+    }),
   ],
   output: {
     publicPath: './',

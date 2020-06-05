@@ -1,18 +1,18 @@
 {
-  "name": "react-new-dashboard",
-  "version": "1.0.0",
-  "description": "New dashboard for Eclipse CHE",
+  "name": "che-dashboard",
+  "version": "5.0.0",
+  "description": "Dashboard for Eclipse CHE",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/olexii4/react-new-dashboard.git"
+    "url": "https://github.com/che-incubator/che-dashboard-next.git"
   },
   "author": "Oleksii Orel",
-  "license": "ISC",
+  "license": "EPL-2.0",
   "bugs": {
-    "url": "https://github.com/olexii4/react-new-dashboard/issues"
+    "url": "https://github.com/che-incubator/che-dashboard-next/issues"
   },
-  "homepage": "https://github.com/olexii4/react-new-dashboard#readme",
+  "homepage": "https://github.com/che-incubator/che-dashboard-next#readme",
   "engines": {
     "yarn": ">=1.20.0",
     "node": ">=10.20.1"
@@ -26,19 +26,14 @@
     "lint:fix": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --fix",
     "serve:prod": "webpack-dev-server --color --disable-host-check --config webpack.config.prod-dev.js",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "license-check": "node license-check",
+    "bump-deps": "node .deps/bump-deps.js"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx}": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
+  "pre-commit": [
+    "lint:fix",
+    "license-check"
+  ],
   "dependencies": {
     "@eclipse-che/workspace-client": "^0.0.1-1585913592",
     "@patternfly/patternfly": "^2.62.0",
@@ -107,11 +102,12 @@
     "eslint-loader": "^4.0.2",
     "eslint-plugin-react": "^7.20.0",
     "file-loader": "^6.0.0",
+    "glob-fs": "^0.1.7",
     "html-webpack-plugin": "^4.3.0",
-    "husky": "^4.2.5",
     "jest": "^26.0.1",
     "lint-staged": "^10.2.8",
     "poststylus": "^1.0.0",
+    "pre-commit": "^1.2.2",
     "redux-mock-store": "^1.5.4",
     "regenerator-runtime": "^0.13.5",
     "source-map-loader": "^1.0.0",

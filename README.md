@@ -46,3 +46,7 @@ An example of how to run with custom port and  server
 $ yarn start --env.server=https://che-che.192.168.99.100.nip.io  --port=3333
 ```
 It is better to have React and Redux Developer Tools for debugging
+
+
+### License
+Che is open sourced under the Eclipse Public License 2.0.

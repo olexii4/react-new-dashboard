@@ -1,3 +1,15 @@
+/*
+ * Copyright (c) 2018-2020 Red Hat, Inc.
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   Red Hat, Inc. - initial API and implementation
+ */
+
 import Axios from 'axios';
 import * as Qs from 'qs';
 
@@ -11,7 +23,7 @@ export async function fetchWorkspaces(): Promise<Array<che.Workspace>> {
   catch (e) {
     throw new Error(`Failed to fetch workspaces, ` + e);
   }
-};
+}
 
 export async function startWorkspace(workspaceId: string): Promise<che.Workspace> {
   try {
@@ -20,7 +32,7 @@ export async function startWorkspace(workspaceId: string): Promise<che.Workspace
   } catch (e) {
     throw new Error(`Failed to start the workspace with ID: ${workspaceId}, ` + e);
   }
-};
+}
 
 export async function stopWorkspace(workspaceId: string): Promise<che.Workspace> {
   try {
@@ -29,7 +41,7 @@ export async function stopWorkspace(workspaceId: string): Promise<che.Workspace>
   } catch (e) {
     throw new Error(`Failed to stop the workspace with ID: ${workspaceId}, ` + e);
   }
-};
+}
 
 export async function deleteWorkspace(workspaceId: string): Promise<che.Workspace> {
   try {
@@ -38,7 +50,7 @@ export async function deleteWorkspace(workspaceId: string): Promise<che.Workspac
   } catch (e) {
     throw new Error(`Failed to delete the workspace with ID: ${workspaceId}, ` + e);
   }
-};
+}
 
 export async function updateWorkspace(workspace: che.Workspace): Promise<che.Workspace> {
   try {
@@ -47,7 +59,7 @@ export async function updateWorkspace(workspace: che.Workspace): Promise<che.Wor
   } catch (e) {
     throw new Error(`Failed to update the workspace with ID: ${workspace.id}, ` + e);
   }
-};
+}
 
 export async function createWorkspaceFromDevfile(
   devfile: che.WorkspaceDevfile,
