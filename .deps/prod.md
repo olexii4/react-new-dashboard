@@ -48,7 +48,7 @@
 | `color-name@1.1.3` |  |
 | `connected-react-router@6.8.0` |  |
 | `convert-source-map@1.7.0` |  |
-| `core-js@2.6.11` |  |
+| `core-js@2.6.11` | https://dev.eclipse.org/ipzilla/show_bug.cgi?id=19151 |
 | `core-util-is@1.0.2` |  |
 | `cosmiconfig@6.0.0` |  |
 | `create-emotion-server@9.2.12` |  |
