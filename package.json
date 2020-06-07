@@ -27,13 +27,8 @@
     "serve:prod": "webpack-dev-server --color --disable-host-check --config webpack.config.prod-dev.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "license-check": "node license-check",
     "bump-deps": "node .deps/bump-deps.js"
   },
-  "pre-commit": [
-    "lint:fix",
-    "license-check"
-  ],
   "dependencies": {
     "@eclipse-che/workspace-client": "^0.0.1-1585913592",
     "@patternfly/patternfly": "^2.62.0",
@@ -100,14 +95,14 @@
     "css-loader": "^3.5.3",
     "eslint": "^7.1.0",
     "eslint-loader": "^4.0.2",
+    "eslint-plugin-notice": "^0.9.10",
     "eslint-plugin-react": "^7.20.0",
     "file-loader": "^6.0.0",
-    "glob-fs": "^0.1.7",
     "html-webpack-plugin": "^4.3.0",
+    "husky": "^4.2.5",
     "jest": "^26.0.1",
     "lint-staged": "^10.2.8",
     "poststylus": "^1.0.0",
-    "pre-commit": "^1.2.2",
     "redux-mock-store": "^1.5.4",
     "regenerator-runtime": "^0.13.5",
     "source-map-loader": "^1.0.0",

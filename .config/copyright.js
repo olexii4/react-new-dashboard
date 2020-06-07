@@ -10,4 +10,3 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-module.exports = 'test-file-stub';

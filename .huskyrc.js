@@ -10,4 +10,9 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-module.exports = 'test-file-stub';
+module.exports = {
+  'hooks': {
+    'pre-commit': 'lint-staged',
+    'pre-push': 'yarn test',
+  },
+};
