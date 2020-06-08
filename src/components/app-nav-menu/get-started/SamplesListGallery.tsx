@@ -24,7 +24,7 @@ import {
 } from '@patternfly/react-core';
 import { AppState } from '../../../store';
 import * as DevfileFiltersStore from '../../../store/DevfileFilters';
-import * as DevfileRegistriesStore from '../../../store/DevfileRegistries'
+import * as DevfileRegistriesStore from '../../../store/DevfileRegistries';
 import { SampleCard } from './SampleCard';
 import { SearchIcon } from '@patternfly/react-icons';
 

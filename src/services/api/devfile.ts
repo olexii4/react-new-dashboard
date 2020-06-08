@@ -19,6 +19,6 @@ export async function fetchDevfileSchema(): Promise<any> {
     const response = await Axios.get(API_DEVFILE);
     return response.data;
   } catch (e) {
-    throw new Error(`Failed to fetch devfile JSON schema, ` + e);
+    throw new Error('Failed to fetch devfile JSON schema, ' + e);
   }
 }

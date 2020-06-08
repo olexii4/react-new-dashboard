@@ -29,7 +29,7 @@ export const setUser = (user: che.User | {}): UserAction => {
     type: 'SET_USER',
     user: user,
     isLogged: true
-  }
+  };
 };
 
 const unloadedState: UserState = { user: { id: '', name: '', email: '' }, isLogged: false };

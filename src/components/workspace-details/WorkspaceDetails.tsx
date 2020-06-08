@@ -172,7 +172,7 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
         this.props.updateWorkspace(newWorkspace).then((workspace: che.Workspace) => {
           this.setState({ hasRequestErrors: false });
           this.setState({ workspace });
-          this.showAlert('success', `Workspace has been updated`, 1000);
+          this.showAlert('success', 'Workspace has been updated', 1000);
           const url = `/workspace/${workspace.namespace}/${workspace.devfile.metadata.name}`;
           this.props.history.replace(url);
         }).catch((error: { data?: { message?: string } }) => {

@@ -14,7 +14,7 @@ import { CheJsonRpcApiClient } from './JsonRpcApiService';
 import { CommunicationClient, CommunicationClientEvent } from './JsonRpcClient';
 import { Keycloak } from '../keycloak/Keycloak';
 import { container } from '../../inversify.config';
-import { WebsocketClient } from "./WebsocketClient";
+import { WebsocketClient } from './WebsocketClient';
 
 export enum MasterChannels {
   ENVIRONMENT_OUTPUT = 'runtime/log',

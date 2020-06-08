@@ -127,7 +127,7 @@ export const actionCreators: ActionCreators = {
       dispatch({ type: 'RECEIVE_SCHEMA', schema });
       return schema;
     } catch (e) {
-      throw new Error(`Failed to request devfile JSON schema, \n` + e);
+      throw new Error('Failed to request devfile JSON schema, \n' + e);
     }
   },
 

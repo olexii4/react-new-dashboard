@@ -17,7 +17,7 @@ import * as $ from 'jquery';
 
 import {
   BRANDING_DEFAULT, IBrandingDocs
-} from './branding.constant'
+} from './branding.constant';
 
 type IResolveFn<T> = {
   (value?: T | PromiseLike<T>): void;

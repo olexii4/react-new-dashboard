@@ -22,7 +22,7 @@ const IdeIframe = (props: RouteComponentProps<{ namespace: string; workspaceName
     <React.Fragment>
       <iframe className='ide-page-frame'
         src={`/workspace-loader/${namespace}/${workspaceName}?uid=${randVal}`} />
-    </React.Fragment>)
+    </React.Fragment>);
 };
 
 export default connect()(IdeIframe);

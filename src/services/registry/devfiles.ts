@@ -13,7 +13,7 @@
 import axios from 'axios';
 
 // create new instance of `axios` to avoid adding an authorization header
-const axiosInstance = axios.create()
+const axiosInstance = axios.create();
 
 function resolveIconUrl(metadata: che.DevfileMetaData, url: string): string {
   if (!metadata.icon || metadata.icon.startsWith('http')) {

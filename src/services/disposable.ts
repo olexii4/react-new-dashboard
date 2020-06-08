@@ -39,7 +39,7 @@ export class DisposableCollection implements Disposable {
           disposables.splice(index, 1);
         }
       }
-    }
+    };
   }
 
 }

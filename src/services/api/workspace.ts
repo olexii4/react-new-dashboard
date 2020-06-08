@@ -21,7 +21,7 @@ export async function fetchWorkspaces(): Promise<Array<che.Workspace>> {
     return response.data;
   }
   catch (e) {
-    throw new Error(`Failed to fetch workspaces, ` + e);
+    throw new Error('Failed to fetch workspaces, ' + e);
   }
 }
 
@@ -80,7 +80,7 @@ export async function createWorkspaceFromDevfile(
         'infrastructure-namespace': infrastructureNamespace,
       },
       paramsSerializer: function (params) {
-        return Qs.stringify(params, { arrayFormat: 'repeat' })
+        return Qs.stringify(params, { arrayFormat: 'repeat' });
       },
     });
     return response.data;
@@ -94,6 +94,6 @@ export async function fetchSettings(): Promise<che.WorkspaceSettings> {
     const response = await Axios.get<che.WorkspaceSettings>(`${API_WORKSPACE}/settings`);
     return response.data;
   } catch (e) {
-    throw new Error(`Failed to fetch workspaces settings, ` + e);
+    throw new Error('Failed to fetch workspaces settings, ' + e);
   }
 }

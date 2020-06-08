@@ -279,9 +279,9 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
           const markers = this.p2m.asDiagnostics(diagnostics);
           let errorMessage = '';
           if (markers && markers[0]) {
-            const {message, startLineNumber, startColumn} = markers[0];
+            const { message, startLineNumber, startColumn } = markers[0];
             if (startLineNumber && startColumn) {
-              errorMessage += `line[${startLineNumber}] column[${startColumn}]: `
+              errorMessage += `line[${startLineNumber}] column[${startColumn}]: `;
             }
             errorMessage += `Error. ${message}`;
           }
@@ -291,7 +291,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
           }
           monaco.editor.setModelMarkers(model, 'default', markers || []);
         });
-      })
+      });
     });
   }
 }

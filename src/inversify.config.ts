@@ -29,4 +29,4 @@ container.bind(CheJsonRpcApi).toSelf().inSingletonScope();
 container.bind(Debounce).toSelf();
 container.bind(WebsocketClient).toSelf();
 
-export { container }
+export { container };

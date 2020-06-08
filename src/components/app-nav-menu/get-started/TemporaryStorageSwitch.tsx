@@ -37,7 +37,7 @@ export class TemporaryStorageSwitch extends React.PureComponent<TemporaryStorage
 
     this.state = {
       isChecked: this.props.persistVolumesDefault === 'false',
-    }
+    };
 
     this.handleChange = (isChecked: boolean): void => {
       this.setState({ isChecked });

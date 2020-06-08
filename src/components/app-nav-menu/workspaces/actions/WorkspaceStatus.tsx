@@ -31,7 +31,7 @@ class WorkspaceStatus extends React.PureComponent<WorkspaceStatusProps, { isDebo
 
     this.debounce = container.get(Debounce);
     this.debounce.subscribe(isDebounceDelay => {
-      this.setState({ isDebounceDelay })
+      this.setState({ isDebounceDelay });
     });
   }
 

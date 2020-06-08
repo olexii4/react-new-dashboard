@@ -76,7 +76,7 @@ export class NavMenu extends React.PureComponent<any, any> {
       keycloak.logout();
     };
     this.onDropdownToggle = (isDropdownOpen: any): void => {
-      this.setState({ isDropdownOpen })
+      this.setState({ isDropdownOpen });
     };
     this.onDropdownSelect = (): void => {
       this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
@@ -94,7 +94,7 @@ export class NavMenu extends React.PureComponent<any, any> {
       } else if (event.data === 'hide-navbar') {
         this.setState({ isNavOpen: false });
       }
-    }
+    };
   }
 
   componentDidMount(): void {

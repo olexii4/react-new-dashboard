@@ -62,7 +62,7 @@ export class Keycloak {
   }
 
   isPresent(): boolean {
-    return KeycloakSetup.keycloakAuth.isPresent
+    return KeycloakSetup.keycloakAuth.isPresent;
   }
 
   getProfileUrl(): string {

@@ -96,14 +96,14 @@ export const actionCreators: ActionCreators = {
           meta.displayName.toLowerCase().split(/\s+/).some(word => word.startsWith(value))
           || meta.description?.toLowerCase().split(/\s+/).some(word => word.startsWith(value))
         );
-      }
+      };
 
       const found = allMetadata.filter(devfile => matches(devfile, searchTokens));
       dispatch({
         type: 'SHOW_FILTERED',
         filter,
         found,
-      })
+      });
 
       return filter;
     }

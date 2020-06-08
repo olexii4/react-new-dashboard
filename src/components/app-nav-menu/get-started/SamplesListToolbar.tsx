@@ -36,7 +36,7 @@ type SamplesListToolbarState = {
 }
 
 export class SamplesListToolbar extends React.PureComponent<SamplesListToolbarProps, SamplesListToolbarState> {
-  handleTextInputChange: TextInputProps["onChange"];
+  handleTextInputChange: TextInputProps['onChange'];
   buildSearchBox: (searchValue: string) => React.ReactElement;
 
   constructor(props) {
@@ -76,7 +76,7 @@ export class SamplesListToolbar extends React.PureComponent<SamplesListToolbarPr
             </Text>
           </TextContent>
         </FlexItem>
-        <FlexItem breakpointMods={[{ modifier: FlexModifiers["align-right"] }]}>
+        <FlexItem breakpointMods={[{ modifier: FlexModifiers['align-right'] }]}>
           <TemporaryStorageSwitch
             persistVolumesDefault={this.props.persistVolumesDefault}
             onChange={this.props.onTemporaryStorageChange} />
@@ -93,7 +93,7 @@ export class SamplesListToolbar extends React.PureComponent<SamplesListToolbarPr
         count={foundCount}
         zero={'Nothing found'}
         data-testid='toolbar-results-count'
-      />)
+      />);
   }
 
 }

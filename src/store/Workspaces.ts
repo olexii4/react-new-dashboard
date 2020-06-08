@@ -248,7 +248,7 @@ export const actionCreators: ActionCreators = {
         });
       })
         .catch(error => {
-          dispatch({ type: 'RECEIVE_ERROR' })
+          dispatch({ type: 'RECEIVE_ERROR' });
           return Promise.reject(new Error(error));
         });
       dispatch({ type: 'REQUEST_WORKSPACES' });
@@ -319,7 +319,7 @@ export const reducer: Reducer<WorkspacesState> = (state: WorkspacesState | undef
           workspaces: state.workspaces,
           settings: action.settings,
           isLoading: false,
-        }
+        };
       }
   }
 

@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { Gallery, PageSection, Text, TextContent } from "@patternfly/react-core";
+import { Gallery, PageSection, Text, TextContent } from '@patternfly/react-core';
 
 const Administration = (): React.ReactElement => (
   <React.Fragment>

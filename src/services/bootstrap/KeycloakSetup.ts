@@ -198,6 +198,6 @@ export class KeycloakSetup {
         callbacks.onError(error);
       });
       document.head.appendChild(script);
-    })
+    });
   }
 }

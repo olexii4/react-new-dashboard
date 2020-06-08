@@ -30,7 +30,7 @@ class DeleteWorkspace extends React.PureComponent<DeleteWorkspaceProps, { isDebo
 
     this.debounce = container.get(Debounce);
     this.debounce.subscribe(isDebounceDelay => {
-      this.setState({ isDebounceDelay })
+      this.setState({ isDebounceDelay });
     });
   }
 

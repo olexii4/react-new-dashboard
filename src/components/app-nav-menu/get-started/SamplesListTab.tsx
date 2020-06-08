@@ -77,11 +77,11 @@ export class SamplesListTab extends React.Component<DevfilesMetadataProps, Sampl
     });
 
     this.onTemporaryStorageChanged = (temporary): void => {
-      this.setState({ temporary, })
-    }
+      this.setState({ temporary, });
+    };
     this.onSampleCardClicked = (devfileContent: string, stackName: string): void => {
       this.createWorkspace(devfileContent, stackName);
-    }
+    };
   }
 
   private async createWorkspace(devfileContent: string, stackName: string): Promise<void> {
