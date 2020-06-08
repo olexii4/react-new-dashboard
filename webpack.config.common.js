@@ -65,15 +65,11 @@ module.exports = {
         test: /\.tsx?$/,
         enforce: 'pre',
         include: path.join(__dirname, 'src'),
-        use: [
-          {
-            options: {
-              eslintPath: require.resolve('eslint'),
-            },
-            loader: require.resolve('eslint-loader'),
-          }
-        ],
         exclude: /node_modules/,
+        loader: 'eslint-loader',
+        options: {
+          cache: true,
+        },
       },
       {
         test: /\.tsx?$/,
