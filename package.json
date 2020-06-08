@@ -101,6 +101,7 @@
     "html-webpack-plugin": "^4.3.0",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
+    "keycloak-js": "^10.0.2",
     "lint-staged": "^10.2.8",
     "poststylus": "^1.0.0",
     "redux-mock-store": "^1.5.4",

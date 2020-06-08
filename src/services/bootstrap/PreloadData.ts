@@ -70,7 +70,7 @@ export class PreloadData {
   }
 
   private async updateUser(): Promise<void> {
-    await this.keycloakSetup.resolve();
+    await this.keycloakSetup.start();
     this.setUser();
   }
 

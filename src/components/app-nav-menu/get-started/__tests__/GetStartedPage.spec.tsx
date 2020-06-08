@@ -17,7 +17,7 @@ import { GetStartedPage } from '../GetStartedPage';
 
 jest.mock('../SamplesListTab', () => {
   return function DummyTab(): React.ReactElement {
-      return <span>Samples List Tab Content</span>;
+    return <span>Samples List Tab Content</span>;
   };
 });
 

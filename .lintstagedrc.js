@@ -11,5 +11,5 @@
  */
 
 module.exports = {
-  '*.{js,ts,tsx}': 'eslint --fix'
+  '*.{js,ts,tsx}': ['eslint --fix', 'yarn format']
 }

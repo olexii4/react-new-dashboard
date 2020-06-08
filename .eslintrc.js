@@ -68,8 +68,6 @@ module.exports = {
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    'react/jsx-key': 'off',
-    'react/no-children-prop': 'off',
   },
   settings: {
     react: {

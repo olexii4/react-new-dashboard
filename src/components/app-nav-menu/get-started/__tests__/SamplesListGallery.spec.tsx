@@ -49,8 +49,8 @@ describe('Samples List Gallery', () => {
       (): void;
       (value?: unknown): void;
     };
-    const onCardClickedPromise = new Promise(resolve => resolveFn = resolve );
-    const onCardClicked = jest.fn(() => resolveFn() );
+    const onCardClickedPromise = new Promise(resolve => resolveFn = resolve);
+    const onCardClicked = jest.fn(() => resolveFn());
 
     // eslint-disable-next-line
     const store = createFakeStoreWithMetadata();

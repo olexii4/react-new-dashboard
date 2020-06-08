@@ -55,7 +55,7 @@ describe('Samples List Toolbar', () => {
     renderToolbar();
 
     const filterInput = screen.getByLabelText('Filter samples list') as HTMLInputElement;
-    fireEvent.change(filterInput, {target: { value: 'NodeJS Angular Web Application' }});
+    fireEvent.change(filterInput, { target: { value: 'NodeJS Angular Web Application' } });
 
     expect(DevfileFilterStore.actionCreators.setFilter).toHaveBeenCalledTimes(1);
     expect(DevfileFilterStore.actionCreators.setFilter).toHaveBeenCalledWith('NodeJS Angular Web Application');

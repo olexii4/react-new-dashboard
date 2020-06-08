@@ -30,9 +30,9 @@ const SECTION_THEME = PageSectionVariants.light;
 
 // At runtime, Redux will merge together...
 type WorkspacesProps = {
-    workspaces: WorkspacesStore.WorkspacesState;
-    branding: { branding: BrandingState };
-  } // ... state we've requested from the Redux store
+  workspaces: WorkspacesStore.WorkspacesState;
+  branding: { branding: BrandingState };
+} // ... state we've requested from the Redux store
   & WorkspacesStore.ActionCreators // ... plus action creators we've requested
   & { history: any };
 
@@ -61,22 +61,22 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
     };
 
     const columns = ['NAME', 'RAM', 'PROJECTS', 'STACK', 'ACTIONS'];
-    const rows = this.props.workspaces.workspaces.map((workspace: che.Workspace, key: number) => ({
+    const rows = this.props.workspaces.workspaces.map((workspace: che.Workspace) => ({
       cells: [
-        <span onClick={(): void => onRowClick(workspace)}>
-          <WorkspaceIndicator key={`indicator_${key}`} status={workspace.status} />
+        <span key={`${workspace.id}_1`} onClick={(): void => onRowClick(workspace)}>
+          <WorkspaceIndicator status={workspace.status} />
           {workspace.namespace}/{workspace.devfile.metadata.name}
         </span>,
-        <span onClick={(): void => onRowClick(workspace)}>
+        <span key={`${workspace.id}_2`} onClick={(): void => onRowClick(workspace)}>
           -
                     </span>,
-        <span onClick={(): void => onRowClick(workspace)}>
+        <span key={`${workspace.id}_3`} onClick={(): void => onRowClick(workspace)}>
           {workspace.devfile.projects ? workspace.devfile.projects.length : '-'}
         </span>,
-        <span onClick={(): void => onRowClick(workspace)}>
+        <span key={`${workspace.id}_4`} onClick={(): void => onRowClick(workspace)}>
           {workspace.attributes && workspace.attributes.stackName ? workspace.attributes.stackName : ''}
         </span>,
-        <span>
+        <span key={`${workspace.id}_5`}>
           <WorkspaceStatus key={`status_${workspace.id}${workspace.status}`}
             workspaceId={workspace.id as string}
             status={workspace.status as string}
