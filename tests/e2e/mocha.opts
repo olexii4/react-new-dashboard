@@ -1,4 +1,5 @@
 --timeout 1200000
+--reporter 'dist/driver/Reporter.js'
 -u tdd 
 --bail
 --full-trace

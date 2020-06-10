@@ -16,6 +16,8 @@ const TYPES = {
 
 const CLASSES = {
     DriverHelper: 'DriverHelper',
+    ScreenCatcher: 'ScreenCatcher'
+
 };
 
 export { TYPES, CLASSES };
