@@ -59,7 +59,12 @@ export const TestConstants = {
     /**
      * Default delay in milliseconds between tries, "1000" by default.
      */
-    TEST_DEFAULT_POLLING: Number(process.env.TEST_DEFAULT_POLLING) || 1000
+    TEST_DEFAULT_POLLING: Number(process.env.TEST_DEFAULT_POLLING) || 1000,
+
+    /**
+     * Path to folder with tests execution report.
+     */
+    TEST_REPORT_FOLDER: process.env.TS_SELENIUM_REPORT_FOLDER || './report'
 
 
 };
