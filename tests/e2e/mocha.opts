@@ -1,5 +1,5 @@
 --timeout 1200000
---reporter 'dist/driver/Reporter.js'
+--reporter 'dist/driver/CheDashboardReporter.js'
 -u tdd 
 --bail
 --full-trace

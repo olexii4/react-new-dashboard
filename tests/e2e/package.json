@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "tsc && mocha --opts mocha.opts",
+    "test": "rm -rf dist && tsc && mocha --opts mocha.opts",
     "lint": "tslint --fix -p .",
     "tsc": "tsc -p ."
   },

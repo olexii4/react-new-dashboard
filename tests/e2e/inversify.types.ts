@@ -11,12 +11,13 @@
  */
 
 const TYPES = {
-    Driver: Symbol.for('Driver'),
+  Driver: Symbol.for('Driver'),
 };
 
 const CLASSES = {
-    DriverHelper: 'DriverHelper',
-    ScreenCatcher: 'ScreenCatcher'
+  DriverHelper: 'DriverHelper',
+  ScreenCatcher: 'ScreenCatcher',
+  Dashboard: 'Dasboard'
 
 };
 
