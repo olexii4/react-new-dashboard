@@ -90,7 +90,7 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
       ]
     })) || [];
 
-    const { docs: { workspace }, workspace: { creationLink } } = this.props.branding.branding.branding as any;
+    const { docs: { workspace }} = this.props.branding.branding.branding as any;
 
     return (
       <React.Fragment>
@@ -104,7 +104,7 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
         </Text>
         <CheProgress isLoading={this.props.workspaces.isLoading} />
         <PageSection variant={SECTION_THEME} className='header-buttons'>
-          <Button onClick={(): void => this.props.history.push(creationLink)} variant='primary'>
+          <Button onClick={(): void => this.props.history.push('/')} variant='primary'>
             Add Workspace
                     </Button>
         </PageSection>

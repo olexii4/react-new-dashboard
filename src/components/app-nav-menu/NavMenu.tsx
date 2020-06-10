@@ -117,7 +117,7 @@ export class NavMenu extends React.PureComponent<any, any> {
             </NavItem>
           ))}
           <NavGroup title='RECENT WORKSPACES'>
-            <NavItem><Link to={this.props.creationLink}><i className='fa fa-plus'>&nbsp;&nbsp;</i>
+            <NavItem><Link to='/'><i className='fa fa-plus'>&nbsp;&nbsp;</i>
                             Create Workspace
                         </Link></NavItem>
             {this.props.workspaces.map((workspace: any, index: number) =>
