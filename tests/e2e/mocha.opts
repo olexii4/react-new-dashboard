@@ -1,0 +1,5 @@
+--timeout 1200000
+-u tdd 
+--bail
+--full-trace
+--spec dist/tests/*.spec.js
