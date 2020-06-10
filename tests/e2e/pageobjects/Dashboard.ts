@@ -32,16 +32,14 @@ export class Dashboard {
   }
 
   async waitPage(timeout: number = TestConstants.TEST_DEFAULT_TIMEOUT) {
-    const getStartedButtonLocator: By = this.getButtonLocator('');
-
     await this.waitDashboardButton(Dashboard.GET_STARTED_BUTTON_TEXT, timeout);
     await this.waitDashboardButton(Dashboard.WORKSPACES_BUTTON_TEXT, timeout);
     await this.waitDashboardButton(Dashboard.ADMINISTRATION_BUTTON_TEXT, timeout);
-    await this.waitDashboardButton(Dashboard.GET_STARTED_BUTTON_TEXT, timeout);
+    await this.waitDashboardButton(Dashboard.CREATE_WORKSPACE_BUTTON_TEXT, timeout);
   }
 
 
-  private async clicDashboardButton(buttonText: string, timeout: number = TestConstants.TEST_DEFAULT_TIMEOUT) {
+  private async clickDashboardButton(buttonText: string, timeout: number = TestConstants.TEST_DEFAULT_TIMEOUT) {
     const buttonLocator: By = this.getButtonLocator(buttonText);
 
     await this.driverHelper.waitAndClick(buttonLocator, timeout);

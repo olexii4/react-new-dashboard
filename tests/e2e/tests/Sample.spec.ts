@@ -11,13 +11,10 @@
  */
 
 import { testContainer } from '../inversify.config';
-import { DriverHelper } from '../utils/DriverHelper';
 import { CLASSES } from '../inversify.types';
-import { error } from 'selenium-webdriver';
 import { Dashboard } from '../pageobjects/Dashboard';
 
 
-const driverHelper: DriverHelper = testContainer.get(CLASSES.DriverHelper);
 const dashboard: Dashboard = testContainer.get(CLASSES.Dashboard);
 
 suite('Suite', async () => {
