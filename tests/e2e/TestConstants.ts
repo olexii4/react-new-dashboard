@@ -44,7 +44,22 @@ export const TestConstants = {
     /**
      * Log level settings, possible variants: 'INFO' (by default), 'DEBUG', 'TRACE'.
      */
-    TEST_LOG_LEVEL: process.env.TEST_LOG_LEVEL || 'INFO'
+    TEST_LOG_LEVEL: process.env.TEST_LOG_LEVEL || 'INFO',
+
+    /**
+     * Default timeout for most of the waitings, "20 000" by default.
+     */
+    TEST_DEFAULT_TIMEOUT: Number(process.env.TEST_DEFAULT_TIMEOUT) || 20000,
+
+    /**
+     * Default ammount of tries, "5" by default.
+     */
+    TEST_DEFAULT_ATTEMPTS: Number(process.env.TEST_DEFAULT_ATTEMPTS) || 5,
+
+    /**
+     * Default delay in milliseconds between tries, "1000" by default.
+     */
+    TEST_DEFAULT_POLLING: Number(process.env.TEST_DEFAULT_POLLING) || 1000
 
 
 };
