@@ -1,5 +1,4 @@
 import { testContainer } from '../inversify.config';
-import { ThenableWebDriver } from 'selenium-webdriver';
 import { DriverHelper } from '../utils/DriverHelper';
 import { CLASSES } from '../inversify.types';
 
