@@ -39,7 +39,12 @@ export const TestConstants = {
     /**
      * Remote driver URL.
      */
-    TEST_REMOTE_DRIVER_URL: process.env.TEST_REMOTE_DRIVER_URL || ''
+    TEST_REMOTE_DRIVER_URL: process.env.TEST_REMOTE_DRIVER_URL || '',
+
+    /**
+     * Log level settings, possible variants: 'INFO' (by default), 'DEBUG', 'TRACE'.
+     */
+    TEST_LOG_LEVEL: process.env.TEST_LOG_LEVEL || 'INFO'
 
 
 };

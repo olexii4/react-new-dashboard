@@ -15,8 +15,8 @@ import { IDriver } from './driver/IDriver';
 import { ChromeDriver } from './driver/ChromeDriver';
 import { TYPES, CLASSES } from './inversify.types';
 
-const testsContainer: Container = new Container({ defaultScope: 'Transient' });
+const testContainer: Container = new Container({ defaultScope: 'Transient' });
 
-testsContainer.bind<IDriver>(TYPES.Driver).to(ChromeDriver).inSingletonScope();
+testContainer.bind<IDriver>(TYPES.Driver).to(ChromeDriver).inSingletonScope();
 
-export { testsContainer };
+export { testContainer };
