@@ -26,7 +26,7 @@ const screenCatcher: ScreenCatcher = testContainer.get(CLASSES.ScreenCatcher);
 let methodIndex: number = 0;
 let deleteScreencast: boolean = true;
 
-class Reporter extends mocha.reporters.Spec {
+class CheDashboardReporter extends mocha.reporters.Spec {
   constructor(runner: mocha.Runner, options: mocha.MochaOptions) {
     super(runner, options);
 
@@ -150,4 +150,4 @@ class Reporter extends mocha.reporters.Spec {
   }
 }
 
-export = Reporter;
+export = CheDashboardReporter;
