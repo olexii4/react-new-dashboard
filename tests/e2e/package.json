@@ -2,7 +2,7 @@
   "name": "e2e",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "private": "true",
   "scripts": {
     "test": "rm -rf dist && tsc && mocha --opts mocha.opts",
     "lint": "tslint --fix -p .",
@@ -18,7 +18,7 @@
     "@types/selenium-webdriver": "3.0.16",
     "axios": "0.18.1",
     "chai": "4.2.0",
-    "chromedriver": "80.0.1",
+    "chromedriver": "83.0.0",
     "mocha": "7.1.1",
     "rimraf": "2.6.2",
     "selenium-webdriver": "3.6.0",
