@@ -62,23 +62,38 @@ export const TestConstants = {
   TEST_DEFAULT_POLLING: Number(process.env.TEST_DEFAULT_POLLING) || 1000,
 
   /**
+   * Timeout in milliseconds waiting for page load, "120 000" by default.
+   */
+  TEST_LOAD_PAGE_TIMEOUT: Number(process.env.TEST_LOAD_PAGE_TIMEOUT) || 120000,
+
+  /**
    * Path to folder with tests execution report.
    */
-  TEST_REPORT_FOLDER: process.env.TS_SELENIUM_REPORT_FOLDER || './report',
+  TEST_REPORT_FOLDER: process.env.TEST_REPORT_FOLDER || './report',
 
   /**
    * Enable or disable storing of execution screencast, "false" by default.
    */
-  TEST_EXECUTION_SCREENCAST: process.env.TS_SELENIUM_EXECUTION_SCREENCAST === 'true',
+  TEST_EXECUTION_SCREENCAST: process.env.TEST_EXECUTION_SCREENCAST === 'true',
 
   /**
    * Delay between screenshots catching in the milliseconds for the execution screencast.
    */
-  TEST_DELAY_BETWEEN_SCREENSHOTS: Number(process.env.TS_SELENIUM_DELAY_BETWEEN_SCREENSHOTS) || 1000,
+  TEST_DELAY_BETWEEN_SCREENSHOTS: Number(process.env.TEST_DELAY_BETWEEN_SCREENSHOTS) || 1000,
 
   /**
    * Delete screencast after execution if all tests passed, "true" by default.
    */
-  TEST_DELETE_SCREENCAST_IF_TEST_PASS: process.env.DELETE_SCREENCAST_IF_TEST_PASS !== 'false'
+  TEST_DELETE_SCREENCAST_IF_TEST_PASS: process.env.DELETE_SCREENCAST_IF_TEST_PASS !== 'false',
+
+  /**
+   * Username used to log in che.openshift.io.
+   */
+  TEST_USERNAME: process.env.TEST_USERNAME || '',
+
+  /**
+   * Password used to log in che.openshift.io.
+   */
+  TEST_PASSWORD: process.env.TEST_PASSWORD || ''
 
 };

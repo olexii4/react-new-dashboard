@@ -10,17 +10,6 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-const TYPES = {
-  Driver: Symbol.for('Driver'),
-  LoginPage: Symbol.for('LoginPage')
-
-};
-
-const CLASSES = {
-  DriverHelper: 'DriverHelper',
-  ScreenCatcher: 'ScreenCatcher',
-  Dashboard: 'Dasboard'
-
-};
-
-export { TYPES, CLASSES };
+export interface ILoginPage {
+  login(): void;
+}

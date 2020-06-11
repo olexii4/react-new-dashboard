@@ -11,15 +11,18 @@
  */
 
 import { testContainer } from '../inversify.config';
-import { CLASSES } from '../inversify.types';
+import { CLASSES, TYPES } from '../inversify.types';
 import { Dashboard } from '../pageobjects/Dashboard';
+import { ILoginPage } from '../pageobjects/login/ILoginPage';
 
-
+const loginPage: ILoginPage = testContainer.get<ILoginPage>(TYPES.LoginPage);
 const dashboard: Dashboard = testContainer.get(CLASSES.Dashboard);
 
 suite('Suite', async () => {
   test('Test', async () => {
-    await dashboard.openDashboard();
+
+    await loginPage.login();
+    await dashboard.waitPage();
 
 
   });

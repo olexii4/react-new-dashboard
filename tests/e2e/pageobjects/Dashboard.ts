@@ -15,6 +15,7 @@ import { CLASSES } from '../inversify.types';
 import { DriverHelper } from '../utils/DriverHelper';
 import { TestConstants } from '../TestConstants';
 import { By } from 'selenium-webdriver';
+import { Logger } from '../utils/Logger';
 
 
 @injectable()
@@ -26,18 +27,21 @@ export class Dashboard {
 
   constructor(@inject(CLASSES.DriverHelper) private readonly driverHelper: DriverHelper) { }
 
-  async openDashboard(timeout: number = TestConstants.TEST_DEFAULT_TIMEOUT) {
+  async openDashboard(timeout: number = TestConstants.TEST_LOAD_PAGE_TIMEOUT) {
+    Logger.debug('Dashboard.openDashboard');
+
     await this.driverHelper.navigateToUrl(TestConstants.TEST_BASE_URL);
     await this.waitPage(timeout);
   }
 
   async waitPage(timeout: number = TestConstants.TEST_DEFAULT_TIMEOUT) {
+    Logger.debug('Dashboard.waitPage');
+
     await this.waitDashboardButton(Dashboard.GET_STARTED_BUTTON_TEXT, timeout);
     await this.waitDashboardButton(Dashboard.WORKSPACES_BUTTON_TEXT, timeout);
     await this.waitDashboardButton(Dashboard.ADMINISTRATION_BUTTON_TEXT, timeout);
     await this.waitDashboardButton(Dashboard.CREATE_WORKSPACE_BUTTON_TEXT, timeout);
   }
-
 
   private async clickDashboardButton(buttonText: string, timeout: number = TestConstants.TEST_DEFAULT_TIMEOUT) {
     const buttonLocator: By = this.getButtonLocator(buttonText);

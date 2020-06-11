@@ -17,10 +17,14 @@ import { TYPES, CLASSES } from './inversify.types';
 import { DriverHelper } from './utils/DriverHelper';
 import { ScreenCatcher } from './utils/ScreenCatcher';
 import { Dashboard } from './pageobjects/Dashboard';
+import { CheOpenshiftIoLoginPage } from './pageobjects/login/CheOpenshiftIoLoginPage';
+import { ILoginPage } from './pageobjects/login/ILoginPage';
 
 const testContainer: Container = new Container({ defaultScope: 'Transient' });
 
 testContainer.bind<IDriver>(TYPES.Driver).to(ChromeDriver).inSingletonScope();
+testContainer.bind<ILoginPage>(TYPES.LoginPage).to(CheOpenshiftIoLoginPage);
+
 testContainer.bind<DriverHelper>(CLASSES.DriverHelper).to(DriverHelper);
 testContainer.bind<ScreenCatcher>(CLASSES.ScreenCatcher).to(ScreenCatcher);
 testContainer.bind<Dashboard>(CLASSES.Dashboard).to(Dashboard);
