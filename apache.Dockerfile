@@ -13,7 +13,7 @@ FROM docker.io/node:10.20.1 as builder
 COPY package.json /dashboard/
 COPY yarn.lock /dashboard/
 WORKDIR /dashboard
-RUN yarn install --ignore-optional
+RUN yarn --network-timeout 600000 && yarn install --ignore-optional
 COPY . /dashboard/
 RUN yarn compile
 
