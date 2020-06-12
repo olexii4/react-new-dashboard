@@ -17,7 +17,6 @@ import {
   TextContent,
   Flex,
   FlexItem,
-  FlexModifiers,
   Text,
   TextInput,
   TextInputProps,
@@ -76,7 +75,7 @@ export class SamplesListToolbar extends React.PureComponent<SamplesListToolbarPr
             </Text>
           </TextContent>
         </FlexItem>
-        <FlexItem breakpointMods={[{ modifier: FlexModifiers['align-right'] }]}>
+        <FlexItem align={{ default: 'alignRight' }}>
           <TemporaryStorageSwitch
             persistVolumesDefault={this.props.persistVolumesDefault}
             onChange={this.props.onTemporaryStorageChange} />

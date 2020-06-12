@@ -22,7 +22,7 @@ const Administration = (): React.ReactElement => (
       </TextContent>
     </PageSection>
     <PageSection>
-      <Gallery gutter='md'>
+      <Gallery hasGutter={true}>
         <h1>Hello, Administration!</h1>
       </Gallery>
     </PageSection>

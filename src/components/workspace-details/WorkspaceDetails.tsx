@@ -108,7 +108,7 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
           <Alert
             variant={this.alert.variant}
             title={this.alert.title}
-            action={<AlertActionCloseButton onClose={this.hideAlert} />}
+            actionClose={<AlertActionCloseButton onClose={this.hideAlert} />}
           />
         )}
         <PageSection variant={SECTION_THEME} className='workspace-details-header'>

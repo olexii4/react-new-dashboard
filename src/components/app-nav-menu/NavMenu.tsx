@@ -13,8 +13,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import gravatarUrl from 'gravatar-url';
-import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
-import { css } from '@patternfly/react-styles';
 import {
   Avatar,
   Brand,
@@ -27,12 +25,12 @@ import {
   NavList,
   Page,
   PageHeader,
-  PageSidebar,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem,
+  PageHeaderTools,
+  PageHeaderToolsGroup,
+  PageHeaderToolsItem,
   PageSection,
-  PageSectionVariants
+  PageSectionVariants,
+  PageSidebar,
 } from '@patternfly/react-core';
 
 import { container } from '../../inversify.config';
@@ -64,7 +62,7 @@ export class NavMenu extends React.PureComponent<any, any> {
 
     const currentTheme = window.sessionStorage.getItem('theme');
     const theme = currentTheme ? currentTheme : DARK;
-    this.state = { isDropdownOpen: false, activeItem: '/', isNavOpen: true, theme };
+    this.state = { isDropdownOpen: false, activeItem: '/', theme };
 
     const keycloak = container.get(Keycloak);
 
@@ -84,17 +82,6 @@ export class NavMenu extends React.PureComponent<any, any> {
     this.onNavSelect = (result: any): void => {
       this.setState({ activeItem: result.itemId });
     };
-    this.onNavToggle = (): void => {
-      this.setState({ isNavOpen: !this.state.isNavOpen });
-    };
-
-    this.handleMessage = (event): void => {
-      if (event.data === 'show-navbar') {
-        this.setState({ isNavOpen: true });
-      } else if (event.data === 'hide-navbar') {
-        this.setState({ isNavOpen: false });
-      }
-    };
   }
 
   componentDidMount(): void {
@@ -106,7 +93,7 @@ export class NavMenu extends React.PureComponent<any, any> {
   }
 
   render(): React.ReactElement {
-    const { isDropdownOpen, activeItem, isNavOpen, theme } = this.state;
+    const { isDropdownOpen, activeItem, theme } = this.state;
     // create a Sidebar
     const PageNav = (
       <Nav onSelect={this.onNavSelect} aria-label='Nav' theme={theme}>
@@ -144,42 +131,52 @@ export class NavMenu extends React.PureComponent<any, any> {
       return user.name;
     };
 
-    const UserDropdownItems = [
+    const userDropdownItems = [
       <DropdownItem key='white' onClick={(): void => this.onTheme(LIGHT)} component='button'>Light theme</DropdownItem>,
       <DropdownItem key='dark' onClick={(): void => this.onTheme(DARK)} component='button'>Dark theme</DropdownItem>,
       <DropdownItem key='account_details'>Account details</DropdownItem>,
       <DropdownItem key='account_logout' onClick={this.onLogout} component='button'>Logout</DropdownItem>
     ];
 
-    const UserDropdownToggle = (<DropdownToggle onToggle={this.onDropdownToggle}>{getUserName()}</DropdownToggle>);
-    const PageToolbar = (
-      <Toolbar>
-        <ToolbarGroup>
-          <ToolbarItem className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnMd)}>
-            <Dropdown toggle={UserDropdownToggle} isOpen={isDropdownOpen} isPlain position='right'
-              dropdownItems={UserDropdownItems} onSelect={this.onDropdownSelect} />
-          </ToolbarItem>
-        </ToolbarGroup>
-      </Toolbar>
+    const avatar = this.buildAvatar();
+    const headerTools = (
+    <PageHeaderTools>
+        <PageHeaderToolsGroup>
+          <PageHeaderToolsItem>
+            <Dropdown
+              isPlain
+              position="right"
+              onSelect={this.onDropdownSelect}
+              isOpen={isDropdownOpen}
+              toggle={
+                <DropdownToggle
+                  onToggle={this.onDropdownToggle}
+                >
+                  {getUserName()}
+                </DropdownToggle>
+              }
+              dropdownItems={userDropdownItems}
+            />
+          </PageHeaderToolsItem>
+        </PageHeaderToolsGroup>
+        {avatar}
+      </PageHeaderTools>
     );
-    const Avatar = this.buildAvatar();
     const Logo = <Brand src={`${this.props.logoURL}`} alt='' />;
     const Header = (
       <PageHeader
-        className={isNavOpen ? 'nav-show' : 'nav-hide'}
         logo={Logo}
         logoProps={{ href: 'https://www.eclipse.org/che/', target: '_blank' }}
-        toolbar={PageToolbar}
-        avatar={Avatar}
-        isNavOpen={isNavOpen}
+        headerTools={headerTools}
+        showNavToggle={true}
         onNavToggle={this.onNavToggle}
       />
     );
 
-    const Sidebar = <PageSidebar nav={PageNav} isNavOpen={isNavOpen} theme={theme} />;
+    const Sidebar = <PageSidebar nav={PageNav} theme={theme} />;
 
-    return (<Page header={Header} sidebar={Sidebar}>
-      <PageSection variant={PageSectionVariants.default} noPadding={true}>
+    return (<Page header={Header} sidebar={Sidebar} isManagedSidebar={true}>
+      <PageSection variant={PageSectionVariants.default} padding={{ default: 'noPadding' }}>
         {this.props.children}
       </PageSection>
     </Page>);

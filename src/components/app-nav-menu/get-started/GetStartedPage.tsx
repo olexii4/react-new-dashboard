@@ -74,9 +74,9 @@ export class GetStartedPage extends React.PureComponent<GetStartedPageProps, Get
     return (
       <React.Fragment>
         <PageSection variant={PageSectionVariants.light}>
-          <Title size="2xl">{title}</Title>
+          <Title headingLevel={'h1'} >{title}</Title>
         </PageSection>
-        <PageSection variant={PageSectionVariants.light} noPadding={true}>
+        <PageSection variant={PageSectionVariants.light} padding={{ default: 'noPadding' }}>
           <Tabs isFilled
             activeKey={activeTabKey}
             onSelect={this.handleTabClick}>

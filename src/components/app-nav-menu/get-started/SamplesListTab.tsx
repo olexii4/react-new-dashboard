@@ -125,7 +125,7 @@ export class SamplesListTab extends React.Component<DevfilesMetadataProps, Sampl
           <Alert
             variant={this.alert.variant}
             title={this.alert.title}
-            action={<AlertActionCloseButton onClose={this.hideAlert} />}
+            actionClose={<AlertActionCloseButton onClose={this.hideAlert} />}
           />
         )}
         <PageSection

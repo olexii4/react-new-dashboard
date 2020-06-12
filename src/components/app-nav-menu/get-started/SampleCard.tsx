@@ -12,12 +12,11 @@
 
 import React from 'react';
 import {
+  Brand,
   Card,
-  CardHead,
-  CardHeadMain,
-  CardHeader,
   CardBody,
-  Brand
+  CardHeader,
+  CardHeaderMain,
 } from '@patternfly/react-core';
 import './SampleCard.styl';
 
@@ -42,11 +41,11 @@ export class SampleCard extends React.PureComponent<SampleCardProps> {
         onClick={onClickHandler}
         className={'sample-card'}
       >
-        <CardHead>
-          <CardHeadMain>
+        <CardHeader>
+          <CardHeaderMain>
             {devfileIcon}
-          </CardHeadMain>
-        </CardHead>
+          </CardHeaderMain>
+        </CardHeader>
         <CardHeader>{metadata.displayName}</CardHeader>
         <CardBody>{metadata.description}</CardBody>
       </Card>

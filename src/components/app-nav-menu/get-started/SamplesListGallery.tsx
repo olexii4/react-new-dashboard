@@ -43,7 +43,7 @@ export class SamplesListGallery extends React.PureComponent<SamplesListGalleryPr
 
     if (cards.length) {
       return (
-        <Gallery gutter='md'>
+        <Gallery hasGutter={true}>
           {cards}
         </Gallery>
       );
@@ -71,7 +71,7 @@ export class SamplesListGallery extends React.PureComponent<SamplesListGalleryPr
     return (
       <EmptyState variant={EmptyStateVariant.full}>
         <EmptyStateIcon icon={SearchIcon} />
-        <Title size='lg'>
+        <Title headingLevel='h1'>
           No results found
           </Title>
         <EmptyStateBody>
