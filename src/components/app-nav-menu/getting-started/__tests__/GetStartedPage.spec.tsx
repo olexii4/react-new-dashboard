@@ -20,6 +20,11 @@ jest.mock('../get-started-tab/SamplesListTab', () => {
     return <span>Samples List Tab Content</span>;
   };
 });
+jest.mock('../custom-workspace-tab/CustomWorkspaceTab', () => {
+  return function DummyTab(): React.ReactNode {
+    return <span>Custom Workspace Tab Content</span>;
+  };
+});
 
 describe('Get Started page', () => {
 

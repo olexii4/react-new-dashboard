@@ -13,16 +13,18 @@
 import * as Workspaces from './Workspaces';
 import * as DevfileRegistries from './DevfileRegistries';
 import * as DevfileMetadataFilter from './DevfileFilters';
+import * as InfrastructureNamespace from './InfrastructureNamespace';
 import brandingReducer from './Branding';
 import userReducer from './User';
 
 // the top-level state object
 export interface AppState {
-  workspaces: Workspaces.WorkspacesState;
-  devfileRegistries: DevfileRegistries.State;
-  devfileMetadataFilter: DevfileMetadataFilter.MetadataFilterState;
   branding: any;
+  devfileMetadataFilter: DevfileMetadataFilter.MetadataFilterState;
+  devfileRegistries: DevfileRegistries.State;
+  infrastructureNamespace: InfrastructureNamespace.State;
   user: any;
+  workspaces: Workspaces.WorkspacesState;
 }
 
 export const reducers = {
@@ -31,6 +33,7 @@ export const reducers = {
   devfileMetadataFilter: DevfileMetadataFilter.reducer,
   branding: brandingReducer,
   user: userReducer,
+  infrastructureNamespace: InfrastructureNamespace.reducer,
 };
 
 // this type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are

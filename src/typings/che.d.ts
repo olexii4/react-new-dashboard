@@ -141,6 +141,15 @@ declare namespace che {
     links: any;
     tags: Array<string>;
   }
+
+  export interface KubernetesNamespace {
+    name: string;
+    attributes: {
+      default?: 'true' | 'false';
+      displayName?: string;
+      phase: string;
+    };
+  }
 }
 
 declare module 'che' {

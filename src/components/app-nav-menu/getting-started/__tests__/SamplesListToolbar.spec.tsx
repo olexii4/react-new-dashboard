@@ -78,6 +78,7 @@ function createFakeStore(metadata?: che.DevfileMetaData[]): Store {
       schema: '',
     },
     user: {} as any,
+    infrastructureNamespace: {} as any,
   };
   const middleware = [thunk];
   const mockStore = createMockStore(middleware);

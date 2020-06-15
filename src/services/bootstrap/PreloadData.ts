@@ -18,6 +18,7 @@ import * as UserStore from '../../store/User';
 import * as WorkspacesStore from '../../store/Workspaces';
 import * as DevfileRegistriesStore from '../../store/DevfileRegistries';
 import * as DevfileMetadataFiltersStore from '../../store/DevfileFilters';
+import * as InfrastructureNamespaceStore from '../../store/InfrastructureNamespace';
 import { Keycloak } from '../keycloak/Keycloak';
 import { Store } from 'redux';
 
@@ -45,6 +46,7 @@ export class PreloadData {
     await this.updateKeycloakUserInfo();
 
     this.updateWorkspaces();
+    this.updateInfrastructureNamespaces();
 
     const settings = await this.updateWorkspaceSettings();
     await this.updateRegistriesMetadata(settings);
@@ -77,6 +79,11 @@ export class PreloadData {
   private async updateWorkspaces(): Promise<void> {
     const { requestWorkspaces } = WorkspacesStore.actionCreators;
     await requestWorkspaces()(this.store.dispatch, this.store.getState);
+  }
+
+  private async updateInfrastructureNamespaces(): Promise<void> {
+    const { requestNamespaces } = InfrastructureNamespaceStore.actionCreators;
+    await requestNamespaces()(this.store.dispatch, this.store.getState);
   }
 
   private async updateWorkspaceSettings(): Promise<che.WorkspaceSettings> {
