@@ -13,6 +13,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
+  Alert,
+  AlertActionCloseButton,
+  AlertGroup,
   Button,
   EmptyState,
   EmptyStateBody,
@@ -21,21 +24,38 @@ import {
   EmptyStateVariant,
   Gallery,
   Title,
+  AlertVariant,
 } from '@patternfly/react-core';
 import { AppState } from '../../../../store';
 import * as DevfileFiltersStore from '../../../../store/DevfileFilters';
 import * as DevfileRegistriesStore from '../../../../store/DevfileRegistries';
 import { SampleCard } from './SampleCard';
 import { SearchIcon } from '@patternfly/react-icons';
+import { AlertItem } from '../../../app-common/types';
 
-type SamplesListGalleryProps = {
+type Props = {
   metadataFilter: DevfileFiltersStore.MetadataFilterState;
   onCardClick: (devfileContent: string, stackName: string) => void;
 }
   & DevfileRegistriesStore.ActionCreators
   & DevfileFiltersStore.ActionCreators;
+type State = {
+  alerts: AlertItem[];
+};
 
-export class SamplesListGallery extends React.PureComponent<SamplesListGalleryProps> {
+export class SamplesListGallery extends React.PureComponent<Props, State> {
+
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      alerts: [],
+    };
+  }
+
+  private removeAlert(key: string): void {
+    this.setState({ alerts: [...this.state.alerts.filter(al => al.key !== key)] });
+  }
 
   render(): React.ReactElement {
     const metadata = this.props.metadataFilter.found;
@@ -43,9 +63,21 @@ export class SamplesListGallery extends React.PureComponent<SamplesListGalleryPr
 
     if (cards.length) {
       return (
-        <Gallery hasGutter={true}>
-          {cards}
-        </Gallery>
+        <React.Fragment>
+          <AlertGroup isToast>
+            {this.state.alerts.map(({ title, variant, key }) => (
+              <Alert
+                variant={variant}
+                title={title}
+                key={key}
+                actionClose={<AlertActionCloseButton onClose={() => this.removeAlert(key)} />}
+              />
+            ))}
+          </AlertGroup>
+          <Gallery hasGutter={true}>
+            {cards}
+          </Gallery>
+        </React.Fragment>
       );
     }
 
@@ -53,8 +85,19 @@ export class SamplesListGallery extends React.PureComponent<SamplesListGalleryPr
   }
 
   private async fetchDevfile(meta: che.DevfileMetaData): Promise<void> {
-    const devfile = await this.props.requestDevfile(meta.links.self);
-    this.props.onCardClick(devfile, meta.displayName);
+    try {
+      const devfile = await this.props.requestDevfile(meta.links.self);
+      this.props.onCardClick(devfile, meta.displayName);
+    } catch (e) {
+      console.warn('Failed to load devfile.', e);
+
+      const alerts = [...this.state.alerts, {
+        key: meta.links.self,
+        title: `Failed to load devfile "${meta.displayName}"`,
+        variant: AlertVariant.warning,
+      }];
+      this.setState({ alerts });
+    }
   }
 
   private buildCardsList(metadata: che.DevfileMetaData[] = []): React.ReactElement[] {
