@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import { load } from 'js-yaml';
 import {
   Alert,
+  AlertGroup,
   AlertActionCloseButton,
   AlertVariant,
   PageSection,
@@ -28,8 +29,6 @@ import CheProgress from '../../../app-common/progress/progress';
 import { SamplesListHeader } from './SamplesListHeader';
 import SamplesListToolbar from './SamplesListToolbar';
 import SamplesListGallery from './SamplesListGallery';
-
-import './SamplesListTab.styl';
 
 // At runtime, Redux will merge together...
 type Props =
@@ -121,11 +120,13 @@ export class SamplesListTab extends React.Component<Props, State> {
     return (
       <React.Fragment>
         {alertVisible && (
-          <Alert
-            variant={this.alert.variant}
-            title={this.alert.title}
-            actionClose={<AlertActionCloseButton onClose={this.hideAlert} />}
-          />
+          <AlertGroup isToast>
+            <Alert
+              variant={this.alert.variant}
+              title={this.alert.title}
+              actionClose={<AlertActionCloseButton onClose={this.hideAlert} />}
+            />
+          </AlertGroup>
         )}
         <PageSection
           variant={PageSectionVariants.light}>

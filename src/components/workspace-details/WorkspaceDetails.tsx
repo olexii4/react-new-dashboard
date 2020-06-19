@@ -22,7 +22,8 @@ import {
   Tab,
   Button,
   Alert,
-  AlertActionCloseButton
+  AlertActionCloseButton,
+  AlertGroup
 } from '@patternfly/react-core';
 import WorkspaceIndicator from '../app-nav-menu/workspaces/workspace-indicator/WorkspaceIndicator';
 import CheProgress from '../app-common/progress/progress';
@@ -105,11 +106,13 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
     return (
       <React.Fragment>
         {alertVisible && (
-          <Alert
-            variant={this.alert.variant}
-            title={this.alert.title}
-            actionClose={<AlertActionCloseButton onClose={this.hideAlert} />}
-          />
+          <AlertGroup isToast>
+            <Alert
+              variant={this.alert.variant}
+              title={this.alert.title}
+              actionClose={<AlertActionCloseButton onClose={this.hideAlert} />}
+            />
+          </AlertGroup>
         )}
         <PageSection variant={SECTION_THEME} className='workspace-details-header'>
           <TextContent>
