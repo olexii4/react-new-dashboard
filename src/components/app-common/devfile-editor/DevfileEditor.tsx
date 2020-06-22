@@ -48,11 +48,13 @@ type Props = {
   & {
     devfile: che.WorkspaceDevfile;
     decorationPattern?: string;
-    onChange?: (devfile: che.WorkspaceDevfile, isValid: boolean) => void;
-    setUpdateEditorCallback?: (arg: any) => void;
+    onChange: (devfile: che.WorkspaceDevfile, isValid: boolean) => void;
   };
+type State = {
+  errorMessage: string;
+};
 
-class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }> {
+export class DevfileEditor extends React.PureComponent<Props, State> {
   private readonly toDispose = new DisposableCollection();
   private editor: any;
   private yamlService: any;
@@ -65,18 +67,15 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
     model.getValue()
   );
 
+  private skipNextOnChange: boolean;
+
   constructor(props: Props) {
     super(props);
 
-    this.state = { errorMessage: '' };
-    if (this.props.setUpdateEditorCallback) {
-      this.props.setUpdateEditorCallback(() => {
-        if (this.editor) {
-          const doc = this.editor.getModel();
-          doc.setValue(dump(this.props.devfile, { 'indent': 1 }));
-        }
-      });
-    }
+    this.state = {
+      errorMessage: '',
+    };
+
     // lazy initialization
     if (!window[YAML_SERVICE]) {
       this.yamlService = yamlLanguageServer.getLanguageService(() => Promise.resolve(''), {} as any, []);
@@ -113,11 +112,24 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
     Monaco.editor.setTheme(EDITOR_THEME);
   }
 
+  public updateContent(devfile: che.WorkspaceDevfile): void {
+    if (this.editor) {
+      this.skipNextOnChange = true;
+
+      const doc = this.editor.getModel();
+      doc.setValue(this.stringify(devfile));
+    }
+  }
+
+  private stringify(devfile: che.WorkspaceDevfile): string {
+    return dump(devfile, { 'indent': 1 });
+  }
+
   // This method is called when the component is first added to the document
   public componentDidMount(): void {
     const element = $('.devfile-editor .monaco').get(0);
     if (element) {
-      const value = dump(this.props.devfile, { 'indent': 1 });
+      const value = this.stringify(this.props.devfile);
       this.editor = monaco.editor.create(element, Object.assign(
         { value },
         MONACO_CONFIG
@@ -205,6 +217,11 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
   }
 
   private onChange(newValue: string, isValid: boolean): void {
+    if (this.skipNextOnChange) {
+      this.skipNextOnChange = false;
+      return;
+    }
+
     let devfile: che.WorkspaceDevfile;
     try {
       devfile = load(newValue);
@@ -212,9 +229,7 @@ class DevfileEditor extends React.PureComponent<Props, { errorMessage: string }>
       console.error('DevfileEditor parse error', e);
       return;
     }
-    if (this.props.onChange) {
-      this.props.onChange(devfile, isValid);
-    }
+    this.props.onChange(devfile, isValid);
   }
 
   private registerLanguageServerProviders(languages: any): void {
@@ -300,5 +315,8 @@ export default connect(
   (state: AppState) => {
     const { devfileRegistries, branding } = state;
     return { devfileRegistries, branding }; // Properties are merged into the component's props
-  }
+  },
+  null,
+  null,
+  { forwardRef: true }
 )(DevfileEditor);
