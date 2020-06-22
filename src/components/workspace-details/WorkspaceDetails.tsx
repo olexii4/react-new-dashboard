@@ -99,10 +99,6 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
     const { workspace, alertVisible } = this.state;
     const workspaceName = workspace.devfile.metadata.name;
 
-    const setCallback = (updateFunction: Function): void => {
-      this.cancelFn = updateFunction;
-    };
-
     return (
       <React.Fragment>
         {alertVisible && (
@@ -140,11 +136,13 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
               <CheProgress isLoading={this.props.isLoading} /><br />
               <TextContent className='workspace-details-editor'>
                 <Text component='h3' className='label'>Workspace</Text>
-                <DevfileEditor devfile={workspace.devfile} setUpdateEditorCallback={setCallback}
+                <DevfileEditor
+                  devfile={workspace.devfile}
                   decorationPattern='location[ \t]*(.*)[ \t]*$'
-                  onChange={(devfile: che.WorkspaceDevfile, isValid: boolean): void => {
+                  onChange={(devfile, isValid) => {
                     this.onDevfileChange(workspace, devfile, isValid);
-                  }} />
+                  }}
+                />
                 {(!this.state.isDevfileValid || this.state.hasRequestErrors) && (
                   <Button onClick={(): void => {
                     if (this.cancelFn) {
