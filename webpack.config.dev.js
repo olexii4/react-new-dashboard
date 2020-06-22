@@ -14,6 +14,7 @@ const merge = require('webpack-merge');
 const path = require('path');
 const webpack = require('webpack');
 const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const common = require('./webpack.config.common');
 
@@ -35,13 +36,15 @@ module.exports = env => {
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new CleanTerminalPlugin(),
+      new HardSourceWebpackPlugin(),
     ],
     optimization: {
+      minimize: false,
       removeAvailableModules: false,
       removeEmptyChunks: false,
       splitChunks: false,
     },
-    devtool: 'source-map',
+    devtool: 'eval-cheap-module-source-map',
     devServer: {
       clientLogLevel: 'debug',
       contentBase: path.join(__dirname, 'assets'),
