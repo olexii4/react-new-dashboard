@@ -21,7 +21,7 @@ import {
   TextInput,
   TextInputProps,
 } from '@patternfly/react-core';
-import { TemporaryStorageSwitch } from '../TemporaryStorageSwitch';
+import { TemporaryStorageSwitch } from './TemporaryStorageSwitch';
 import * as DevfileFiltersStore from '../../../../store/DevfileFilters';
 import { AppState } from '../../../../store';
 

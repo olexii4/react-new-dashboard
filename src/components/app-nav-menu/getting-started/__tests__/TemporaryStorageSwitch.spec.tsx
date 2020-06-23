@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { RenderResult, render, screen } from '@testing-library/react';
-import { TemporaryStorageSwitch } from '../TemporaryStorageSwitch';
+import { TemporaryStorageSwitch } from '../get-started-tab/TemporaryStorageSwitch';
 
 describe('Temporary Storage Switch', () => {
 

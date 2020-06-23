@@ -49,7 +49,7 @@ export class TemporaryStorageSwitch extends React.PureComponent<TemporaryStorage
     return (
       <React.Fragment>
         <Switch
-          id="simple-switch"
+          id="temporary-storage-switch"
           label="Temporary Storage On"
           labelOff="Temporary Storage Off"
           isChecked={isChecked}
