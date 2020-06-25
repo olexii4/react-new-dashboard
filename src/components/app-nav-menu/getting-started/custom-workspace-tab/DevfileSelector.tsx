@@ -86,15 +86,19 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
     } catch (e) {
       console.warn('Failed to load devfile.', e);
 
-      const alerts = [...this.state.alerts, {
+      this.showAlert({
         key: 'load-devfile-failed',
         title: 'Failed to load devfile.',
         variant: AlertVariant.warning,
-      }];
-      this.setState({ alerts });
+      });
 
       throw new Error(e);
     }
+  }
+
+  private showAlert(alert: AlertItem): void {
+    const alerts = [...this.state.alerts, alert];
+    this.setState({ alerts });
   }
 
   private removeAlert(key: string): void {

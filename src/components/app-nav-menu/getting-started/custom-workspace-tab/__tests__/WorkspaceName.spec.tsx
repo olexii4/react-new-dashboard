@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { RenderResult, render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { RenderResult, render, screen, fireEvent } from '@testing-library/react';
 import { WorkspaceNameFormGroup } from '../WorkspaceName';
 
 describe('Workspace Name Input', () => {

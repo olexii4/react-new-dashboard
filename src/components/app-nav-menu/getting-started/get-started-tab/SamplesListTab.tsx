@@ -12,18 +12,11 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { load } from 'js-yaml';
 import {
-  Alert,
-  AlertGroup,
-  AlertActionCloseButton,
-  AlertVariant,
   PageSection,
   PageSectionVariants,
 } from '@patternfly/react-core';
 import { AppState } from '../../../../store';
-import { container } from '../../../../inversify.config';
-import { Debounce } from '../../../../services/debounce/Debounce';
 import * as WorkspacesStore from '../../../../store/Workspaces';
 import CheProgress from '../../../app-common/progress/progress';
 import { SamplesListHeader } from './SamplesListHeader';
@@ -31,113 +24,51 @@ import SamplesListToolbar from './SamplesListToolbar';
 import SamplesListGallery from './SamplesListGallery';
 
 // At runtime, Redux will merge together...
-type Props =
-  {
-    workspaces: WorkspacesStore.WorkspacesState;
-  }// ... state we've requested from the Redux store
-  & WorkspacesStore.ActionCreators // ... plus action creators we've requested
-  & { history: any };
+type Props = {
+  onDevfile: (devfileContent: string, stackName: string) => Promise<void>;
+} & {
+  workspaces: WorkspacesStore.WorkspacesState;
+}// ... state we've requested from the Redux store
+  & WorkspacesStore.ActionCreators; // ... plus action creators we've requested;
 type State = {
-  alertVisible: boolean;
   temporary: boolean;
 };
 
 export class SamplesListTab extends React.Component<Props, State> {
-  private debounce: Debounce;
-  private alert: { variant?: AlertVariant; title?: string } = {};
-  private showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
-  private hideAlert: () => void;
-
-  private onTemporaryStorageChanged: (temporary: boolean) => void;
-  private onSampleCardClicked: (devfile: string, stackName: string) => void;
 
   constructor(props: Props) {
     super(props);
 
-    this.debounce = container.get(Debounce);
-
     this.state = {
-      alertVisible: false,
       temporary: false,
     };
 
-    this.showAlert = (variant: AlertVariant, title: string, timeDelay?: number): void => {
-      this.alert = { variant, title };
-      this.setState({ alertVisible: true });
-      this.debounce.setDelay(timeDelay);
-    };
-    this.hideAlert = (): void => this.setState({ alertVisible: false });
-
-    this.debounce.subscribe(isDebounceDelay => {
-      if (!isDebounceDelay) {
-        this.hideAlert();
-      }
-    });
-
-    this.onTemporaryStorageChanged = (temporary): void => {
-      this.setState({ temporary, });
-    };
-    this.onSampleCardClicked = (devfileContent: string, stackName: string): void => {
-      this.createWorkspace(devfileContent, stackName);
-    };
   }
 
-  private async createWorkspace(devfileContent: string, stackName: string): Promise<void> {
-    if (this.debounce.hasDelay()) {
-      return;
-    }
-    const attr = { stackName };
+  private handleTemporaryStorageChange(temporary: boolean): void {
+    this.setState({ temporary });
+  }
 
-    const devfile: che.WorkspaceDevfile = load(devfileContent);
-    const workspace = await this.props.createWorkspaceFromDevfile(
-      devfile,
-      undefined,
-      undefined,
-      attr,
-    );
-
-    const workspaceName = workspace.devfile.metadata.name;
-    this.showAlert(AlertVariant.success, `Workspace ${workspaceName} has been created`, 1500);
-    // force start for the new workspace
-    try {
-      await this.props.startWorkspace(`${workspace.id}`);
-      this.props.history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
-    } catch (error) {
-      const message = error.data && error.data.message
-        ? error.data.message
-        : `Workspace ${workspaceName} failed to start.`;
-      this.showAlert(AlertVariant.danger, message, 5000);
-    }
-    this.debounce.setDelay();
+  private handleSampleCardClick(devfileContent: string, stackName: string): Promise<void> {
+    return this.props.onDevfile(devfileContent, stackName);
   }
 
   public render(): React.ReactElement {
-    const { alertVisible } = this.state;
-
     const isLoading = this.props.workspaces.isLoading;
     const persistVolumesDefault = this.props.workspaces.settings['che.workspace.persist_volumes.default'];
 
     return (
       <React.Fragment>
-        {alertVisible && (
-          <AlertGroup isToast>
-            <Alert
-              variant={this.alert.variant}
-              title={this.alert.title}
-              actionClose={<AlertActionCloseButton onClose={this.hideAlert} />}
-            />
-          </AlertGroup>
-        )}
         <PageSection
           variant={PageSectionVariants.light}>
           <SamplesListHeader />
           <SamplesListToolbar
             persistVolumesDefault={persistVolumesDefault}
-            onTemporaryStorageChange={this.onTemporaryStorageChanged} />
+            onTemporaryStorageChange={temporary => this.handleTemporaryStorageChange(temporary)} />
         </PageSection>
         <CheProgress isLoading={isLoading} />
         <PageSection variant={PageSectionVariants.default}>
-          <SamplesListGallery onCardClick={this.onSampleCardClicked} />
+          <SamplesListGallery onCardClick={(devfileContent, stackName) => this.handleSampleCardClick(devfileContent, stackName)} />
         </PageSection>
       </React.Fragment>
     );

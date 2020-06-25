@@ -14,6 +14,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { load } from 'js-yaml';
 import {
+  Button,
   Form,
   PageSection,
   PageSectionVariants,
@@ -28,6 +29,7 @@ import InfrastructureNamespaceFormGroup from './InfrastructureNamespace';
 
 type Props = {
   workspaces: WorkspaceStore.WorkspacesState,
+  onDevfile: (devfile: che.WorkspaceDevfile, InfrastructureNamespace: string | undefined) => Promise<void>;
 };
 type State = {
   isTemporary: boolean;
@@ -76,17 +78,12 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
   }
 
   private handleInfrastructureNamespaceChange(namespace: che.KubernetesNamespace): void {
-    console.log('>>> infrastructure namespace', namespace);
     this.setState({ namespace });
   }
 
   private handleWorkspaceNameChange(name: string): void {
-    console.log('>>> workspace name changed', name);
     const devfile = this.state.devfile;
 
-    // if (Object.keys(devfile.metadata).includes('generateName')) {
-    //   delete devfile.metadata.generateName;
-    // }
     devfile.metadata.name = name;
 
     this.setState({ devfile });
@@ -122,8 +119,6 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
   }
 
   private handleDevfileChange(devfile: che.WorkspaceDevfile, isValid: boolean): void {
-    console.log('>>> edited devfile', devfile);
-    console.log('>>> isValid', isValid);
     if (!isValid) {
       return;
     }
@@ -147,6 +142,10 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
 
   private updateEditor(devfile: che.WorkspaceDevfile): void {
     this.devfileEditorRef.current?.updateContent(devfile);
+  }
+
+  private handleCreate(): Promise<void> {
+    return this.props.onDevfile(this.state.devfile, this.state.namespace?.name);
   }
 
   public render(): React.ReactElement {
@@ -192,6 +191,14 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
             decorationPattern='location[ \t]*(.*)[ \t]*$'
             onChange={(devfile, isValid) => this.handleDevfileChange(devfile, isValid)}
           />
+        </PageSection>
+        <PageSection variant={PageSectionVariants.light}>
+          <Button
+            variant="primary"
+            onClick={() => this.handleCreate()}
+          >
+            Create & Open
+          </Button>
         </PageSection>
       </React.Fragment>
     );
