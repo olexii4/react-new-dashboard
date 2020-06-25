@@ -30,7 +30,7 @@ export interface RequestBrandingAction {
 export interface ReceivedBrandingAction {
   isLoading: boolean;
   type: 'RECEIVED_BRANDING';
-  branding: BrandingData;
+  data: BrandingData;
 }
 
 type KnownActions =
@@ -74,7 +74,7 @@ export const actionCreators: ActionCreators = {
         dispatch({
           type: 'RECEIVED_BRANDING',
           isLoading: false,
-          branding,
+          data: branding,
         });
         return branding;
       } catch (e) {
@@ -103,7 +103,7 @@ export const reducer: Reducer<State> = (state: State | undefined, incomingAction
     case 'RECEIVED_BRANDING':
       return Object.assign({}, state, {
         isLoading: false,
-        branding: action.branding,
+        data: action.data,
       });
     default:
       return state;
