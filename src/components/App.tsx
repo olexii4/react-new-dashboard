@@ -27,7 +27,7 @@ type RouteItem = {
 
 // todo improve fallback
 const fallback = <div>loading....</div>;
-const GetStartedPage = React.lazy(() => import('./app-nav-menu/getting-started/GetStartedPage'));
+const GetStartedPage = React.lazy(() => import('./app-nav-menu/get-started/GetStartedPage'));
 const WorkspacesList = React.lazy(() => import('./app-nav-menu/workspaces/WorkspacesList'));
 const Administration = React.lazy(() => import('./app-nav-menu/administration/Administration'));
 const WorkspaceDetails = React.lazy(() => import('./workspace-details/WorkspaceDetails'));
