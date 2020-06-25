@@ -16,10 +16,10 @@ import thunk from 'redux-thunk';
 import createMockStore from 'redux-mock-store';
 import { render, screen, RenderResult, fireEvent } from '@testing-library/react';
 import mockAxios from 'axios';
-import SamplesListGallery from '../get-started-tab/SamplesListGallery';
+import SamplesListGallery from '../SamplesListGallery';
 import { Provider } from 'react-redux';
-import { AppState } from '../../../../store';
-import mockMetadata from './devfileMetadata.json';
+import { AppState } from '../../../../../store';
+import mockMetadata from '../../__tests__/devfileMetadata.json';
 
 describe('Samples List Gallery', () => {
 

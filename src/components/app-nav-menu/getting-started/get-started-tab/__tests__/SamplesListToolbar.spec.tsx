@@ -16,10 +16,10 @@ import createMockStore from 'redux-mock-store';
 import { RenderResult, render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
-import { AppState } from '../../../../store';
-import SamplesListToolbar from '../get-started-tab/SamplesListToolbar';
-import mockMetadata from './devfileMetadata.json';
-import * as DevfileFilterStore from '../../../../store/DevfileFilters';
+import { AppState } from '../../../../../store';
+import SamplesListToolbar from '../SamplesListToolbar';
+import mockMetadata from '../../__tests__/devfileMetadata.json';
+import * as DevfileFilterStore from '../../../../../store/DevfileFilters';
 
 describe('Samples List Toolbar', () => {
 

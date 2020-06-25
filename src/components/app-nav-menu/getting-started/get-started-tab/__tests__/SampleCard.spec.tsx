@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { render, screen, RenderResult, fireEvent } from '@testing-library/react';
-import { SampleCard } from '../get-started-tab/SampleCard';
+import { SampleCard } from '../SampleCard';
 
 describe('Devfile Metadata Card', () => {
 
