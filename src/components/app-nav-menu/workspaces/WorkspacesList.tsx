@@ -20,7 +20,7 @@ import { Table, TableBody, TableHeader } from '@patternfly/react-table';
 import WorkspaceIndicator from './workspace-indicator/WorkspaceIndicator';
 import WorkspaceStatus from './actions/WorkspaceStatus';
 import DeleteWorkspace from './actions/DeleteWorkspace';
-import { BrandingState } from '../../../store/Branding';
+import * as BrandingStore from '../../../store/Branding';
 import { Debounce } from '../../../services/debounce/Debounce';
 import { container } from '../../../inversify.config';
 
@@ -31,7 +31,7 @@ const SECTION_THEME = PageSectionVariants.light;
 // At runtime, Redux will merge together...
 type WorkspacesProps = {
   workspaces: WorkspacesStore.WorkspacesState;
-  branding: { branding: BrandingState };
+  branding: BrandingStore.State;
 } // ... state we've requested from the Redux store
   & WorkspacesStore.ActionCreators // ... plus action creators we've requested
   & { history: any };
@@ -90,7 +90,7 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
       ]
     })) || [];
 
-    const { docs: { workspace }} = this.props.branding.branding.branding as any;
+    const { workspace } = this.props.branding.data.docs;
 
     return (
       <React.Fragment>

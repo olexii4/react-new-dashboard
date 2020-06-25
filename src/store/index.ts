@@ -14,12 +14,12 @@ import * as Workspaces from './Workspaces';
 import * as DevfileRegistries from './DevfileRegistries';
 import * as DevfileMetadataFilter from './DevfileFilters';
 import * as InfrastructureNamespace from './InfrastructureNamespace';
-import brandingReducer from './Branding';
+import * as Branding from './Branding';
 import userReducer from './User';
 
 // the top-level state object
 export interface AppState {
-  branding: any;
+  branding: Branding.State;
   devfileMetadataFilter: DevfileMetadataFilter.MetadataFilterState;
   devfileRegistries: DevfileRegistries.State;
   infrastructureNamespace: InfrastructureNamespace.State;
@@ -31,7 +31,7 @@ export const reducers = {
   workspaces: Workspaces.reducer,
   devfileRegistries: DevfileRegistries.reducer,
   devfileMetadataFilter: DevfileMetadataFilter.reducer,
-  branding: brandingReducer,
+  branding: Branding.reducer,
   user: userReducer,
   infrastructureNamespace: InfrastructureNamespace.reducer,
 };

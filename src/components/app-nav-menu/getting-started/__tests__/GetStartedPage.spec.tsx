@@ -14,6 +14,7 @@ import React from 'react';
 import { createHashHistory } from 'history';
 import { render, screen } from '@testing-library/react';
 import { GetStartedPage } from '../GetStartedPage';
+import { BrandingData } from '../../../../services/bootstrap/branding.constant';
 
 jest.mock('../get-started-tab/SamplesListTab', () => {
   return function DummyTab(): React.ReactElement {
@@ -33,13 +34,10 @@ describe('Get Started page', () => {
   beforeEach(() => {
     const history = createHashHistory();
     const branding = {
-      branding: {
-        branding: {
-          branding: {
-            name: 'test'
-          }
-        }
-      }
+      isLoading: false,
+      data: {
+        name: 'test'
+      } as BrandingData
     };
     render(<GetStartedPage branding={branding} history={history} />);
 

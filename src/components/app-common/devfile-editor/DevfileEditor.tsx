@@ -14,7 +14,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../../store';
 import * as DevfileRegistriesStore from '../../../store/DevfileRegistries';
-import { BrandingState } from '../../../store/Branding';
+import * as BrandingStore from '../../../store/Branding';
 import { DisposableCollection } from '../../../services/disposable';
 import * as monacoConversion from 'monaco-languageclient/lib/monaco-converter';
 import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
@@ -43,7 +43,7 @@ const MONACO_CONFIG: Monaco.IEditorConstructionOptions = {
 
 type Props = {
   devfileRegistries: DevfileRegistriesStore.State;
-  branding: { branding: BrandingState };
+  branding: BrandingStore.State;
 } // Redux store
   & {
     devfile: che.WorkspaceDevfile;
@@ -177,7 +177,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
   }
 
   public render(): React.ReactElement {
-    const href = (this.props.branding.branding.branding.docs as any).devfile;
+    const href = this.props.branding.data.docs.devfile;
     const { errorMessage } = this.state;
 
     return (

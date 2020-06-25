@@ -21,7 +21,7 @@ import {
   TabContent,
   Title,
 } from '@patternfly/react-core';
-import { BrandingState } from '../../../store/Branding';
+import * as BrandingStore from '../../../store/Branding';
 import { AppState } from '../../../store';
 
 const SamplesListTab = React.lazy(() => import('./get-started-tab/SamplesListTab'));
@@ -32,7 +32,7 @@ const GET_STARTED_TAB_KEY = '#get-started';
 const CUSTOM_WORKSPACE_TAB_KEY = '#custom-workspace';
 
 type Props = {
-  branding: BrandingState;
+  branding: BrandingStore.State;
 } & { history: History };
 
 type State = {
@@ -59,7 +59,7 @@ export class GetStartedPage extends React.PureComponent<Props, State> {
   }
 
   private getTitle(): string {
-    const productName = (this.props.branding.branding.branding as any).name;
+    const productName = this.props.branding.data.name;
     const titles = {
       [GET_STARTED_TAB_KEY]: `Getting Started with ${productName}`,
       [CUSTOM_WORKSPACE_TAB_KEY]: 'Create Custom Workspace',

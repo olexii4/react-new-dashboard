@@ -10,36 +10,102 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { IBranding } from '../services/bootstrap/CheBranding';
+import { Action, Reducer } from 'redux';
+import { fetchBranding } from '../services/assets/branding';
+import { AppThunkAction, AppState } from '.';
+import { BRANDING_DEFAULT, BrandingData } from '../services/bootstrap/branding.constant';
 
-export interface BrandingState {
-  branding: IBranding;
+const ASSET_PREFIX = './assets/branding/';
+
+export interface State {
+  isLoading: boolean;
+  data: BrandingData;
 }
 
-export interface BrandingAction extends BrandingState {
-  type: 'SET_BRANDING' | string;
+export interface RequestBrandingAction {
+  isLoading: boolean;
+  type: 'REQUEST_BRANDING';
 }
 
-export const setBranding = (branding: IBranding): BrandingAction => {
-  return {
-    type: 'SET_BRANDING',
-    branding: branding
-  };
+export interface ReceivedBrandingAction {
+  isLoading: boolean;
+  type: 'RECEIVED_BRANDING';
+  branding: BrandingData;
+}
+
+type KnownActions =
+  RequestBrandingAction
+  | ReceivedBrandingAction;
+
+export type ActionCreators = {
+  requestBranding: () => any;
 };
 
-const unloadedState: BrandingState = { branding: {} };
+export const actionCreators: ActionCreators = {
 
-const brandingReducer = (state: { branding: IBranding } | undefined = { branding: {} }, action: BrandingAction): BrandingState => {
+  requestBranding: (): AppThunkAction<KnownActions> =>
+    async (dispatch, getState): Promise<any> => {
+      const appState: AppState = getState();
+      if (!appState || !appState.branding) {
+        // todo throw a nice error
+        throw Error('something unexpected happened.');
+      }
+
+      const url = `${ASSET_PREFIX}product.json?id=` + Math.floor((Math.random() * 100) + 1);
+
+      dispatch({
+        type: 'REQUEST_BRANDING',
+        isLoading: true
+      });
+
+      try {
+        const branding = await fetchBranding(url);
+
+        // resolve asset paths
+        const assetTitles: Array<keyof BrandingData> = ['logoFile', 'logoTextFile', 'favicon', 'loader'];
+        assetTitles.forEach(asset => {
+          const path = branding[asset] as string;
+          if (path.startsWith(ASSET_PREFIX)) {
+            return;
+          }
+          branding[asset] = ASSET_PREFIX + branding[asset];
+        });
+
+        dispatch({
+          type: 'RECEIVED_BRANDING',
+          isLoading: false,
+          branding,
+        });
+        return branding;
+      } catch (e) {
+        throw new Error(`Failed to request branding data by URL: ${url}`);
+      }
+    },
+
+};
+
+const unloadedState: State = {
+  isLoading: false,
+  data: BRANDING_DEFAULT,
+};
+
+export const reducer: Reducer<State> = (state: State | undefined, incomingAction: Action): State => {
   if (state === undefined) {
     return unloadedState;
   }
 
+  const action = incomingAction as KnownActions;
   switch (action.type) {
-    case 'SET_BRANDING':
-      return { branding: action.branding };
+    case 'REQUEST_BRANDING':
+      return Object.assign({}, state, {
+        isLoading: true,
+      });
+    case 'RECEIVED_BRANDING':
+      return Object.assign({}, state, {
+        isLoading: false,
+        branding: action.branding,
+      });
+    default:
+      return state;
   }
-
-  return state;
 };
-
-export default brandingReducer;

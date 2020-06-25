@@ -10,7 +10,7 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-export type IBranding = {
+export type BrandingData = {
   title: string;
   name: string;
   logoFile: string;
@@ -26,13 +26,13 @@ export type IBranding = {
     configName: string;
     name: string;
   };
-  docs: IBrandingDocs;
-  workspace: IBrandingWorkspace;
-  footer: IBrandingFooter;
-  configuration: IBrandingConfiguration;
+  docs: BrandingDocs;
+  workspace: BrandingWorkspace;
+  footer: BrandingFooter;
+  configuration: BrandingConfiguration;
 }
 
-export type IBrandingDocs = {
+export type BrandingDocs = {
   devfile: string;
   workspace: string;
   factory: string;
@@ -43,18 +43,18 @@ export type IBrandingDocs = {
   faq?: string;
 }
 
-export type IBrandingWorkspace = {
+export type BrandingWorkspace = {
   priorityStacks: Array<string>;
   defaultStack: string
 }
 
-export type IBrandingFooter = {
+export type BrandingFooter = {
   content: string;
   links: Array<{ title: string; location: string }>;
   email: { title: string; address: string; subject: string } | null;
 }
 
-export type IBrandingConfiguration = {
+export type BrandingConfiguration = {
   menu: {
     disabled: string[];
   };
@@ -67,7 +67,7 @@ export type IBrandingConfiguration = {
   };
 }
 
-export const BRANDING_DEFAULT: IBranding = {
+export const BRANDING_DEFAULT: BrandingData = {
   title: 'new Eclipse Che',
   name: 'new Eclipse Che',
   logoFile: 'che-logo.svg',

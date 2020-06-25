@@ -23,7 +23,6 @@ import {
 } from '../services/api/workspace';
 import { container } from '../inversify.config';
 import { CheJsonRpcApi } from '../services/json-rpc/JsonRpcApiFactory';
-import { CheBranding } from '../services/bootstrap/CheBranding';
 import { JsonRpcMasterApi } from '../services/json-rpc/JsonRpcMasterApi';
 
 // This state defines the type of data maintained in the Redux store.
@@ -85,11 +84,7 @@ export enum WorkspaceStatus {
 }
 
 const cheJsonRpcApi = container.get(CheJsonRpcApi);
-const cheBranding = container.get(CheBranding);
 let jsonRpcMasterApi: JsonRpcMasterApi;
-
-// TODO change this test implementation to the real one
-const jsonRpcApiLocation = new URL(window.location.href).origin.replace('http', 'ws') + cheBranding.all.websocketContext;
 
 export type ActionCreators = {
   requestWorkspaces: () => any;
@@ -111,12 +106,17 @@ export type ActionCreators = {
 export const actionCreators: ActionCreators = {
 
   requestWorkspaces: (): AppThunkAction<KnownAction> => (dispatch, getState): Promise<Array<che.Workspace>> => {
-    // Lazy initialization of jsonRpcMasterApi
-    if (!jsonRpcMasterApi) {
-      jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
-    }
     const appState = getState();
+
     if (appState && appState.workspaces) {
+
+      // Lazy initialization of jsonRpcMasterApi
+      if (!jsonRpcMasterApi) {
+        // TODO change this test implementation to the real one
+        const jsonRpcApiLocation = new URL(window.location.href).origin.replace('http', 'ws') + appState.branding.data.websocketContext;
+        jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
+      }
+
       const promise = fetchWorkspaces();
       promise.then(workspaces => {
         jsonRpcMasterApi.unSubscribeAllWorkspaceStatus();
@@ -225,13 +225,17 @@ export const actionCreators: ActionCreators = {
     infrastructureNamespace: string | undefined,
     attributes: { [key: string]: string } = {},
   ): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
-    // Lazy initialization of jsonRpcMasterApi
-    if (!jsonRpcMasterApi) {
-      jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
-    }
 
     const appState = getState();
     if (appState && appState.workspaces) {
+
+      // Lazy initialization of jsonRpcMasterApi
+      if (!jsonRpcMasterApi) {
+        // TODO change this test implementation to the real one
+        const jsonRpcApiLocation = new URL(window.location.href).origin.replace('http', 'ws') + appState.branding.data.websocketContext;
+        jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
+      }
+
       const promise = createWorkspaceFromDevfile(
         devfile,
         cheNamespace,

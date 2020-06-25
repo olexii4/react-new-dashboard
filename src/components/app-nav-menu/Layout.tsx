@@ -25,9 +25,8 @@ const NavMenuComponent = (props: { items: { to: string; label?: string }[]; chil
   return (
     <React.Fragment>
       <NavMenu user={state.user.user.user}
-        logoURL={state.branding.branding.branding.logoURL}
+        logoURL={state.branding.data.logoFile}
         workspaces={state.workspaces.workspaces}
-        creationLink={state.branding.branding.branding.workspace.creationLink}
         items={props.items}>{props.children}</NavMenu>
     </React.Fragment>);
 };
