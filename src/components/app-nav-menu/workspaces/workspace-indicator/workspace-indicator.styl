@@ -1,24 +1,27 @@
 .workspace-status-indicator
   display inline-block
-  width 21px
-  line-height 20px
-  max-height 20px
-  height 20px
-  text-align left
+  position relative
+  overflow hidden
+  width 26px
+  height 19px
+  vertical-align baseline
   & > *
     display inline
-  .fa-circle
+  i.codicon
+    top 3px
+    font-size 20px
+    position relative
+    left -4px
+  .codicon-circle-filled
     color #00c183
   .workspace-status-spinner
     display inline-block
     line-height inherit
-    vertical-align middle
   .workspace-status-spinner .spinner
     width 20px
-    height 20px
-    font-size 8px
-    padding-bottom 1px
-    padding-right 4px
+    height 19px
+    margin-left -1px
+    margin-top 3px
     div
       width 2px
       border-radius 0

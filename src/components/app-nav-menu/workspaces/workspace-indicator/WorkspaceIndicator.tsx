@@ -38,12 +38,12 @@ class WorkspaceIndicator extends React.PureComponent<{ status: string | undefine
 
     const iconClass = (status: string | undefined): string => {
       if (status === ERROR) {
-        return 'fa fa-circle workspace-status-error';
+        return 'codicon codicon-circle-filled workspace-status-error';
       }
       if (status === RUNNING) {
-        return 'fa fa-circle';
+        return 'codicon codicon-circle-filled';
       }
-      return 'fa fa-circle-o';
+      return 'codicon codicon-circle-outline';
     };
 
     return (

@@ -46,7 +46,7 @@ class WorkspaceStatus extends React.PureComponent<WorkspaceStatusProps, { isDebo
 
   public render(): React.ReactElement {
     const tooltipContent = (): string => this.props.status === STOPPED ? 'Run Workspace' : 'Stop workspace';
-    const iconClass = (): string => this.props.status === STOPPED ? 'fa fa-play' : 'fa fa-stop';
+    const iconClass = (): string => this.props.status === STOPPED ? 'codicon codicon-play' : 'codicon codicon-debug-stop';
 
     return (
       <span key={`wrks-status-${this.props.workspaceId}`}

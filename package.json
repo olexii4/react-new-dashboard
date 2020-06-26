@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/che-incubator/che-dashboard-next.git"
   },
-  "author": "Oleksii Orel",
+  "author": "Oleksii Orel (oorel@redhat.com)",
   "license": "EPL-2.0",
   "bugs": {
     "url": "https://github.com/che-incubator/che-dashboard-next/issues"

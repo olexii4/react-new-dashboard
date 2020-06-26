@@ -14,13 +14,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createHashHistory } from 'history';
+
 import '@patternfly/react-core/dist/styles/base.css';
+import 'monaco-editor-core/esm/vs/base/browser/ui/codiconLabel/codicon/codicon.css';
 
 import configureStore from './store/configureStore';
 import App from './components/App';
 import { PreloadData } from './services/bootstrap/PreloadData';
 
-import '../node_modules/@patternfly/patternfly/patternfly-addons.css';
+import '@patternfly/patternfly/patternfly-addons.css';
 
 const history = createHashHistory();
 // get the application-wide store instance, with state from the server where available

@@ -59,7 +59,7 @@ describe('Devfile Metadata Card', () => {
     const cardIcon = screen.queryByAltText(metadata.displayName);
     expect(cardIcon).toBeFalsy();
 
-    const blankIcon = container.querySelector('.cheico-type-blank');
+    const blankIcon = container.querySelector('.codicon-symbol-method');
     expect(blankIcon).toBeTruthy();
   });
 

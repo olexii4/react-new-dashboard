@@ -54,7 +54,7 @@ class DeleteWorkspace extends React.PureComponent<DeleteWorkspaceProps, { isDebo
           this.onActionClick();
         }}>
         <Tooltip entryDelay={200} exitDelay={200} content='Delete Workspace'>
-          <i className='fa fa-trash'>&nbsp;</i>
+          <i className='codicon codicon-trash'>&nbsp;</i>
         </Tooltip>
       </span>
     );

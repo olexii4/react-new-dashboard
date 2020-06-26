@@ -103,8 +103,10 @@ export class NavMenu extends React.PureComponent<any, any> {
               <Link to={item.to}><i className={item.ico}>&nbsp;&nbsp;</i>{item.label}</Link>
             </NavItem>
           ))}
+        </NavList>
+        <NavList>
           <NavGroup title='RECENT WORKSPACES'>
-            <NavItem><Link to='/'><i className='fa fa-plus'>&nbsp;&nbsp;</i>
+            <NavItem><Link to='/'><i className='codicon codicon-add'>&nbsp;&nbsp;</i>
                             Create Workspace
                         </Link></NavItem>
             {this.props.workspaces.map((workspace: any, index: number) =>
@@ -140,7 +142,7 @@ export class NavMenu extends React.PureComponent<any, any> {
 
     const avatar = this.buildAvatar();
     const headerTools = (
-    <PageHeaderTools>
+      <PageHeaderTools>
         <PageHeaderToolsGroup>
           <PageHeaderToolsItem>
             <Dropdown

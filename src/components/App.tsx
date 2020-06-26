@@ -34,10 +34,10 @@ const WorkspaceDetails = React.lazy(() => import('./workspace-details/WorkspaceD
 const IdeIframe = React.lazy(() => import('./ide-iframe/IdeIframe'));
 
 const items: RouteItem[] = [
-  { to: '/get-started', component: GetStartedPage, label: 'Get Started Page', ico: 'fa fa-plus' },
+  { to: '/get-started', component: GetStartedPage, label: 'Get Started Page', ico: 'codicon codicon-add' },
   { to: '/', component: GetStartedPage },
-  { to: '/workspaces', component: WorkspacesList, label: 'Workspaces', ico: 'chefont cheico-workspace' },
-  { to: '/administration', component: Administration, label: 'Administration', ico: 'material-design icon-ic_settings_24px' },
+  { to: '/workspaces', component: WorkspacesList, label: 'Workspaces', ico: 'codicon codicon-symbol-method' },
+  { to: '/administration', component: Administration, label: 'Administration', ico: 'codicon codicon-settings-gear' },
   { to: '/workspace/:namespace/:workspaceName/', component: WorkspaceDetails },
   { to: '/ide/:namespace/:workspaceName/', component: IdeIframe },
 ];
