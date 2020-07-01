@@ -37,12 +37,12 @@ i.codicon-symbol-method
     a:hover
       background-color var(--pf-c-nav--m-dark__item--m-current--BackgroundColor)
 
-.pf-c-page .pf-c-page__header.nav-show
-  min-height 60px
-  max-height 60px
+.pf-c-page .pf-c-page__header.header-show
+  min-height 57px
+  max-height 57px
   animation-name showHeader
-  animation-duration .2s
-  animation-timing-function ease-in
+  animation-duration .1s
+  animation-timing-function linear
 
 @keyframes showHeader
   0%
@@ -51,22 +51,22 @@ i.codicon-symbol-method
     max-height 0
   100%
     overflow visible
-    min-height 60px
-    max-height 60px
+    min-height 57px
+    max-height 57px
 
-.pf-c-page .pf-c-page__header.nav-hide
+.pf-c-page .pf-c-page__header.header-hide
   overflow hidden
   min-height 0
   max-height 0
   animation-name hideHeader
-  animation-duration .2s
-  animation-timing-function ease-in-out
+  animation-duration .1s
+  animation-timing-function linear
 
 @keyframes hideHeader
   0%
     overflow visible
-    min-height 60px
-    max-height 60px
+    min-height 57px
+    max-height 57px
   100%
     overflow hidden
     min-height 0

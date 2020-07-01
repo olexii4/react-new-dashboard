@@ -62,7 +62,7 @@ export class NavMenu extends React.PureComponent<any, any> {
 
     const currentTheme = window.sessionStorage.getItem('theme');
     const theme = currentTheme ? currentTheme : DARK;
-    this.state = { isDropdownOpen: false, activeItem: '/', theme };
+    this.state = { isDropdownOpen: false, activeItem: '/', isNavOpen: true, isHeaderOpen: true, theme };
 
     const keycloak = container.get(Keycloak);
 
@@ -82,6 +82,18 @@ export class NavMenu extends React.PureComponent<any, any> {
     this.onNavSelect = (result: any): void => {
       this.setState({ activeItem: result.itemId });
     };
+    this.onNavToggle = () => {
+      this.setState({ isNavOpen: !this.state.isNavOpen });
+    };
+    this.handleMessage = (event): void => {
+      if (event.data === 'show-navbar') {
+        this.setState({ isHeaderOpen: true });
+        this.setState({ isNavOpen: true });
+      } else if (event.data === 'hide-navbar') {
+        this.setState({ isHeaderOpen: false });
+        this.setState({ isNavOpen: false });
+      }
+    };
   }
 
   componentDidMount(): void {
@@ -93,7 +105,7 @@ export class NavMenu extends React.PureComponent<any, any> {
   }
 
   render(): React.ReactElement {
-    const { isDropdownOpen, activeItem, theme } = this.state;
+    const { isDropdownOpen, activeItem, isNavOpen, isHeaderOpen, theme } = this.state;
     // create a Sidebar
     const PageNav = (
       <Nav onSelect={this.onNavSelect} aria-label='Nav' theme={theme}>
@@ -164,10 +176,11 @@ export class NavMenu extends React.PureComponent<any, any> {
         {avatar}
       </PageHeaderTools>
     );
-    const Logo = <Brand src={`${this.props.logoURL}`} alt='' />;
-    const Header = (
+    const logo = <Brand src={`${this.props.logoURL}`} alt='' />;
+    const header = (
       <PageHeader
-        logo={Logo}
+        className={isHeaderOpen ? 'header-show' : 'header-hide'}
+        logo={logo}
         logoProps={{ href: 'https://www.eclipse.org/che/', target: '_blank' }}
         headerTools={headerTools}
         showNavToggle={true}
@@ -175,9 +188,9 @@ export class NavMenu extends React.PureComponent<any, any> {
       />
     );
 
-    const Sidebar = <PageSidebar nav={PageNav} theme={theme} />;
+    const Sidebar = <PageSidebar nav={PageNav} theme={theme} isNavOpen={isNavOpen} />;
 
-    return (<Page header={Header} sidebar={Sidebar} isManagedSidebar={true}>
+    return (<Page header={header} sidebar={Sidebar} isManagedSidebar={false}>
       <PageSection variant={PageSectionVariants.default} padding={{ default: 'noPadding' }}>
         {this.props.children}
       </PageSection>
