@@ -191,9 +191,7 @@ export class NavMenu extends React.PureComponent<any, any> {
     const Sidebar = <PageSidebar nav={PageNav} theme={theme} isNavOpen={isNavOpen} />;
 
     return (<Page header={header} sidebar={Sidebar} isManagedSidebar={false}>
-      <PageSection variant={PageSectionVariants.default} padding={{ default: 'noPadding' }}>
-        {this.props.children}
-      </PageSection>
+      {this.props.children}
     </Page>);
   }
 
