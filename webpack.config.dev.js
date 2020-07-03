@@ -82,6 +82,19 @@ module.exports = env => {
             origin: proxyTarget
           }
         },
+        '/dashboard': {
+          target: proxyTarget,
+          secure: false,
+          changeOrigin: true,
+          headers: {
+            origin: proxyTarget
+          },
+          bypass(req) {
+            if (req.url === '/dashboard/assets/branding/loader.svg') {
+              return '/assets/branding/loader.svg';
+            }
+          },
+        },
       },
     },
     watchOptions: {

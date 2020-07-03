@@ -113,12 +113,12 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
   }
 
   public updateContent(devfile: che.WorkspaceDevfile): void {
-    if (this.editor) {
-      this.skipNextOnChange = true;
-
-      const doc = this.editor.getModel();
-      doc.setValue(this.stringify(devfile));
+    if (!this.editor) {
+      return;
     }
+    this.skipNextOnChange = true;
+    const doc = this.editor.getModel();
+    doc.setValue(this.stringify(devfile));
   }
 
   private stringify(devfile: che.WorkspaceDevfile): string {

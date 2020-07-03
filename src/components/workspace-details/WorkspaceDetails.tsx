@@ -29,7 +29,7 @@ import WorkspaceIndicator from '../app-nav-menu/workspaces/workspace-indicator/W
 import CheProgress from '../app-common/progress/progress';
 import { AppState } from '../../store';
 import * as WorkspacesStore from '../../store/Workspaces';
-import DevfileEditor from '../app-common/devfile-editor/DevfileEditor';
+import DevfileEditor, { DevfileEditor as Editor } from '../app-common/devfile-editor/DevfileEditor';
 
 import './workspace-details.styl';
 
@@ -45,12 +45,13 @@ type WorkspaceDetailsState = { activeTabKey: number; workspace: che.Workspace; a
 
 class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, WorkspaceDetailsState> {
   private timeoutId: any;
-  private cancelFn: Function;
   private alert: { variant?: 'success' | 'danger'; title?: string } = {};
   private showAlert: (variant: 'success' | 'danger', title: string, timeDelay?: number) => void;
   private hideAlert: () => void;
   private readonly handleTabClick: (event: any, tabIndex: any) => void;
   private readonly cancelChanges: (workspaceId: string | undefined) => void;
+
+  private devfileEditorRef: React.RefObject<Editor>;
 
   constructor(props: WorkspaceDetailsProps) {
     super(props);
@@ -93,6 +94,11 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
       }, timeDelay ? timeDelay : 2000);
     };
     this.hideAlert = (): void => this.setState({ alertVisible: false });
+    this.devfileEditorRef = React.createRef<Editor>();
+  }
+
+  private updateEditor(devfile: che.WorkspaceDevfile): void {
+    this.devfileEditorRef.current?.updateContent(devfile);
   }
 
   public render(): React.ReactElement {
@@ -137,6 +143,7 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
               <TextContent className='workspace-details-editor'>
                 <Text component='h3' className='label'>Workspace</Text>
                 <DevfileEditor
+                  ref={this.devfileEditorRef}
                   devfile={workspace.devfile}
                   decorationPattern='location[ \t]*(.*)[ \t]*$'
                   onChange={(devfile, isValid) => {
@@ -145,9 +152,7 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
                 />
                 {(!this.state.isDevfileValid || this.state.hasRequestErrors) && (
                   <Button onClick={(): void => {
-                    if (this.cancelFn) {
-                      this.cancelFn();
-                    }
+                    this.updateEditor(workspace.devfile);
                   }} variant='secondary' className='cancel-button'>
                     Cancel
                   </Button>

@@ -46,9 +46,9 @@ export class PreloadData {
 
     const settings = await this.updateWorkspaceSettings();
     await this.updateRegistriesMetadata(settings);
+    await this.updateDevfileSchema();
 
     this.updateDevfileMetadataFilters();
-    this.updateDevfileSchema();
   }
 
   private async updateBranding(): Promise<void> {
