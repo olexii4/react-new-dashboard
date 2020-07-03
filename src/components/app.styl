@@ -1,34 +1,31 @@
 .pf-c-form
   --pf-c-form--m-horizontal__group-label--md--GridColumnWidth: 11rem
 
-.main-page-loader
-  font-family: Helvetica, Arial, sans-serif
-  font-size: 24px
-  color: #fff
-  background-color: #000
-  position: absolute
-  top: 0
-  bottom: 0
-  left: 0
-  right: 0
-  margin: auto
-  z-index: 80
-
-.main-page-loader .ide-page-loader-content img
-  position: fixed
-  top: 0
-  bottom: 0
-  left: 0
-  right: 0
-  margin: auto
-
-.ide-page-loader-content img
-  max-width: 140px
-  max-height: 140px
-  animation-name: opacity
-  animation-duration: 2s
-  animation-iteration-count: infinite
-  animation-timing-function: ease-in-out
+div.main-page-loader
+  font-family Helvetica, Arial, sans-serif
+  font-size 24px
+  color #fff
+  background-color #000
+  position absolute
+  top 0
+  bottom 0
+  left 0
+  right 0
+  margin auto
+  z-index 80
+  .ide-page-loader-content img
+    position fixed
+    top 0
+    bottom 0
+    left 0
+    right 0
+    margin auto
+    max-width 140px
+    max-height 140px
+    animation-name opacity
+    animation-duration 2s
+    animation-iteration-count infinite
+    animation-timing-function ease-in-out
 
 @keyframes opacity
   0%, 100%

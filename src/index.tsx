@@ -27,10 +27,10 @@ import '@patternfly/patternfly/patternfly-addons.css';
 const history = createHashHistory();
 // get the application-wide store instance, with state from the server where available
 const store = configureStore(history);
+
+const ROOT = document.querySelector('.ui-container');
 // preload app data
 new PreloadData(store).init().then(() => {
   console.log('UD: preload data complete successfully.');
+  ReactDOM.render(<Provider store={store}><App history={history} /></Provider>, ROOT);
 });
-
-const ROOT = document.querySelector('.ui-container');
-ReactDOM.render(<Provider store={store}><App history={history} /></Provider>, ROOT);
