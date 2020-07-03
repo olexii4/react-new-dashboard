@@ -20,8 +20,10 @@ const IdeIframe = (props: RouteComponentProps<{ namespace: string; workspaceName
 
   return (
     <React.Fragment>
-      <iframe className='ide-page-frame'
-        src={`/workspace-loader/${namespace}/${workspaceName}?uid=${randVal}`} />
+      <div style="height: 100%">
+        <iframe className='ide-page-frame'
+          src={`/workspace-loader/${namespace}/${workspaceName}?uid=${randVal}`} />
+      </div>
     </React.Fragment>);
 };
 
