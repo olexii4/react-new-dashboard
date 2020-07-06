@@ -13,6 +13,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { History } from 'history';
 import {
   PageSection,
   PageSectionVariants,
@@ -35,15 +36,21 @@ import './workspace-details.styl';
 
 const SECTION_THEME = PageSectionVariants.light;
 
-type WorkspaceDetailsProps =
+type Props =
   WorkspacesStore.WorkspacesState // ... state we've requested from the Redux store
   & WorkspacesStore.ActionCreators // ... plus action creators we've requested
-  & { history: any } // ... plus history
+  & { history: History } // ... plus history
   & RouteComponentProps<{ namespace: string; workspaceName: string }>; // incoming parameters
 
-type WorkspaceDetailsState = { activeTabKey: number; workspace: che.Workspace; alertVisible: boolean; isDevfileValid: boolean; hasRequestErrors: boolean };
+type State = {
+  activeTabKey: number;
+  workspace: che.Workspace;
+  alertVisible: boolean;
+  isDevfileValid: boolean;
+  hasRequestErrors: boolean;
+};
 
-class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, WorkspaceDetailsState> {
+class WorkspaceDetails extends React.PureComponent<Props, State> {
   private timeoutId: any;
   private alert: { variant?: 'success' | 'danger'; title?: string } = {};
   private showAlert: (variant: 'success' | 'danger', title: string, timeDelay?: number) => void;
@@ -53,7 +60,7 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
 
   private devfileEditorRef: React.RefObject<Editor>;
 
-  constructor(props: WorkspaceDetailsProps) {
+  constructor(props: Props) {
     super(props);
 
     const { namespace, workspaceName } = this.props.match.params;
@@ -130,7 +137,8 @@ class WorkspaceDetails extends React.PureComponent<WorkspaceDetailsProps, Worksp
           <TextContent>
             <Text component='h1'>
               Workspaces&nbsp;<b>&nbsp;&gt;&nbsp;</b>&nbsp;{workspaceName}&nbsp;
-                            <WorkspaceIndicator status={workspace.status} /><span>{workspace.status}</span>
+              <WorkspaceIndicator status={workspace.status} />
+              <span>{workspace.status}</span>
             </Text>
           </TextContent>
         </PageSection>

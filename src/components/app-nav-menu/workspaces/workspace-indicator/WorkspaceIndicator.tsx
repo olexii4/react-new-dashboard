@@ -20,7 +20,11 @@ const STARTING = 'STARTING';
 const RUNNING = 'RUNNING';
 const STOPPING = 'STOPPING';
 
-class WorkspaceIndicator extends React.PureComponent<{ status: string | undefined }> {
+type Props = {
+  status: string | undefined;
+};
+
+class WorkspaceIndicator extends React.PureComponent<Props> {
 
   public render(): React.ReactElement {
 
@@ -47,9 +51,9 @@ class WorkspaceIndicator extends React.PureComponent<{ status: string | undefine
     };
 
     return (
-      <React.Fragment>
-        <span className='workspace-status-indicator'><i className={iconClass(this.props.status)} /></span>
-      </React.Fragment>
+      <span className='workspace-status-indicator'>
+        <i className={iconClass(this.props.status)} />
+      </span>
     );
   }
 }
