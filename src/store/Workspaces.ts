@@ -11,7 +11,7 @@
  */
 
 import { Action, Reducer } from 'redux';
-import { AppThunkAction } from './';
+import { AppThunkAction, AppState } from './';
 import {
   createWorkspaceFromDevfile,
   deleteWorkspace,
@@ -99,6 +99,9 @@ export type ActionCreators = {
     attributes: { [key: string]: string },
   ) => any;
   requestSettings: () => any;
+
+  getById: (id: string) => any;
+  getByQualifiedName: (cheNamespace: string, name: string) => any;
 };
 
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -261,6 +264,32 @@ export const actionCreators: ActionCreators = {
     // todo what kind of error?
     return Promise.reject(new Error('something went wrong with "Workspaces" state.'));
   },
+
+  getById: (id: string): AppThunkAction<KnownAction> =>
+    (dispatch, getState): che.Workspace | undefined => {
+      const appState: AppState = getState();
+      if (!appState || !appState.workspaces) {
+        // todo throw a nice error
+        throw Error('something unexpected happened.');
+      }
+
+      return appState.workspaces.workspaces
+        .find(workspace => workspace.id === id);
+  },
+
+  getByQualifiedName: (cheNamespace: string, name: string): AppThunkAction<KnownAction> =>
+    (dispatch, getState): che.Workspace | undefined => {
+      const appState: AppState = getState();
+      if (!appState || !appState.workspaces) {
+        // todo throw a nice error
+        throw Error('something unexpected happened.');
+      }
+
+      return appState.workspaces.workspaces
+        .find(workspace =>
+          workspace.namespace === cheNamespace
+          && workspace.devfile.metadata.name === name);
+    },
 };
 
 const unloadedState: WorkspacesState = {

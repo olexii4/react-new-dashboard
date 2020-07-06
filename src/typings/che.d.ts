@@ -13,7 +13,7 @@
 declare namespace che {
 
   export interface Workspace {
-    id?: string;
+    id: string;
     projects?: any;
     links?: {
       ide?: string;
