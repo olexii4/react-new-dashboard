@@ -50,7 +50,7 @@ It is better to have React and Redux Developer Tools for debugging
 
 
 ## License tool
-There is a tool that checks all existing CQs for transitive dependency.
+There is a tool that checks all existing CQs for all dependencies (including transitive ones).
 It updates two files: '.deps/dev.md' and '.deps/prod.md'. These files include all the needed information.
 
 In order to build the license-tool dockerfile
