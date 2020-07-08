@@ -20,6 +20,7 @@ docker build . -f apache.Dockerfile -t quay.io/che-incubator/che-dashboard-next:
 ## Running
 
 Install all modules listed as dependencies in package.json
+
 ```sh
 $ yarn
 ```
@@ -47,6 +48,22 @@ $ yarn start --env.server=https://che-che.192.168.99.100.nip.io  --port=3333
 ```
 It is better to have React and Redux Developer Tools for debugging
 
+
+## License tool
+There is a tool that checks all existing CQs for transitive dependency.
+It updates two files: '.deps/dev.md' and '.deps/prod.md'. These files include all the needed information.
+
+In order to build the license-tool dockerfile
+
+```sh
+$ license-tool/build.sh
+```
+
+In order to build the license-tool dockerfile
+
+```sh
+$ license-tool/run.sh
+```
 
 ### License
 Che is open sourced under the Eclipse Public License 2.0.
