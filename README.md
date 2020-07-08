@@ -59,7 +59,7 @@ In order to build the license-tool dockerfile
 $ license-tool/build.sh
 ```
 
-In order to build the license-tool dockerfile
+In order to run the license-tool
 
 ```sh
 $ license-tool/run.sh
