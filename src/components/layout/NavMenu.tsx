@@ -35,7 +35,7 @@ import {
 
 import { container } from '../../inversify.config';
 import { Keycloak } from '../../services/keycloak/Keycloak';
-import WorkspaceIndicator from './workspaces/workspace-indicator/WorkspaceIndicator';
+import WorkspaceIndicator from '../app-nav-menu/workspaces/workspace-indicator/WorkspaceIndicator';
 import './nav-menu.styl';
 
 const DARK = 'dark';

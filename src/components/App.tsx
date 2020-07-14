@@ -14,7 +14,7 @@ import React, { Suspense } from 'react';
 import { Redirect, Route, Switch } from 'react-router';
 import { ConnectedRouter as Router } from 'connected-react-router';
 import { History } from 'history';
-import Layout from './app-nav-menu/Layout';
+import Layout from './layout/Layout';
 
 import './app.styl';
 
