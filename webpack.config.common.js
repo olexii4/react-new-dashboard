@@ -86,10 +86,6 @@ module.exports = {
         loader: 'umd-compat-loader'
       },
       {
-        test: /\.css$/,
-        loaders: ['style-loader', 'css-loader'],
-      },
-      {
         test: /\.styl$/,
         loader: 'style-loader!css-loader!stylus-loader',
       },

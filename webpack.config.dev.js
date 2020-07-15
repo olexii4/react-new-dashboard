@@ -15,6 +15,7 @@ const path = require('path');
 const webpack = require('webpack');
 const CleanTerminalPlugin = require('clean-terminal-webpack-plugin');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const StylelintPlugin = require('stylelint-webpack-plugin');
 
 const common = require('./webpack.config.common');
 
@@ -31,12 +32,32 @@ module.exports = env => {
           loader: 'source-map-loader',
           include: path.resolve(__dirname, 'src'),
         },
+        {
+          test: /\.css$/,
+          use: [
+            'style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: {
+                  auto: true,
+                  localIdentName: '[path][name]__[local]',
+                },
+              },
+            },
+          ],
+        },
       ]
     },
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
       new CleanTerminalPlugin(),
       new HardSourceWebpackPlugin(),
+      new StylelintPlugin({
+        files: '**/*.css',
+        lintDirtyModulesOnly: true,
+        emitWarning: true,
+      }),
     ],
     optimization: {
       minimize: false,
@@ -52,7 +73,7 @@ module.exports = env => {
       disableHostCheck: true,
       host: 'localhost',
       hot: true,
-      open: true,
+      open: false,
       port: 3000,
       stats: 'errors-warnings',
       // writeToDisk: true,

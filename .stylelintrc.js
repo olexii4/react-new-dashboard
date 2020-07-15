@@ -11,11 +11,8 @@
  */
 
 module.exports = {
-  '*.{js,ts,tsx}': [
-    'eslint --fix',
-    'yarn format',
-  ],
-  '*.css': [
-    'stylelint --fix',
+  'extends': [
+    'stylelint-config-standard',
+    'stylelint-config-rational-order',
   ]
-};
+}

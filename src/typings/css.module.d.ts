@@ -10,12 +10,10 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-module.exports = {
-  '*.{js,ts,tsx}': [
-    'eslint --fix',
-    'yarn format',
-  ],
-  '*.css': [
-    'stylelint --fix',
-  ]
-};
+declare module '*.css' {
+  interface IClassNames {
+    [className: string]: string
+  }
+  const classNames: IClassNames;
+  export = classNames;
+}

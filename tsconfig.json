@@ -21,9 +21,6 @@
     "allowJs": true,
     "resolveJsonModule": true
   },
-  "files": [
-    "./src/typings/che.d.ts"
-  ],
   "include": [
     "./src/**/*.tsx",
     "./src/**/*.ts"
