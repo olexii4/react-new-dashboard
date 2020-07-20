@@ -102,6 +102,7 @@ export type ActionCreators = {
 
   getById: (id: string) => any;
   getByQualifiedName: (cheNamespace: string, name: string) => any;
+  getRecent: (num: number) => any;
 };
 
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -275,7 +276,7 @@ export const actionCreators: ActionCreators = {
 
       return appState.workspaces.workspaces
         .find(workspace => workspace.id === id);
-  },
+    },
 
   getByQualifiedName: (cheNamespace: string, name: string): AppThunkAction<KnownAction> =>
     (dispatch, getState): che.Workspace | undefined => {
@@ -289,6 +290,31 @@ export const actionCreators: ActionCreators = {
         .find(workspace =>
           workspace.namespace === cheNamespace
           && workspace.devfile.metadata.name === name);
+    },
+
+  getRecent: (num: number): AppThunkAction<KnownAction> =>
+    (dispatch, getState): Array<che.Workspace> => {
+      const appState: AppState = getState();
+      if (!appState || !appState.workspaces) {
+        // todo throw a nice error
+        throw Error('something unexpected happened.');
+      }
+
+      return appState.workspaces.workspaces
+        // sort workspaces by the updating/creating time
+        .sort((a, b) => {
+          const timeA = (a.attributes && (a.attributes.updated || a.attributes.created)) || 0;
+          const timeB = (b.attributes && (b.attributes.updated || b.attributes.created)) || 0;
+          if (timeA > timeB) {
+            return -1;
+          } else if (timeA < timeB) {
+            return 1;
+          } else {
+            return 0;
+          }
+        })
+        // return necessary number of workspaces
+        .slice(0, num);
     },
 };
 

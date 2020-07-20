@@ -38,7 +38,7 @@ export class KeycloakSetup {
     }
   });
 
-  private user: che.User | {} = {};
+  private user: che.User | undefined;
 
   async start(): Promise<void> {
     if (KeycloakSetup.keycloakAuth.isPresent) {
@@ -101,7 +101,7 @@ export class KeycloakSetup {
     });
   }
 
-  getUser(): che.User | {} {
+  getUser(): che.User | undefined {
     return this.user;
   }
 

@@ -58,7 +58,9 @@ export class PreloadData {
 
   private setUser(): void {
     const user = this.keycloakSetup.getUser();
-    this.store.dispatch(UserStore.setUser({ user }));
+    if (user) {
+      this.store.dispatch(UserStore.setUser(user));
+    }
   }
 
   private async updateUser(): Promise<void> {
@@ -102,6 +104,8 @@ export class PreloadData {
     }
     const userInfo = await this.keycloak.fetchUserInfo();
     const user = Object.assign({}, this.keycloakSetup.getUser(), userInfo);
-    this.store.dispatch(UserStore.setUser({ user }));
+    if (user) {
+      this.store.dispatch(UserStore.setUser(user));
+    }
   }
 }

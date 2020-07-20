@@ -12,7 +12,7 @@
 
 // This state defines the type of data maintained in the Redux store.
 export interface UserState {
-  user: che.User | {};
+  user: che.User | undefined;
   isLogged: boolean;
 }
 
@@ -24,7 +24,7 @@ export const actionCreators = {
 
 };
 
-export const setUser = (user: che.User | {}): UserAction => {
+export const setUser = (user: che.User): UserAction => {
   return {
     type: 'SET_USER',
     user: user,
@@ -32,7 +32,10 @@ export const setUser = (user: che.User | {}): UserAction => {
   };
 };
 
-const unloadedState: UserState = { user: { id: '', name: '', email: '' }, isLogged: false };
+const unloadedState: UserState = {
+  user: undefined,
+  isLogged: false,
+};
 
 const userReducer = (state: UserState | undefined, action: UserAction): UserState => {
   if (state === undefined) {
