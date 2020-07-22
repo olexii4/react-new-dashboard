@@ -19,7 +19,7 @@ import '@patternfly/react-core/dist/styles/base.css';
 import 'monaco-editor-core/esm/vs/base/browser/ui/codiconLabel/codicon/codicon.css';
 
 import configureStore from './store/configureStore';
-import App from './components/App';
+import App from './App';
 import { PreloadData } from './services/bootstrap/PreloadData';
 
 import '@patternfly/patternfly/patternfly-addons.css';
