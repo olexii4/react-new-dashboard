@@ -30,11 +30,11 @@ import * as BrandingStore from '../../../store/Branding';
 import * as WorkspaceStore from '../../../store/Workspaces';
 import { AppState } from '../../../store';
 import { AlertItem } from '../../app-common/types';
+import { ROUTE } from '../../route.enum';
 
 const SamplesListTab = React.lazy(() => import('./get-started-tab/SamplesListTab'));
 const CustomWorkspaceTab = React.lazy(() => import('./custom-workspace-tab/CustomWorkspaceTab'));
 
-const PATH = '/get-started';
 const GET_STARTED_TAB_KEY = '#get-started';
 const CUSTOM_WORKSPACE_TAB_KEY = '#custom-workspace';
 
@@ -79,7 +79,7 @@ export class GetStartedPage extends React.PureComponent<Props, State> {
 
   private getActiveTabKey(): string {
     const { pathname, hash } = this.props.history.location;
-    if (pathname === PATH && hash === CUSTOM_WORKSPACE_TAB_KEY) {
+    if (pathname === ROUTE.GET_STARTED && hash === CUSTOM_WORKSPACE_TAB_KEY) {
       return CUSTOM_WORKSPACE_TAB_KEY;
     }
 
@@ -94,10 +94,10 @@ export class GetStartedPage extends React.PureComponent<Props, State> {
 
     if (tabKey === GET_STARTED_TAB_KEY
       && historyLocation.hash !== GET_STARTED_TAB_KEY) {
-      this.props.history.replace(`${PATH}#${GET_STARTED_TAB_KEY}`);
+      this.props.history.replace(ROUTE.TAB_GET_STARTED);
     } else if (tabKey === CUSTOM_WORKSPACE_TAB_KEY
       && historyLocation.hash !== CUSTOM_WORKSPACE_TAB_KEY) {
-      this.props.history.replace(`${PATH}#${CUSTOM_WORKSPACE_TAB_KEY}`);
+      this.props.history.replace(ROUTE.TAB_CUSTOM_WORKSPACE);
     }
   }
 
@@ -180,7 +180,7 @@ export class GetStartedPage extends React.PureComponent<Props, State> {
   }
 
   private handleTabClick(event: React.MouseEvent<HTMLElement, MouseEvent>, activeTabKey: React.ReactText): void {
-    this.props.history.push(`${PATH}${activeTabKey}`);
+    this.props.history.push(`${ROUTE.GET_STARTED}${activeTabKey}`);
 
     this.setState({
       activeTabKey: activeTabKey as string,
