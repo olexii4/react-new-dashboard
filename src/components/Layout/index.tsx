@@ -102,12 +102,14 @@ export class Layout extends React.PureComponent<Props, State> {
 
     const user = this.props.userStore.user;
     const logoUrl = this.props.brandingStore.data.logoFile;
+    const helpPath = this.props.brandingStore.data.helpPath;
 
     return (
       <Page
         header={
           <Header
             isVisible={isHeaderVisible}
+            helpPath={helpPath}
             logoUrl={logoUrl}
             user={user}
             logout={() => this.logout()}

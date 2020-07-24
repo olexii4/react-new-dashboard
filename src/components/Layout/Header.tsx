@@ -24,6 +24,7 @@ import * as styles from './Header.module.css';
 
 type Props = {
   isVisible: boolean;
+  helpPath: string;
   logoUrl: string;
   user: User | undefined;
   logout: () => void;
@@ -57,7 +58,7 @@ export default class Header extends React.PureComponent<Props, State> {
   }
 
   public render(): React.ReactElement {
-    const logo = <Brand src={`${this.props.logoUrl}`} alt='Logo' />;
+    const logo = <Brand src={this.props.logoUrl} alt='Logo' />;
 
     const userEmail = this.props.user?.email || '';
     const userName = this.props.user?.name || '';
@@ -68,7 +69,7 @@ export default class Header extends React.PureComponent<Props, State> {
       <PageHeader
         className={className}
         logo={logo}
-        logoProps={{ href: 'https://www.eclipse.org/che/', target: '_blank' }}
+        logoProps={{ href: this.props.helpPath, target: '_blank' }}
         showNavToggle={true}
         onNavToggle={() => this.toggleNav()}
         headerTools={

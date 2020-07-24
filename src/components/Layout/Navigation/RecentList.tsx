@@ -20,12 +20,13 @@ import { PlusIcon } from '@patternfly/react-icons';
 import NavigationRecentItem from './RecentItem';
 import { NavigationItemObject, NavigationRecentItemObject } from '.';
 import NavigationMainItem from './MainItem';
+import { ROUTE } from '../../route.enum';
 
 import styles from './index.module.css';
 
 function buildCreateWorkspaceItem(): React.ReactElement {
   const item: NavigationItemObject = {
-    to: '/get-started#custom-workspace',
+    to: ROUTE.TAB_CUSTOM_WORKSPACE,
     label: 'Create Workspace',
     icon: <PlusIcon className={styles.mainItemIcon} />,
   };
@@ -39,11 +40,15 @@ function buildCreateWorkspaceItem(): React.ReactElement {
 function buildRecentWorkspacesItems(workspaces: Array<che.Workspace>, activeItem: string): Array<React.ReactElement> {
   return workspaces.map(workspace => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const name = workspace.devfile.metadata.name!;
-    const namespace = workspace.namespace;
+    const workspaceName = workspace.devfile.metadata.name!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const namespace = workspace.namespace!;
+    const navigateTo = ROUTE.IDE
+      .replace(':namespace', namespace)
+      .replace(':workspaceName', workspaceName);
     const item: NavigationRecentItemObject = {
-      to: `/ide/${namespace}/${name}`,
-      label: name,
+      to: navigateTo,
+      label: workspaceName,
       status: workspace.status,
     };
     return <NavigationRecentItem key={item.to} item={item} activeItem={activeItem} />;
