@@ -3,8 +3,6 @@
 | Packages | License | Resolved CQs |
 | --- | --- | --- |
 | [`@babel/runtime@7.10.2`](https://github.com/babel/babel.git) | MIT | clearlydefined |
-| [`@eclipse-che/api@7.4.0`](Unknown) | EPL-2.0 |  |
-| [`@eclipse-che/workspace-client@0.0.1-1585913592`](https://github.com/eclipse/che-workspace-client) | EPL-2.0 |  |
 | [`@patternfly/patternfly@4.10.31`](https://github.com/patternfly/patternfly.git) | MIT |  |
 | [`@patternfly/react-core@4.18.5`](https://github.com/patternfly/patternfly-react.git) | MIT |  |
 | [`@patternfly/react-icons@4.3.5`](https://github.com/patternfly/patternfly-react.git) | MIT | clearlydefined |
@@ -53,12 +51,10 @@
 | [`inversify-react@0.4.3`](https://github.com/Kukkimonsuta/inversify-react.git) | Apache-2.0 | clearlydefined |
 | [`inversify@5.0.1`](https://github.com/inversify/InversifyJS.git) | MIT | clearlydefined |
 | [`is-arguments@1.0.4`](git://github.com/ljharb/is-arguments.git) | MIT | clearlydefined |
-| [`is-buffer@2.0.4`](git://github.com/feross/is-buffer.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`is-callable@1.1.5`](git://github.com/ljharb/is-callable.git) | MIT | clearlydefined |
 | [`is-date-object@1.0.2`](git://github.com/ljharb/is-date-object.git) | MIT | clearlydefined |
 | [`is-regex@1.0.5`](git://github.com/ljharb/is-regex.git) | MIT | clearlydefined |
 | [`is-symbol@1.0.3`](git://github.com/inspect-js/is-symbol.git) | MIT | clearlydefined |
-| [`is-typedarray@1.0.0`](git://github.com/hughsk/is-typedarray.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`isarray@0.0.1`](git://github.com/juliangruber/isarray.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`jquery@3.5.1`](https://github.com/jquery/jquery.git) | MIT | clearlydefined |
 | [`js-tokens@4.0.0`](https://github.com/lydell/js-tokens.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
@@ -76,7 +72,6 @@
 | [`monaco-languageclient@0.12.0`](https://github.com/TypeFox/monaco-languageclient.git) | MIT | clearlydefined |
 | [`monaco-languages@1.10.0`](https://github.com/Microsoft/monaco-languages) | MIT | clearlydefined |
 | [`ms@2.0.0`](https://github.com/zeit/ms.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
-| [`nan@2.14.1`](git://github.com/nodejs/nan.git) | MIT |  |
 | [`object-assign@4.1.1`](https://github.com/sindresorhus/object-assign.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`object-inspect@1.7.0`](git://github.com/substack/object-inspect.git) | MIT | clearlydefined |
 | [`object-is@1.1.2`](git://github.com/es-shims/object-is.git) | MIT | clearlydefined |
@@ -129,10 +124,8 @@
 | [`tiny-warning@1.0.3`](https://github.com/alexreardon/tiny-warning.git) | MIT | clearlydefined |
 | [`tippy.js@5.1.2`](git+https://github.com/atomiks/tippyjs.git) | MIT | clearlydefined |
 | [`tslib@1.13.0`](https://github.com/Microsoft/tslib.git) | 0BSD |  |
-| [`tunnel@0.0.6`](https://github.com/koichik/node-tunnel.git) | MIT | clearlydefined |
 | [`type-fest@0.8.1`](https://github.com/sindresorhus/type-fest.git) | (MIT OR CC0-1.0) | clearlydefined |
 | [`typed-styles@0.0.7`](Unknown) | MIT | clearlydefined |
-| [`typedarray-to-buffer@3.1.5`](git://github.com/feross/typedarray-to-buffer.git) | MIT | clearlydefined |
 | [`umd-compat-loader@2.1.1`](http://github.com/matt-gadd/umd-compat-loader.git) | BSD | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`url-parse@1.4.7`](https://github.com/unshiftio/url-parse.git) | MIT | clearlydefined |
 | [`value-equal@1.0.1`](https://github.com/mjackson/value-equal.git) | MIT | clearlydefined |
@@ -148,8 +141,6 @@
 | [`warning@4.0.3`](https://github.com/BerkeleyTrue/warning.git) | MIT |  |
 | [`websocket-driver@0.7.4`](git://github.com/faye/websocket-driver-node.git) | Apache-2.0 | clearlydefined |
 | [`websocket-extensions@0.1.3`](git://github.com/faye/websocket-extensions-node.git) | MIT | clearlydefined |
-| [`websocket@1.0.23`](https://github.com/theturtle32/WebSocket-Node.git) | Apache-2.0 |  |
 | [`xtend@4.0.2`](git://github.com/Raynos/xtend.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
-| [`yaeti@0.0.4`](https://github.com/ibc/yaeti.git) | MIT | clearlydefined |
 | [`yaml-ast-parser-custom-tags@0.0.43`](https://github.com/jpinkney/yaml-ast-parser.git) | Apache-2.0 | clearlydefined |
 | [`yaml-language-server@0.7.2`](https://github.com/redhat-developer/yaml-language-server.git) | MIT | clearlydefined |
