@@ -6,7 +6,7 @@
 | [`@patternfly/patternfly@4.10.31`](https://github.com/patternfly/patternfly.git) | MIT |  |
 | [`@patternfly/react-core@4.18.5`](https://github.com/patternfly/patternfly-react.git) | MIT |  |
 | [`@patternfly/react-icons@4.3.5`](https://github.com/patternfly/patternfly-react.git) | MIT | clearlydefined |
-| [`@patternfly/react-styles@4.3.4`](Unknown) | MIT | clearlydefined |
+| `@patternfly/react-styles@4.3.4` | MIT | clearlydefined |
 | [`@patternfly/react-table@4.5.7`](https://github.com/patternfly/patternfly-react.git) | MIT | clearlydefined |
 | [`@patternfly/react-tokens@4.4.4`](https://github.com/patternfly/patternfly-react.git) | MIT | clearlydefined |
 | [`@types/classnames@2.2.10`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
@@ -33,7 +33,7 @@
 | [`esprima@4.0.1`](https://github.com/jquery/esprima.git) | BSD-2-Clause | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`eventsource@1.0.7`](git://github.com/EventSource/eventsource.git) | MIT | clearlydefined |
 | [`faye-websocket@0.11.3`](git://github.com/faye/faye-websocket-node.git) | Apache-2.0 | clearlydefined |
-| [`file-selector@0.1.12`](Unknown) | MIT |  |
+| `file-selector@0.1.12` | MIT |  |
 | [`focus-trap@4.0.2`](git+https://github.com/davidtheclark/focus-trap.git) | MIT | clearlydefined |
 | [`follow-redirects@1.5.10`](git@github.com:follow-redirects/follow-redirects.git) | MIT | clearlydefined |
 | [`function-bind@1.1.1`](git://github.com/Raynos/function-bind.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
@@ -125,7 +125,7 @@
 | [`tippy.js@5.1.2`](git+https://github.com/atomiks/tippyjs.git) | MIT | clearlydefined |
 | [`tslib@1.13.0`](https://github.com/Microsoft/tslib.git) | 0BSD |  |
 | [`type-fest@0.8.1`](https://github.com/sindresorhus/type-fest.git) | (MIT OR CC0-1.0) | clearlydefined |
-| [`typed-styles@0.0.7`](Unknown) | MIT | clearlydefined |
+| `typed-styles@0.0.7` | MIT | clearlydefined |
 | [`umd-compat-loader@2.1.1`](http://github.com/matt-gadd/umd-compat-loader.git) | BSD | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`url-parse@1.4.7`](https://github.com/unshiftio/url-parse.git) | MIT | clearlydefined |
 | [`value-equal@1.0.1`](https://github.com/mjackson/value-equal.git) | MIT | clearlydefined |

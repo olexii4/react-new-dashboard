@@ -48,7 +48,10 @@ function arrayToDocument(title, depsArray, depToCQ, allLicenses) {
   // table body
   depsArray.forEach(item => {
     const license = allLicenses.has(item) ? allLicenses.get(item).License : '';
-    const lib = allLicenses.has(item) ? `[\`${item}\`](${allLicenses.get(item).URL})` : `\`${item}\``;
+    let lib = `\`${item}\``;
+    if (allLicenses.has(item) && allLicenses.get(item).URL) {
+      lib = `[${lib}](${allLicenses.get(item).URL})`;
+    }
     let cq = '';
     if (depToCQ.has(item)) {
       cq = depToCQ.get(item);
@@ -79,7 +82,7 @@ if (index !== -1) {
   body.forEach(libInfo => {
     allLicenses.set(`${libInfo[head.indexOf('Name')]}@${libInfo[head.indexOf('Version')]}`, {
       License: libInfo[head.indexOf('License')],
-      URL: libInfo[head.indexOf('URL')]
+      URL: libInfo[head.indexOf('URL')] === 'Unknown' ? undefined : libInfo[head.indexOf('URL')]
     });
   })
 }

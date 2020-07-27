@@ -35,7 +35,6 @@
 | [`@babel/types@7.10.2`](https://github.com/babel/babel.git) | MIT | clearlydefined |
 | [`@bcoe/v8-coverage@0.2.3`](git://github.com/demurgos/v8-coverage.git) | MIT | clearlydefined |
 | [`@cnakazawa/watch@1.0.4`](git://github.com/mikeal/watch.git) | Apache-2.0 | clearlydefined |
-| [`@eclipse-che/api@7.5.0-SNAPSHOT`](Unknown) | EPL-2.0 |  |
 | [`@istanbuljs/load-nyc-config@1.1.0`](git+https://github.com/istanbuljs/load-nyc-config.git) | ISC | clearlydefined |
 | [`@istanbuljs/schema@0.1.2`](git+https://github.com/istanbuljs/schema.git) | MIT | clearlydefined |
 | [`@jest/console@26.0.1`](https://github.com/facebook/jest.git) | MIT | clearlydefined |
@@ -133,15 +132,15 @@
 | [`@typescript-eslint/typescript-estree@3.1.0`](https://github.com/typescript-eslint/typescript-eslint.git) | BSD-2-Clause | clearlydefined |
 | [`@webassemblyjs/ast@1.9.0`](https://github.com/xtuc/webassemblyjs.git) | MIT | clearlydefined |
 | [`@webassemblyjs/floating-point-hex-parser@1.9.0`](https://github.com/xtuc/webassemblyjs.git) | MIT | clearlydefined |
-| [`@webassemblyjs/helper-api-error@1.9.0`](Unknown) | MIT | clearlydefined |
+| `@webassemblyjs/helper-api-error@1.9.0` | MIT | clearlydefined |
 | [`@webassemblyjs/helper-buffer@1.9.0`](https://github.com/xtuc/webassemblyjs.git) | MIT | clearlydefined |
 | [`@webassemblyjs/helper-code-frame@1.9.0`](https://github.com/xtuc/webassemblyjs.git) | MIT | clearlydefined |
-| [`@webassemblyjs/helper-fsm@1.9.0`](Unknown) | ISC |  |
+| `@webassemblyjs/helper-fsm@1.9.0` | ISC |  |
 | [`@webassemblyjs/helper-module-context@1.9.0`](https://github.com/xtuc/webassemblyjs.git) | MIT | clearlydefined |
 | [`@webassemblyjs/helper-wasm-bytecode@1.9.0`](https://github.com/xtuc/webassemblyjs.git) | MIT | clearlydefined |
 | [`@webassemblyjs/helper-wasm-section@1.9.0`](https://github.com/xtuc/webassemblyjs.git) | MIT | clearlydefined |
-| [`@webassemblyjs/ieee754@1.9.0`](Unknown) | MIT | clearlydefined |
-| [`@webassemblyjs/leb128@1.9.0`](Unknown) | MIT |  |
+| `@webassemblyjs/ieee754@1.9.0` | MIT | clearlydefined |
+| `@webassemblyjs/leb128@1.9.0` | MIT |  |
 | [`@webassemblyjs/utf8@1.9.0`](https://github.com/xtuc/webassemblyjs.git) | MIT | clearlydefined |
 | [`@webassemblyjs/wasm-edit@1.9.0`](https://github.com/xtuc/webassemblyjs.git) | MIT | clearlydefined |
 | [`@webassemblyjs/wasm-gen@1.9.0`](https://github.com/xtuc/webassemblyjs.git) | MIT | clearlydefined |
@@ -432,9 +431,9 @@
 | [`fs-minipass@2.1.0`](git+https://github.com/npm/fs-minipass.git) | ISC | clearlydefined |
 | [`fs-write-stream-atomic@1.0.10`](https://github.com/npm/fs-write-stream-atomic) | ISC | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`fs.realpath@1.0.0`](git+https://github.com/isaacs/fs.realpath.git) | ISC | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
-| [`fsevents@2.1.3`](https://github.com/fsevents/fsevents.git) | MIT | clearlydefined |
+| `fsevents@2.1.3` |  | clearlydefined |
 | [`functional-red-black-tree@1.0.1`](git://github.com/mikolalysenko/functional-red-black-tree.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
-| [`gensync@1.0.0-beta.1`](Unknown) | MIT |  |
+| `gensync@1.0.0-beta.1` | MIT |  |
 | [`get-caller-file@2.0.5`](git+https://github.com/stefanpenner/get-caller-file.git) | ISC | clearlydefined |
 | [`get-own-enumerable-property-symbols@3.0.2`](git+https://github.com/mightyiam/get-own-enumerable-property-symbols.git) | ISC | clearlydefined |
 | [`get-package-type@0.1.0`](git+https://github.com/cfware/get-package-type.git) | MIT | clearlydefined |
@@ -647,9 +646,9 @@
 | [`minimalistic-crypto-utils@1.0.1`](git+ssh://git@github.com/indutny/minimalistic-crypto-utils.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`minimatch@3.0.4`](git://github.com/isaacs/minimatch.git) | ISC | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`minimist-options@4.1.0`](https://github.com/vadimdemedes/minimist-options.git) | MIT | clearlydefined |
-| [`minipass-collect@1.0.2`](Unknown) | ISC | clearlydefined |
+| `minipass-collect@1.0.2` | ISC | clearlydefined |
 | [`minipass-flush@1.0.5`](git+https://github.com/isaacs/minipass-flush.git) | ISC | clearlydefined |
-| [`minipass-pipeline@1.2.3`](Unknown) | ISC | clearlydefined |
+| `minipass-pipeline@1.2.3` | ISC | clearlydefined |
 | [`minipass@3.1.3`](git+https://github.com/isaacs/minipass.git) | ISC | clearlydefined |
 | [`minizlib@2.1.0`](git+https://github.com/isaacs/minizlib.git) | MIT | clearlydefined |
 | [`mississippi@3.0.0`](git+https://github.com/maxogden/mississippi.git) | BSD-2-Clause | clearlydefined |
@@ -752,7 +751,7 @@
 | [`postcss-modules-scope@2.2.0`](https://github.com/css-modules/postcss-modules-scope.git) | ISC | clearlydefined |
 | [`postcss-modules-values@3.0.0`](git+https://github.com/css-modules/postcss-modules-values.git) | ISC | clearlydefined |
 | [`postcss-reporter@6.0.1`](https://github.com/postcss/postcss-reporter.git) | MIT | clearlydefined |
-| [`postcss-resolve-nested-selector@0.1.1`](Unknown) | MIT | clearlydefined |
+| `postcss-resolve-nested-selector@0.1.1` | MIT | clearlydefined |
 | [`postcss-safe-parser@4.0.2`](https://github.com/postcss/postcss-safe-parser.git) | MIT | clearlydefined |
 | [`postcss-sass@0.4.4`](https://github.com/AleshaOleg/postcss-sass.git) | MIT | clearlydefined |
 | [`postcss-scss@2.1.1`](https://github.com/postcss/postcss-scss.git) | MIT | clearlydefined |
@@ -933,7 +932,7 @@
 | [`tr46@2.0.2`](https://github.com/jsdom/tr46) | MIT | clearlydefined |
 | [`trim-newlines@3.0.0`](https://github.com/sindresorhus/trim-newlines.git) | MIT | clearlydefined |
 | [`trim-trailing-lines@1.1.3`](https://github.com/wooorm/trim-trailing-lines.git) | MIT | clearlydefined |
-| [`trim@0.0.1`](Unknown) | MIT |  |
+| `trim@0.0.1` | MIT |  |
 | [`trough@1.0.5`](https://github.com/wooorm/trough.git) | MIT | clearlydefined |
 | [`ts-jest@26.1.0`](git+https://github.com/kulshekhar/ts-jest.git) | MIT | clearlydefined |
 | [`ts-loader@7.0.5`](https://github.com/TypeStrong/ts-loader.git) | MIT | clearlydefined |
