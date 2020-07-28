@@ -2,4 +2,17 @@
 set -e
 set -u
 
-docker run --rm -t -v ${PWD}/yarn.lock:/workspace/yarn.lock -v ${PWD}/package.json:/workspace/package.json -v ${PWD}/.deps:/workspace/.deps  nodejs-license-dashes:next
+if [ ! -d ${PWD}/.deps/tmp ]; then
+    mkdir ${PWD}/.deps/tmp
+fi
+
+if [ ! -f ${PWD}/.deps/tmp/DEPENDENCIES ]; then
+    touch ${PWD}/.deps/tmp/DEPENDENCIES
+    chmod 666 ${PWD}/.deps/tmp/DEPENDENCIES
+fi
+
+docker run --rm -t -v ${PWD}/yarn.lock:/workspace/yarn.lock  \
+       -v ${PWD}/package.json:/workspace/package.json  \
+       -v ${PWD}/.deps:/workspace/.deps  \
+       -v ${PWD}/.deps/tmp/DEPENDENCIES:/workspace/DEPENDENCIES \
+       nodejs-license-dashes:next
