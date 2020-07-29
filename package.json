@@ -30,7 +30,8 @@
     "serve:prod": "webpack-dev-server --color --disable-host-check --config webpack.config.prod-dev.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "bump-deps": "node license-tool/src/bump-deps.js"
+    "prepare:licenseCheck": "license-tool/build.sh",
+    "licenseCheck": "license-tool/run.sh"
   },
   "dependencies": {
     "@patternfly/patternfly": "^4.10.31",
