@@ -25,7 +25,6 @@
 | [`deep-equal@1.1.1`](http://github.com/substack/node-deep-equal.git) | MIT | clearlydefined |
 | [`define-properties@1.1.3`](git://github.com/ljharb/define-properties.git) | MIT | clearlydefined |
 | [`dom-helpers@3.4.0`](https://github.com/jquense/dom-helpers.git) | MIT |  |
-| `e2e@1.0.0` | ISC |  |
 | [`emojis-list@3.0.0`](git+https://github.com/kikobeats/emojis-list.git) | MIT | clearlydefined |
 | [`es-abstract@1.17.5`](git://github.com/ljharb/es-abstract.git) | MIT | clearlydefined |
 | [`es-to-primitive@1.2.1`](git://github.com/ljharb/es-to-primitive.git) | MIT | clearlydefined |
