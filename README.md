@@ -56,13 +56,13 @@ It updates two files: '.deps/dev.md' and '.deps/prod.md'. These files include al
 In order to build the license-tool dockerfile
 
 ```sh
-$ license-tool/build.sh
+$ yarn prepare:licenseCheck
 ```
 
 In order to run the license-tool
 
 ```sh
-$ license-tool/run.sh
+$ yarn licenseCheck
 ```
 
 ### License
