@@ -26,7 +26,7 @@ describe('Navigation Main List', () => {
           onSelect={() => jest.fn()}
           theme="light"
         >
-          <NavigationMainList activeItem="" />
+          <NavigationMainList activePath="" />
         </Nav>
       </MemoryRouter>
     );

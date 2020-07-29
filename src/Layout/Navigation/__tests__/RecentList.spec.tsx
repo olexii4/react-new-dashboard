@@ -68,7 +68,7 @@ describe('Navigation Recent List', () => {
             onSelect={() => jest.fn()}
             theme="light"
           >
-            <NavigationRecentList workspaces={workspaces} activeItem="" />
+            <NavigationRecentList workspaces={workspaces} activePath="" />
           </Nav>
         </MemoryRouter>
       </Provider>
@@ -108,7 +108,7 @@ describe('Navigation Recent List', () => {
             onSelect={() => jest.fn()}
             theme="light"
           >
-            <NavigationRecentList workspaces={workspaces} activeItem="" />
+            <NavigationRecentList workspaces={workspaces} activePath="" />
           </Nav>
         </MemoryRouter>
       </Provider>

@@ -13,6 +13,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Page } from '@patternfly/react-core';
+import { History } from 'history';
 
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -28,6 +29,7 @@ const IS_MANAGED_SIDEBAR = false;
 
 type Props = {
   children: React.ReactNode;
+  history: History;
 } & {
   brandingStore: BrandingStore.State;
   userStore: UserStore.UserState;
@@ -99,6 +101,7 @@ export class Layout extends React.PureComponent<Props, State> {
 
   public render(): React.ReactElement {
     const { isHeaderVisible, isSidebarVisible, theme } = this.state;
+    const { history } = this.props;
 
     const user = this.props.userStore.user;
     const logoUrl = this.props.brandingStore.data.logoFile;
@@ -121,6 +124,7 @@ export class Layout extends React.PureComponent<Props, State> {
           <Sidebar
             isManaged={IS_MANAGED_SIDEBAR}
             isNavOpen={isSidebarVisible}
+            history={history}
             theme={theme}
           />
         }

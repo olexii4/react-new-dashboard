@@ -30,13 +30,13 @@ const items: NavigationItemObject[] = [
   { to: ROUTE.ADMINISTRATION, label: 'Administration', icon: <CogIcon className={styles.mainItemIcon} /> },
 ];
 
-function NavigationMainList(props: { activeItem: string }): React.ReactElement {
+function NavigationMainList(props: { activePath: string }): React.ReactElement {
   const navItems = items.map(item => {
     return (
       <NavigationMainItem
         key={item.label}
         item={item}
-        activeItem={props.activeItem}
+        activePath={props.activePath}
       >
         {item.icon}
       </NavigationMainItem>

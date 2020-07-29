@@ -29,7 +29,7 @@ describe('Navigation Item', () => {
   function renderComponent(): RenderResult {
     return render(
       <MemoryRouter>
-        <NavigationRecentItem item={item} activeItem={activeItem} />
+        <NavigationRecentItem item={item} activePath={activeItem} />
       </MemoryRouter>
     );
   }
@@ -72,7 +72,7 @@ describe('Navigation Item', () => {
       activeItem = '/namespace/workspace';
       rerender(
         <MemoryRouter>
-          <NavigationRecentItem item={item} activeItem={activeItem} />
+          <NavigationRecentItem item={item} activePath={activeItem} />
         </MemoryRouter>
       );
 

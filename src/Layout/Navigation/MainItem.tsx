@@ -18,8 +18,8 @@ import { NavigationItemObject } from '.';
 
 import styles from './index.module.css';
 
-function NavigationMainItem(props: { item: NavigationItemObject, children: React.ReactNode, activeItem?: string }): React.ReactElement {
-  const isActive = props.item.to === props.activeItem;
+function NavigationMainItem(props: { item: NavigationItemObject, children: React.ReactNode, activePath?: string }): React.ReactElement {
+  const isActive = props.item.to === props.activePath;
 
   return (
     <NavItem

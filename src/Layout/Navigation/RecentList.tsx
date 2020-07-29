@@ -37,7 +37,7 @@ function buildCreateWorkspaceItem(): React.ReactElement {
   );
 }
 
-function buildRecentWorkspacesItems(workspaces: Array<che.Workspace>, activeItem: string): Array<React.ReactElement> {
+function buildRecentWorkspacesItems(workspaces: Array<che.Workspace>, activePath: string): Array<React.ReactElement> {
   return workspaces.map(workspace => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const workspaceName = workspace.devfile.metadata.name!;
@@ -51,13 +51,13 @@ function buildRecentWorkspacesItems(workspaces: Array<che.Workspace>, activeItem
       label: workspaceName,
       status: workspace.status,
     };
-    return <NavigationRecentItem key={item.to} item={item} activeItem={activeItem} />;
+    return <NavigationRecentItem key={item.to} item={item} activePath={activePath} />;
   });
 }
 
-function NavigationRecentList(props: { workspaces: Array<che.Workspace>, activeItem: string }): React.ReactElement {
+function NavigationRecentList(props: { workspaces: Array<che.Workspace>, activePath: string }): React.ReactElement {
   const createWorkspaceItem = buildCreateWorkspaceItem();
-  const recentWorkspaceItems = buildRecentWorkspacesItems(props.workspaces, props.activeItem);
+  const recentWorkspaceItems = buildRecentWorkspacesItems(props.workspaces, props.activePath);
   return (
     <NavList>
       <NavGroup title="RECENT WORKSPACES">

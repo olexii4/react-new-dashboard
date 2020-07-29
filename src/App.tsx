@@ -26,7 +26,7 @@ const fallback = <div>loading....</div>;
 function AppComponent(props: { history: History }): React.ReactElement {
   return (
     <ConnectedRouter history={props.history}>
-      <Layout>
+      <Layout history={props.history}>
         <Suspense fallback={fallback}>
           <Switch>
             <Routes />

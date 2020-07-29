@@ -12,6 +12,7 @@
 
 import React from 'react';
 import { PageSidebar } from '@patternfly/react-core';
+import { History } from 'history';
 
 import Navigation from './Navigation';
 import { ThemeVariant } from './themeVariant';
@@ -19,6 +20,7 @@ import { ThemeVariant } from './themeVariant';
 type Props = {
   isManaged: boolean;
   isNavOpen: boolean;
+  history: History;
   theme: ThemeVariant;
 };
 
@@ -26,7 +28,7 @@ export default class Sidebar extends React.PureComponent<Props> {
 
   public render(): React.ReactElement {
     // todo isManaged?
-    const { isManaged, isNavOpen, theme } = this.props;
+    const { isManaged, isNavOpen, history, theme } = this.props;
 
     return (
       <PageSidebar
@@ -34,7 +36,7 @@ export default class Sidebar extends React.PureComponent<Props> {
         isNavOpen={isNavOpen}
         theme={theme}
         nav={
-          <Navigation theme={theme} />
+          <Navigation history={history} theme={theme} />
         }
       />
     );

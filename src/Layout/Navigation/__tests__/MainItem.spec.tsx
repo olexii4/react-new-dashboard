@@ -32,7 +32,7 @@ describe('Navigation Item', () => {
       <MemoryRouter>
         <NavigationMainItem
           item={item}
-          activeItem={activeItem}
+          activePath={activeItem}
         >
           {item.icon}
         </NavigationMainItem>
@@ -73,7 +73,7 @@ describe('Navigation Item', () => {
         <MemoryRouter>
           <NavigationMainItem
             item={item}
-            activeItem={activeItem}
+            activePath={activeItem}
           >
             {item.icon}
           </NavigationMainItem>

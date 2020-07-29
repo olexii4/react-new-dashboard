@@ -13,6 +13,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Nav } from '@patternfly/react-core';
+import { History } from 'history';
 
 import { ThemeVariant } from '../themeVariant';
 import { AppState } from '../../store';
@@ -32,13 +33,14 @@ export interface NavigationRecentItemObject {
 }
 
 type Props = {
+  history: History;
   theme: ThemeVariant;
 } & {
   workspaceStore: WorkspaceState.WorkspacesState;
 } &
   WorkspaceState.ActionCreators;
 type State = {
-  activeItem: string;
+  activePath: string;
   recent: Array<che.Workspace>;
 };
 
@@ -47,21 +49,22 @@ export class Navigation extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    const activePath = this.props.history.location.pathname;
     const recent = this.props.getRecent(5);
 
     this.state = {
-      activeItem: '',
+      activePath,
       recent,
     };
   }
 
   private onNavSelect(selected: any): void {
-    this.setState({ activeItem: selected.itemId });
+    this.setState({ activePath: selected.itemId });
   }
 
   public render(): React.ReactElement {
     const { theme } = this.props;
-    const { activeItem, recent } = this.state;
+    const { activePath, recent } = this.state;
 
     return (
       <Nav
@@ -69,8 +72,8 @@ export class Navigation extends React.Component<Props, State> {
         onSelect={selected => this.onNavSelect(selected)}
         theme={theme}
       >
-        <NavigationMainList activeItem={activeItem} />
-        <NavigationRecentList workspaces={recent} activeItem={activeItem} />
+        <NavigationMainList activePath={activePath} />
+        <NavigationRecentList workspaces={recent} activePath={activePath} />
       </Nav>
     );
   }
