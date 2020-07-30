@@ -1,38 +1,48 @@
 apiVersion: 1.0.0
 metadata:
   name: dashboard-next
+attributes:
+  persistVolumes: 'false'
+projects:
+  - name: che-dashboard-next
+    source:
+      location: 'https://github.com/che-incubator/che-dashboard-next.git'
+      type: git
 components:
-  - alias: typescript-plugin
+  - id: che-incubator/typescript/1.30.2
     type: chePlugin
-    id: che-incubator/typescript/1.30.2
-  - alias: ud-dev
-    type: dockerimage
-    image: 'okurinnyi/che-dashboard-dev:nightly'
+    alias: typescript-plugin
+  - mountSources: true
     endpoints:
       - name: ud-dev-server
         port: 3000
         attributes:
-          path: /
+          public: 'true'
           protocol: http
-          public: "true"
-    mountSources: true
+          path: /
     memoryLimit: 3Gi
+    type: dockerimage
+    alias: ud-dev
+    image: 'okurinnyi/che-dashboard-dev:nightly'
 commands:
-  - name: "[UD] build"
+  - name: '[UD] build'
     actions:
-      - type: exec
-        component: ud-dev
+      - workdir: /projects/che-dashboard-next
+        type: exec
         command: yarn && yarn build
-        workdir: /projects/react-new-dashboard
-  - name: "[UD] test"
-    actions:
-      - type: exec
         component: ud-dev
+  - name: '[UD] test'
+    actions:
+      - workdir: /projects/che-dashboard-next
+        type: exec
         command: yarn test
-        workdir: /projects/react-new-dashboard
-  - name: "[UD] start"
-    actions:
-      - type: exec
         component: ud-dev
-        command: 'yarn start --disable-host-check --public=$(echo ${server.ud-dev-server} | sed -e s/https:\\/\\/// -e s/http:\\/\\/// -e s/\\///) --host="0.0.0.0" --env.server=${CHE_API_EXTERNAL%????}'
-        workdir: /projects/react-new-dashboard
+  - name: '[UD] start'
+    actions:
+      - workdir: /projects/che-dashboard-next
+        type: exec
+        command: >-
+          yarn start --disable-host-check --public=$(echo
+          ${server.ud-dev-server} | sed -e s/https:\\/\\/// -e s/http:\\/\\///
+          -e s/\\///) --host="0.0.0.0" --env.server=${CHE_API_EXTERNAL%????}
+        component: ud-dev
