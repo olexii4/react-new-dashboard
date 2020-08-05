@@ -15,4 +15,4 @@ docker run --rm -t -v ${PWD}/yarn.lock:/workspace/yarn.lock  \
        -v ${PWD}/package.json:/workspace/package.json  \
        -v ${PWD}/.deps:/workspace/.deps  \
        -v ${PWD}/.deps/tmp/DEPENDENCIES:/workspace/DEPENDENCIES \
-       nodejs-license-dashes:next
+       nodejs-license-tool:next

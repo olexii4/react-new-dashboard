@@ -10,7 +10,6 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import 'reflect-metadata';
 import { Container } from 'inversify';
 import { KeycloakSetup } from './services/bootstrap/KeycloakSetup';
 import { Keycloak } from './services/keycloak/Keycloak';
