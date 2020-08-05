@@ -1,15 +1,10 @@
-## About Eclipse Che Dashboard
+# About Eclipse Che Dashboard
 
-This is the first step for implementing a new version of  Eclipse Che Dashboard which is based on  React 16 and Webpack 4.
-
-
-Che Dashboard
-
-==============
+This is the first step to implement a new Eclipse Che Dashboard.
 
 ## Requirements
 
-- Node.js `v10.x.x`
+- Node.js `v10.x.x` and later.
 
 ## Quick start
 
@@ -19,51 +14,43 @@ docker build . -f apache.Dockerfile -t quay.io/che-incubator/che-dashboard-next:
 
 ## Running
 
-Install all modules listed as dependencies in package.json
+Install all dependencies:
 
 ```sh
-$ yarn
+yarn
 ```
 
-In order to run the project, to start dev-server is used
+and start dev-server:
 
 ```sh
-$ yarn start
+yarn start
 ```
 
-It will launch the server and then the project can be tested on http://localhost:3030
-
-
-For the easiest development, this dashboard will try to connect to [che.openshift.io](https://che.openshift.io) with own proxy by default.
-
-So, it is better to login previously (I am about [che.openshift.io](https://che.openshift.io)).
-
-
-With initial implementation, this dashboard can show a simple list of created workspaces.
-
-An example of how to run with custom port and  server
+The development server serves the project on [http://localhost:3000](http://localhost:3000).
+By default it proxies all API requests to [che.openshift.io](https://che.openshift.io). You can change this behavior providing your own proxy target url and port using the following command as an example:
 
 ```sh
-$ yarn start --env.server=https://che-che.192.168.99.100.nip.io  --port=3333
+yarn start --env.server=https://che-che.192.168.99.100.nip.io  --port=3333
 ```
-It is better to have React and Redux Developer Tools for debugging
 
+For better debugging experience you need to have React and Redux Developer Tools installed in your browser.
 
 ## License tool
-There is a tool that checks all existing CQs for all dependencies (including transitive ones).
-It updates two files: '.deps/dev.md' and '.deps/prod.md'. These files include all the needed information.
 
-In order to build the license-tool dockerfile
+It uses [dash-licenses](https://github.com/eclipse/dash-licenses) to check all dependencies (including transitive) to be known to Eclipse IPZilla or ClearlyDefined. It generates `.deps/dev.md` and `.deps/prod.md` that contains such information.
 
-```sh
-$ yarn prepare:licenseCheck
-```
-
-In order to run the license-tool
+Firstly, build the license-tool dockerfile:
 
 ```sh
-$ yarn licenseCheck
+yarn licenseCheck:prepare
 ```
 
-### License
+and then run the license-tool:
+
+```sh
+yarn licenseCheck:run
+```
+
+## License
+
 Che is open sourced under the Eclipse Public License 2.0.

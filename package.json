@@ -30,8 +30,8 @@
     "serve:prod": "webpack-dev-server --color --disable-host-check --config webpack.config.prod-dev.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "prepare:licenseCheck": "license-tool/build.sh",
-    "licenseCheck": "license-tool/run.sh"
+    "licenseCheck:prepare": "license-tool/build.sh",
+    "licenseCheck:run": "license-tool/run.sh"
   },
   "dependencies": {
     "@patternfly/patternfly": "^4.10.31",
