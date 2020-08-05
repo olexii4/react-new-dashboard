@@ -3,7 +3,7 @@
   "version": "5.0.0",
   "description": "Dashboard for Eclipse CHE",
   "private": true,
-  "workspaces": ["e2e"],
+  "workspaces": ["che-dashboard-e2e"],
   "repository": {
     "type": "git",
     "url": "https://github.com/che-incubator/che-dashboard-next.git"
