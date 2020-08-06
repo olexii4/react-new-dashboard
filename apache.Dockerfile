@@ -10,11 +10,11 @@
 
 FROM docker.io/node:10.20.1 as builder
 
-COPY package.json /dashboard/
-COPY yarn.lock /dashboard/
-WORKDIR /dashboard
+COPY package.json /dashboard-next/
+COPY yarn.lock /dashboard-next/
+WORKDIR /dashboard-next
 RUN yarn --network-timeout 600000 && yarn install --ignore-optional
-COPY . /dashboard/
+COPY . /dashboard-next/
 RUN yarn compile
 
 FROM docker.io/httpd:2.4.43-alpine
@@ -23,5 +23,5 @@ RUN sed -i 's|    AllowOverride None|    AllowOverride All|' /usr/local/apache2/
     mkdir -p /var/www && ln -s /usr/local/apache2/htdocs /var/www/html && \
     chmod -R g+rwX /usr/local/apache2 && \
     echo "ServerName localhost" >> /usr/local/apache2/conf/httpd.conf
-COPY --from=builder /dashboard/build /usr/local/apache2/htdocs/dashboard
+COPY --from=builder /dashboard-next/build /usr/local/apache2/htdocs/dashboard
 RUN sed -i -r -e 's#<base href="/">#<base href="/dashboard/"#g'  /usr/local/apache2/htdocs/dashboard/index.html

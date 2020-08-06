@@ -2,6 +2,10 @@
 set -e
 set -u
 
+if [ ! -d ${PWD}/.deps ]; then
+    mkdir ${PWD}/.deps
+fi
+
 if [ ! -d ${PWD}/.deps/tmp ]; then
     mkdir ${PWD}/.deps/tmp
 fi

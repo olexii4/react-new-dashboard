@@ -13,6 +13,8 @@
 const { execSync } = require('child_process');
 const { writeFileSync, existsSync, readFileSync } = require('fs');
 
+let logs = '';
+
 // update excluded deps
 function parseExcludedFileData(fileData, depsMap) {
   const pattern = /^\| `([^|^ ]+)` \| ([^|]+) \|$/gm;
@@ -26,19 +28,25 @@ function parseExcludedFileData(fileData, depsMap) {
 function parseDependenciesFileData(fileData, depsMap) {
   const pattern = /^npm\/npmjs\/(-\/)?([^,]+)\/([0-9.]+), ([^,]+)?, approved, (\w+)$/gm;
 
+  let unusedQuantity = 0;
   let result;
+  if (depsMap.size) {
+    logs += '\n### UNUSED Excludes';
+  }
   while ((result = pattern.exec(fileData)) !== null) {
     const key = `${result[2]}@${result[3]}`;
-    if (depsMap.has(key)) {
-      continue;
-    }
     let cq = result[5]
-    const cqNum = parseInt(cq.replace('CQ', ''), 10);
-    if (cqNum) {
-      cq = `[CQ${cqNum}](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=${cqNum})`;
+    if (depsMap.has(key)) {
+      logs += `\n${++unusedQuantity}. '${key}'`;
+    } else {
+      const cqNum = parseInt(cq.replace('CQ', ''), 10);
+      if (cqNum) {
+        cq = `[CQ${cqNum}](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=${cqNum})`;
+      }
+      depsMap.set(key, cq);
     }
-    depsMap.set(key, cq);
   }
+  logs += '\n';
 }
 
 function bufferToArray(buffer) {
@@ -53,7 +61,7 @@ function arrayToDocument(title, depsArray, depToCQ, allLicenses) {
   let document = '### ' + title + '\n\n';
   // table header
   document += '| Packages | License | Resolved CQs |\n| --- | --- | --- |\n';
-  console.log('\n### UNRESOLVED ' + title);
+  logs += '\n### UNRESOLVED ' + title;
   let unresolvedQuantity = 0;
   // table body
   depsArray.forEach(item => {
@@ -66,10 +74,11 @@ function arrayToDocument(title, depsArray, depToCQ, allLicenses) {
     if (depToCQ.has(item)) {
       cq = depToCQ.get(item);
     } else {
-      console.log(`${++unresolvedQuantity}.'${item}'`);
+      logs += `\n${++unresolvedQuantity}. '${item}'`;
     }
     document += `| ${lib} | ${license} | ${cq} |\n`;
   });
+  logs += '\n';
 
   return document;
 }
@@ -78,6 +87,7 @@ const EXCLUDED_DEPENDENCIES = '.deps/EXCLUDED.md';
 const ALL_DEPENDENCIES = './DEPENDENCIES';
 const PROD_PATH = '.deps/prod.md';
 const DEV_PATH = '.deps/dev.md';
+const TMP_DIR_PATH = '.deps/tmp'
 const ENCODING = 'utf8';
 
 const depsToCQ = new Map();
@@ -101,8 +111,12 @@ if (existsSync(EXCLUDED_DEPENDENCIES)) {
   parseExcludedFileData(readFileSync(EXCLUDED_DEPENDENCIES, ENCODING), depsToCQ);
 }
 
-if (existsSync(ALL_DEPENDENCIES)) {
-  parseDependenciesFileData(readFileSync(ALL_DEPENDENCIES, ENCODING), depsToCQ);
+let path = ALL_DEPENDENCIES;
+if (!existsSync(ALL_DEPENDENCIES)) {
+  path = path.replace('./', '.deps/tmp/');
+}
+if (existsSync(path)) {
+  parseDependenciesFileData(readFileSync(path, ENCODING), depsToCQ);
 }
 
 // prod dependencies
@@ -118,3 +132,10 @@ const devDeps = allDeps.filter(entry => prodDeps.includes(entry) === false);
 
 writeFileSync(PROD_PATH, arrayToDocument('Production dependencies', prodDeps, depsToCQ, allLicenses), ENCODING);
 writeFileSync(DEV_PATH, arrayToDocument('Development dependencies', devDeps, depsToCQ, allLicenses), ENCODING);
+
+if (logs) {
+  if (existsSync(TMP_DIR_PATH)) {
+    writeFileSync(`${TMP_DIR_PATH}/logs`, logs, ENCODING);
+  }
+  console.log(logs);
+}
