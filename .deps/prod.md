@@ -123,7 +123,7 @@
 | [`tiny-invariant@1.1.0`](https://github.com/alexreardon/tiny-invariant.git) | MIT | clearlydefined |
 | [`tiny-warning@1.0.3`](https://github.com/alexreardon/tiny-warning.git) | MIT | clearlydefined |
 | [`tippy.js@5.1.2`](git+https://github.com/atomiks/tippyjs.git) | MIT | clearlydefined |
-| [`tslib@1.13.0`](https://github.com/Microsoft/tslib.git) | 0BSD |  |
+| [`tslib@1.9.0`](https://github.com/Microsoft/tslib.git) | Apache-2.0 | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`type-fest@0.8.1`](https://github.com/sindresorhus/type-fest.git) | (MIT OR CC0-1.0) | clearlydefined |
 | `typed-styles@0.0.7` | MIT | clearlydefined |
 | [`umd-compat-loader@2.1.1`](http://github.com/matt-gadd/umd-compat-loader.git) | BSD | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |

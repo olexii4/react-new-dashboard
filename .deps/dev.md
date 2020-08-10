@@ -85,7 +85,7 @@
 | [`@types/http-proxy@1.17.4`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/istanbul-lib-coverage@2.0.2`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/istanbul-lib-report@3.0.0`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
-| [`@types/istanbul-reports@1.1.2`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
+| [`@types/istanbul-reports@1.1.2`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/jest@25.2.3`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/jquery@3.3.38`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/js-yaml@3.12.4`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
@@ -250,7 +250,7 @@
 | [`character-entities@1.2.4`](https://github.com/wooorm/character-entities.git) | MIT | clearlydefined |
 | [`character-reference-invalid@1.1.4`](https://github.com/wooorm/character-reference-invalid.git) | MIT | clearlydefined |
 | [`chardet@0.7.0`](git@github.com:runk/node-chardet.git) | MIT | clearlydefined |
-| [`chokidar@2.1.8`](https://github.com/paulmillr/chokidar.git) | MIT |  |
+| [`chokidar@2.1.8`](https://github.com/paulmillr/chokidar.git) | MIT | [CQ21965](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=21965) |
 | [`chownr@2.0.0`](git://github.com/isaacs/chownr.git) | ISC | clearlydefined |
 | [`chrome-trace-event@1.0.2`](github.com:samccone/chrome-trace-event) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`ci-info@2.0.0`](https://github.com/watson/ci-info.git) | MIT | clearlydefined |
