@@ -63,8 +63,7 @@
     "reflect-metadata": "^0.1.13",
     "sockjs-client": "^1.4.0",
     "umd-compat-loader": "2.1.1",
-    "yaml-language-server": "^0.7.2",
-    "tslib": "1.9.0"
+    "yaml-language-server": "^0.7.2"
   },
   "devDependencies": {
     "@testing-library/dom": "^7.16.2",
@@ -129,5 +128,8 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^4.2.2"
+  },
+  "resolutions": {
+    "tslib": "1.9.0"
   }
 }
