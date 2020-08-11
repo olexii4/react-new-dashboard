@@ -1,19 +1,6 @@
 | Packages | Resolved CQs |
 | --- | --- |
 | `che-dashboard-e2e@1.0.0` | - |
-| `@patternfly/patternfly@4.10.31` | [CQ22346](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22346) |
-| `@patternfly/react-core@4.18.5` | [CQ22347](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22347) |
-| `attr-accept@1.1.3` | [CQ22348](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22348) |
-| `dom-helpers@3.4.0` | [CQ22349](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22349) |
-| `file-selector@0.1.12` | [CQ22350](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22350) |
-| `json5@1.0.1` | [CQ22351](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22351) |
-| `nan@2.14.1` | [CQ22352](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22352) |
-| `popper.js@1.16.1` | [CQ22353](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22353) |
-| `prop-types-extra@1.1.1` | [CQ22354](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22354) |
-| `react-dropzone@9.0.0` | [CQ22355](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22355) |
-| `react-transition-group@2.9.0` | [CQ22356](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22356) |
-| `vscode-languageclient@6.1.3` | [CQ22358](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22358) |
-| `warning@4.0.3` | [CQ22359](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22359) |
 | `websocket@1.0.23` | [CQ22360](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22360) |
 | `@babel/parser@7.10.2` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `@types/axios@0.14.0` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
@@ -46,3 +33,12 @@
 | `watchpack-chokidar2@2.0.0` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `wbuf@1.7.3` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `chokidar@2.1.8` | [CQ21965](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=21965) |
+| `doctrine@2.1.0` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
+| `istanbul-reports@3.0.2` | [CQ22446](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22446) |
+| `normalize-selector@0.2.0` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
+| `postcss-syntax@0.36.2` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
+| `remark-parse@8.0.2` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
+| `remark-stringify@8.1.0` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
+| `trim@0.0.1` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
+| `x-is-string@0.1.0` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
+| `chokidar@2.1.8` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |

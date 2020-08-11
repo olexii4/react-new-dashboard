@@ -250,7 +250,7 @@
 | [`character-entities@1.2.4`](https://github.com/wooorm/character-entities.git) | MIT | clearlydefined |
 | [`character-reference-invalid@1.1.4`](https://github.com/wooorm/character-reference-invalid.git) | MIT | clearlydefined |
 | [`chardet@0.7.0`](git@github.com:runk/node-chardet.git) | MIT | clearlydefined |
-| [`chokidar@2.1.8`](https://github.com/paulmillr/chokidar.git) | MIT | [CQ21965](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=21965) |
+| [`chokidar@2.1.8`](https://github.com/paulmillr/chokidar.git) | MIT | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
 | [`chownr@2.0.0`](git://github.com/isaacs/chownr.git) | ISC | clearlydefined |
 | [`chrome-trace-event@1.0.2`](github.com:samccone/chrome-trace-event) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`ci-info@2.0.0`](https://github.com/watson/ci-info.git) | MIT | clearlydefined |
@@ -340,7 +340,7 @@
 | [`dns-equal@1.0.0`](git+https://github.com/watson/dns-equal.git) | MIT | clearlydefined |
 | [`dns-packet@1.3.1`](https://github.com/mafintosh/dns-packet) | MIT | clearlydefined |
 | [`dns-txt@2.0.2`](https://github.com/watson/dns-txt.git) | MIT | clearlydefined |
-| [`doctrine@2.1.0`](https://github.com/eslint/doctrine.git) | Apache-2.0 |  |
+| [`doctrine@2.1.0`](https://github.com/eslint/doctrine.git) | Apache-2.0 | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
 | [`dom-accessibility-api@0.4.5`](https://github.com/eps1lon/dom-accessibility-api.git) | MIT | clearlydefined |
 | [`dom-converter@0.2.0`](https://github.com/AriaMinaei/dom-converter) | MIT | clearlydefined |
 | [`dom-serializer@0.2.2`](git://github.com/cheeriojs/dom-renderer.git) | MIT | clearlydefined |
@@ -393,7 +393,7 @@
 | [`expand-brackets@2.1.4`](https://github.com/jonschlinkert/expand-brackets.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`expand-tilde@2.0.2`](https://github.com/jonschlinkert/expand-tilde.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`expect@26.0.1`](https://github.com/facebook/jest.git) | MIT | clearlydefined |
-| [`express@4.17.1`](https://github.com/expressjs/express.git) | MIT | clearlydefined |
+| [`express@4.17.1`](https://github.com/expressjs/express.git) | MIT | [CQ20009](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=20009) |
 | [`extend-shallow@2.0.1`](https://github.com/jonschlinkert/extend-shallow.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`extend@3.0.2`](https://github.com/justmoon/node-extend.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`external-editor@3.1.0`](git+https://github.com/mrkmg/node-external-editor.git) | MIT | clearlydefined |
@@ -547,7 +547,7 @@
 | [`istanbul-lib-instrument@4.0.3`](git+ssh://git@github.com/istanbuljs/istanbuljs.git) | BSD-3-Clause | clearlydefined |
 | [`istanbul-lib-report@3.0.0`](git+ssh://git@github.com/istanbuljs/istanbuljs.git) | BSD-3-Clause | clearlydefined |
 | [`istanbul-lib-source-maps@4.0.0`](git+ssh://git@github.com/istanbuljs/istanbuljs.git) | BSD-3-Clause | clearlydefined |
-| [`istanbul-reports@3.0.2`](git+ssh://git@github.com/istanbuljs/istanbuljs.git) | BSD-3-Clause |  |
+| [`istanbul-reports@3.0.2`](git+ssh://git@github.com/istanbuljs/istanbuljs.git) | BSD-3-Clause | [CQ22446](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22446) |
 | [`jest-changed-files@26.0.1`](https://github.com/facebook/jest.git) | MIT | clearlydefined |
 | [`jest-cli@26.0.1`](https://github.com/facebook/jest) | MIT | clearlydefined |
 | [`jest-config@26.0.1`](https://github.com/facebook/jest.git) | MIT | clearlydefined |
@@ -676,7 +676,7 @@
 | [`normalize-package-data@2.5.0`](git://github.com/npm/normalize-package-data.git) | BSD-2-Clause | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | [`normalize-path@3.0.0`](https://github.com/jonschlinkert/normalize-path.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`normalize-range@0.1.2`](https://github.com/jamestalmage/normalize-range.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
-| [`normalize-selector@0.2.0`](git://github.com/getify/normalize-selector.git) | MIT |  |
+| [`normalize-selector@0.2.0`](git://github.com/getify/normalize-selector.git) | MIT | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
 | [`npm-run-path@2.0.2`](https://github.com/sindresorhus/npm-run-path.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`nth-check@1.0.2`](https://github.com/fb55/nth-check) | BSD-2-Clause | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | [`num2fraction@1.2.2`](git@github.com:yisibl/num2fraction.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
@@ -757,7 +757,7 @@
 | [`postcss-scss@2.1.1`](https://github.com/postcss/postcss-scss.git) | MIT | clearlydefined |
 | [`postcss-selector-parser@6.0.2`](https://github.com/postcss/postcss-selector-parser.git) | MIT | clearlydefined |
 | [`postcss-sorting@5.0.1`](https://github.com/hudochenkov/postcss-sorting.git) | MIT | clearlydefined |
-| [`postcss-syntax@0.36.2`](git+https://github.com/gucong3000/postcss-syntax.git) | MIT |  |
+| [`postcss-syntax@0.36.2`](git+https://github.com/gucong3000/postcss-syntax.git) | MIT | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
 | [`postcss-value-parser@4.1.0`](https://github.com/TrySound/postcss-value-parser.git) | MIT | clearlydefined |
 | [`postcss@7.0.32`](https://github.com/postcss/postcss.git) | MIT | clearlydefined |
 | [`poststylus@1.0.0`](https://github.com/seaneking/poststylus.git) | MIT | clearlydefined |
@@ -793,8 +793,8 @@
 | [`regex-not@1.0.2`](https://github.com/jonschlinkert/regex-not.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`regexpp@3.1.0`](git+https://github.com/mysticatea/regexpp.git) | MIT | clearlydefined |
 | [`relateurl@0.2.7`](git://github.com/stevenvachon/relateurl.git) | MIT | clearlydefined |
-| [`remark-parse@8.0.2`](https://github.com/remarkjs/remark/tree/master/packages/remark-parse) | MIT |  |
-| [`remark-stringify@8.1.0`](https://github.com/remarkjs/remark/tree/master/packages/remark-stringify) | MIT |  |
+| [`remark-parse@8.0.2`](https://github.com/remarkjs/remark/tree/master/packages/remark-parse) | MIT | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
+| [`remark-stringify@8.1.0`](https://github.com/remarkjs/remark/tree/master/packages/remark-stringify) | MIT | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
 | [`remark@12.0.0`](https://github.com/remarkjs/remark/tree/master/packages/remark) | MIT | clearlydefined |
 | [`remove-trailing-separator@1.1.0`](git+https://github.com/darsain/remove-trailing-separator.git) | ISC | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`renderkid@2.0.3`](https://github.com/AriaMinaei/RenderKid.git) | MIT | clearlydefined |
@@ -932,7 +932,7 @@
 | [`tr46@2.0.2`](https://github.com/jsdom/tr46) | MIT | clearlydefined |
 | [`trim-newlines@3.0.0`](https://github.com/sindresorhus/trim-newlines.git) | MIT | clearlydefined |
 | [`trim-trailing-lines@1.1.3`](https://github.com/wooorm/trim-trailing-lines.git) | MIT | clearlydefined |
-| `trim@0.0.1` | MIT |  |
+| `trim@0.0.1` | MIT | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
 | [`trough@1.0.5`](https://github.com/wooorm/trough.git) | MIT | clearlydefined |
 | [`ts-jest@26.1.0`](git+https://github.com/kulshekhar/ts-jest.git) | MIT | clearlydefined |
 | [`ts-loader@7.0.5`](https://github.com/TypeStrong/ts-loader.git) | MIT | clearlydefined |
@@ -1010,7 +1010,7 @@
 | [`write-json-file@2.3.0`](https://github.com/sindresorhus/write-json-file.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`write@1.0.3`](https://github.com/jonschlinkert/write.git) | MIT | clearlydefined |
 | [`ws@6.2.1`](https://github.com/websockets/ws.git) | MIT | clearlydefined |
-| [`x-is-string@0.1.0`](git://github.com/Matt-Esch/x-is-string.git) | MIT |  |
+| [`x-is-string@0.1.0`](git://github.com/Matt-Esch/x-is-string.git) | MIT | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
 | [`xml-name-validator@3.0.0`](https://github.com/jsdom/xml-name-validator.git) | Apache-2.0 | clearlydefined |
 | [`xmlchars@2.2.0`](https://github.com/lddubeau/xmlchars.git) | MIT | clearlydefined |
 | [`xregexp@4.3.0`](https://github.com/slevithan/xregexp.git) | MIT | clearlydefined |
