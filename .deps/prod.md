@@ -69,7 +69,7 @@
 | [`mini-create-react-context@0.4.0`](https://github.com/StringEpsilon/mini-create-react-context) | MIT | clearlydefined |
 | [`minimist@1.2.5`](git://github.com/substack/minimist.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`monaco-editor-core@0.20.0`](https://github.com/Microsoft/vscode) | MIT | clearlydefined |
-| [`monaco-languageclient@0.12.0`](https://github.com/TypeFox/monaco-languageclient.git) | MIT | clearlydefined |
+| [`monaco-languageclient@0.13.0`](https://github.com/TypeFox/monaco-languageclient.git) | MIT | clearlydefined |
 | [`monaco-languages@1.10.0`](https://github.com/Microsoft/monaco-languages) | MIT | clearlydefined |
 | [`ms@2.0.0`](https://github.com/zeit/ms.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`object-assign@4.1.1`](https://github.com/sindresorhus/object-assign.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
@@ -137,7 +137,7 @@
 | [`vscode-languageserver-types@3.15.1`](https://github.com/Microsoft/vscode-languageserver-node.git) | MIT | clearlydefined |
 | [`vscode-languageserver@5.2.1`](https://github.com/Microsoft/vscode-languageserver-node.git) | MIT | clearlydefined |
 | [`vscode-nls@4.1.2`](https://github.com/Microsoft/vscode-nls.git) | MIT | clearlydefined |
-| [`vscode-uri@1.0.8`](git+https://github.com/Microsoft/vscode-uri.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
+| [`vscode-uri@2.1.2`](git+https://github.com/Microsoft/vscode-uri.git) | MIT | clearlydefined |
 | [`warning@4.0.3`](https://github.com/BerkeleyTrue/warning.git) | MIT | [CQ22359](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22359) |
 | [`websocket-driver@0.7.4`](git://github.com/faye/websocket-driver-node.git) | Apache-2.0 | clearlydefined |
 | [`websocket-extensions@0.1.3`](git://github.com/faye/websocket-extensions-node.git) | MIT | clearlydefined |
