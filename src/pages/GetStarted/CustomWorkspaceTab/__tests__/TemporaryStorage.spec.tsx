@@ -10,47 +10,47 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import React from 'react';
-import { RenderResult, render, screen, fireEvent } from '@testing-library/react';
-import { TemporaryStorageFormGroup } from '../TemporaryStorage';
+// import React from 'react';
+// import { RenderResult, render, screen, fireEvent } from '@testing-library/react';
+// import { TemporaryStorageFormGroup } from '../TemporaryStorage';
 
-describe('Temporary Storage Switch', () => {
-
-  const mockOnChange = jest.fn();
-
-  function renderComponent(isTemporary: boolean): RenderResult {
-    return render(
-      <TemporaryStorageFormGroup
-        isTemporary={isTemporary}
-        onChange={mockOnChange}
-      />
-    );
-  }
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should fire onChange event', () => {
-    renderComponent(true);
-
-    const checkbox = screen.getByRole('checkbox');
-
-    fireEvent.click(checkbox);
-    expect(mockOnChange).toHaveBeenCalledWith(false);
-  });
-
-  it('should correctly re-render component', () => {
-    const { rerender } = renderComponent(true);
-    rerender(
-      (<TemporaryStorageFormGroup
-        isTemporary={false}
-        onChange={mockOnChange}
-      />)
-    );
-
-    const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).not.toBeChecked();
-  });
-
-});
+// describe('Temporary Storage Switch', () => {
+//
+//   const mockOnChange = jest.fn();
+//
+//   function renderComponent(isTemporary: boolean): RenderResult {
+//     return render(
+//       <TemporaryStorageFormGroup
+//         isTemporary={isTemporary}
+//         onChange={mockOnChange}
+//       />
+//     );
+//   }
+//
+//   afterEach(() => {
+//     jest.clearAllMocks();
+//   });
+//
+//   it('should fire onChange event', () => {
+//     renderComponent(true);
+//
+//     const checkbox = screen.getByRole('checkbox');
+//
+//     fireEvent.click(checkbox);
+//     expect(mockOnChange).toHaveBeenCalledWith(false);
+//   });
+//
+//   it('should correctly re-render component', () => {
+//     const { rerender } = renderComponent(true);
+//     rerender(
+//       (<TemporaryStorageFormGroup
+//         isTemporary={false}
+//         onChange={mockOnChange}
+//       />)
+//     );
+//
+//     const checkbox = screen.getByRole('checkbox');
+//     expect(checkbox).not.toBeChecked();
+//   });
+//
+// });

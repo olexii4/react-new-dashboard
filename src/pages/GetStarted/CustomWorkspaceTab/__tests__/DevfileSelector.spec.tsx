@@ -92,6 +92,10 @@ describe('Devfile Selector', () => {
 
 function createFakeStore(metadata: che.DevfileMetaData[]): Store {
   const initialState: AppState = {
+    plugins: {
+      isLoading: false,
+      plugins: [],
+    },
     workspaces: {} as any,
     branding: {} as any,
     devfileMetadataFilter: {} as any,

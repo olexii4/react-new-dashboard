@@ -32,7 +32,6 @@ export default class Sidebar extends React.PureComponent<Props> {
 
     return (
       <PageSidebar
-        isManagedSidebar={isManaged}
         isNavOpen={isNavOpen}
         theme={theme}
         nav={

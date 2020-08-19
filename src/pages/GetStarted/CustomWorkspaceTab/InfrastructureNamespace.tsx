@@ -18,6 +18,8 @@ import { AppState } from '../../../store';
 import * as InfrastructureNamespaceStore from '../../../store/InfrastructureNamespace';
 import { InfrastructureNamespaceSelect } from './InfrastructureNamespaceSelect';
 
+import styles from './index.module.css';
+
 type Props = {
   onChange: (namespace: che.KubernetesNamespace) => void;
 
@@ -85,7 +87,7 @@ export class InfrastructureNamespaceFormGroup extends React.PureComponent<Props>
           </Tooltip>
         }
       >
-        {infrastructureNamespaces}
+        <div className={styles.namespaceSelector}>{infrastructureNamespaces}</div>
       </FormGroup>
     );
   }

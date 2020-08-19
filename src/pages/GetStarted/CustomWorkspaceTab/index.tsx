@@ -17,12 +17,12 @@ import {
   Button,
   Form,
   PageSection,
-  PageSectionVariants,
+  PageSectionVariants, Tab, TextContent,
 } from '@patternfly/react-core';
 import { AppState } from '../../../store';
 import DevfileEditor, { DevfileEditor as Editor } from '../../../components/DevfileEditor';
 import * as WorkspaceStore from '../../../store/Workspaces';
-import { TemporaryStorageFormGroup } from './TemporaryStorage';
+import { StorageTypeFormGroup } from './StorageType';
 import { WorkspaceNameFormGroup } from './WorkspaceName';
 import DevfileSelectorFormGroup from './DevfileSelector';
 import InfrastructureNamespaceFormGroup from './InfrastructureNamespace';
@@ -165,10 +165,10 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
               name={workspaceName}
               onChange={_name => this.handleWorkspaceNameChange(_name)}
             />
-            <TemporaryStorageFormGroup
-              isTemporary={isTemporary}
+            {/*            <StorageTypeFormGroup
+              storageType={isTemporary}
               onChange={_isTemporary => this.handleTemporaryStorageChange(_isTemporary)}
-            />
+            />*/}
           </Form>
         </PageSection>
         <PageSection

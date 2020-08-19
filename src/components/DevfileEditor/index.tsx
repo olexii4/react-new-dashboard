@@ -14,6 +14,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '../../store';
 import * as DevfileRegistriesStore from '../../store/DevfileRegistries';
+import * as PluginsStore from '../../store/Plugins';
 import * as BrandingStore from '../../store/Branding';
 import { DisposableCollection } from '../../services/disposable';
 import * as monacoConversion from 'monaco-languageclient/lib/monaco-converter';
@@ -43,6 +44,7 @@ const MONACO_CONFIG: Monaco.IEditorConstructionOptions = {
 
 type Props = {
   devfileRegistries: DevfileRegistriesStore.State;
+  plugins: PluginsStore.State;
   branding: BrandingStore.State;
 } // Redux store
   & {
@@ -56,6 +58,7 @@ type State = {
 
 export class DevfileEditor extends React.PureComponent<Props, State> {
   private readonly toDispose = new DisposableCollection();
+  private handleResize: () => void;
   private editor: any;
   private yamlService: any;
   private m2p = new monacoConversion.MonacoToProtocolConverter();
@@ -95,17 +98,41 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
     Monaco.languages.setLanguageConfiguration(LANGUAGE_ID, conf);
     // register language server providers
     this.registerLanguageServerProviders(Monaco.languages);
+    const jsonSchema = this.props.devfileRegistries.schema || {};
+    const items = this.props.plugins.plugins;
+    const components = jsonSchema && jsonSchema.properties ? jsonSchema.properties.components : undefined;
+    if (components) {
+      jsonSchema.additionalProperties = true;
+      if (!components.defaultSnippets) {
+        components.defaultSnippets = [];
+      }
+      const pluginsId: string[] = [];
+      items.forEach((item: che.Plugin) => {
+        const id = `${item.publisher}/${item.name}/latest`;
+        if (pluginsId.indexOf(id) === -1 && item.type !== 'Che Editor') {
+          pluginsId.push(id);
+          components.defaultSnippets.push({
+            label: item.displayName,
+            description: item.description,
+            body: { id: id, type: 'chePlugin' }
+          });
+        } else {
+          pluginsId.push(item.id);
+        }
+      });
+      if (components.items && components.items.properties) {
+        if (!components.items.properties.id) {
+          components.items.properties.id = {
+            type: 'string',
+            description: 'Plugin\'s/Editor\'s id.'
+          };
+        }
+        components.items.properties.id.examples = pluginsId;
+      }
+    }
+    const schemas = [{ uri: 'inmemory:yaml', fileMatch: ['*'], schema: jsonSchema }];
     // add the devfile schema into yaml language server configuration
-    this.yamlService.configure({
-      validate: true,
-      schemas: [{
-        uri: 'inmemory:yaml',
-        fileMatch: ['*'],
-        schema: this.props.devfileRegistries.schema || {}
-      }],
-      hover: true,
-      completion: true,
-    });
+    this.yamlService.configure({ validate: true, schemas, hover: true, completion: true });
     // register custom themes
     registerCustomThemes();
     // define the default
@@ -125,6 +152,13 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
     return dump(devfile, { 'indent': 1 });
   }
 
+  public componentDidUpdate(): void {
+    if (!this.handleResize) {
+      return;
+    }
+    this.handleResize();
+  }
+
   // This method is called when the component is first added to the document
   public componentDidMount(): void {
     const element = $('.devfile-editor .monaco').get(0);
@@ -142,6 +176,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
         const layout = { height: element.offsetHeight, width: element.offsetWidth };
         this.editor.layout(layout);
       };
+      this.handleResize = handleResize;
       window.addEventListener('resize', handleResize);
       this.toDispose.push({
         dispose: () => {
@@ -238,25 +273,58 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
     const m2p = this.m2p;
     const p2m = this.p2m;
 
+    const sortTextCache = {};
+    const createSortText = (pluginId: string): string => {
+      if (sortTextCache[pluginId]) {
+        return sortTextCache[pluginId];
+      }
+      const [publisher, name, version] = pluginId.split('/');
+      const semverRE = /^\d+?\.\d+?\.\d+?/;
+      let versionText: string;
+      if (semverRE.test(version)) {
+        let [major, minor, rest] = version.split('.');
+        major = addLeadingZeros(major);
+        minor = addLeadingZeros(minor);
+        rest = rest.replace(/^(\d+)/, addLeadingZeros);
+        versionText = `${major}.${minor}.${rest}`;
+      } else {
+        let prefix = '-';
+        if (version === 'latest') {
+          prefix += '0';
+        } else if (version === 'next') {
+          prefix += '1';
+        } else if (version === 'nightly') {
+          prefix += '2';
+        }
+        versionText = `${prefix}${version}`;
+      }
+      const sortText = `${publisher}/${name}/${versionText}`;
+      sortTextCache[pluginId] = sortText;
+      return sortText;
+    };
+    const addLeadingZeros = (number: string): string => {
+      while (number.length < 4) {
+        number = '0' + number;
+      }
+      return number;
+    };
+
     languages.registerCompletionItemProvider(LANGUAGE_ID, {
       provideCompletionItems(model: monaco.editor.ITextModel, position: monaco.Position) {
         const document = createDocument(model);
         return yamlService.doComplete(document, m2p.asPosition(position.lineNumber, position.column), true)
           .then(list => {
             const completionResult: any = p2m.asCompletionResult(list, {} as any);
-            if (!completionResult || !completionResult.items) {
+            if (!completionResult || !completionResult.suggestions) {
               return completionResult;
             }
             // convert completionResult into suggestions
             const defaultInsertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
-            const suggestions = completionResult.items.map(item => {
-              return {
-                label: item.label,
-                kind: item.kind,
-                documentation: item.documentation,
-                insertText: item.insertText && item.insertText.value ? item.insertText.value : item.insertText,
-                insertTextRules: item.insertTextRules ? item.insertTextRules : defaultInsertTextRules
-              };
+            const suggestions = completionResult.suggestions.map(suggestion => {
+              return Object.assign(suggestion, {
+                insertTextRules: suggestion.insertTextRules ? suggestion.insertTextRules : defaultInsertTextRules,
+                sortText: createSortText(suggestion.insertText)
+              });
             });
             return { suggestions };
           });
@@ -313,8 +381,8 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
 
 export default connect(
   (state: AppState) => {
-    const { devfileRegistries, branding } = state;
-    return { devfileRegistries, branding }; // Properties are merged into the component's props
+    const { devfileRegistries, plugins, branding } = state;
+    return { devfileRegistries, plugins, branding }; // Properties are merged into the component's props
   },
   null,
   null,
