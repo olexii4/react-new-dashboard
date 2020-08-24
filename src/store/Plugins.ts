@@ -25,20 +25,20 @@ interface RequestPluginsAction {
 
 interface ReceivePluginsAction {
   type: 'RECEIVE_PLUGINS';
-  plugins: che.Plugin;
+  plugins: che.Plugin[];
 }
 
 type KnownAction = RequestPluginsAction
   | ReceivePluginsAction;
 
-// todo proper type insead of 'any'
+// todo proper type instead of 'any'
 export type ActionCreators = {
   requestPlugins: (registryUrl: string) => any;
 };
 
 export const actionCreators: ActionCreators = {
 
-  requestPlugins: (registryUrl: string): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<Array<che.KubernetesNamespace>> => {
+  requestPlugins: (registryUrl: string): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<che.Plugin[]> => {
     const appState: AppState = getState();
     if (!appState || !appState.infrastructureNamespace) {
       // todo throw a nice error

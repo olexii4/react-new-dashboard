@@ -20,6 +20,7 @@ interface MetadataSelectOptionObject extends SelectOptionObject {
 type Props = {
   metadata: che.DevfileMetaData[];
   onSelect: (meta: che.DevfileMetaData) => void;
+  onClear?: () => void;
 };
 type State = {
   selected?: MetadataSelectOptionObject;
@@ -92,6 +93,9 @@ export class DevfileSelect extends React.PureComponent<Props, State> {
       selected: undefined,
       isOpen: false
     });
+    if (this.props.onClear) {
+      this.props.onClear();
+    }
   }
 
   private handleCustomFilter(e: React.ChangeEvent<HTMLInputElement>): React.ReactElement[] {

@@ -35,6 +35,7 @@
 | [`@babel/types@7.10.2`](https://github.com/babel/babel.git) | MIT | clearlydefined |
 | [`@bcoe/v8-coverage@0.2.3`](git://github.com/demurgos/v8-coverage.git) | MIT | clearlydefined |
 | [`@cnakazawa/watch@1.0.4`](git://github.com/mikeal/watch.git) | Apache-2.0 | clearlydefined |
+| `@eclipse-che/api@7.5.0-SNAPSHOT` | EPL-2.0 | - |
 | [`@istanbuljs/load-nyc-config@1.1.0`](git+https://github.com/istanbuljs/load-nyc-config.git) | ISC | clearlydefined |
 | [`@istanbuljs/schema@0.1.2`](git+https://github.com/istanbuljs/schema.git) | MIT | clearlydefined |
 | [`@jest/console@26.0.1`](https://github.com/facebook/jest.git) | MIT | clearlydefined |

@@ -12,14 +12,14 @@
 
 import Axios from 'axios';
 
-export async function fetchPlugins(registryUrl: string, headers: { [name: string]: string | undefined; } = { 'Authorization': undefined }): Promise<any> {
+export async function fetchPlugins(registryUrl: string, headers?: { [name: string]: string | undefined; }): Promise<che.Plugin[]> {
   try {
     const response = await Axios({
       'method': 'GET',
       'url': `${registryUrl}/plugins/`,
-      'headers': headers
+      'headers': headers ? headers : { 'Authorization': undefined }
     });
-    return response.data;
+    return response.data as che.Plugin[];
   } catch (e) {
     throw new Error('Failed to fetch workspace settings, ' + e);
   }

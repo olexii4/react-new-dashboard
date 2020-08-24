@@ -143,7 +143,7 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
           </TextContent>
         </PageSection>
         <PageSection variant={SECTION_THEME} className='workspace-details-tabs'>
-          <Tabs isFilled activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
+          <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
             <Tab eventKey={0} title='Overview'>
               <br /><p>Tab 1 section</p>
             </Tab>
@@ -159,7 +159,7 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
             <Tab eventKey={4} title='Devfile'>
               <CheProgress isLoading={this.props.isLoading} /><br />
               <TextContent className='workspace-details-editor'>
-                <Text component='h3' className='label'>Workspace</Text>
+                <Text component='h3' className='label'></Text>
                 <DevfileEditor
                   ref={this.devfileEditorRef}
                   devfile={workspace.devfile}

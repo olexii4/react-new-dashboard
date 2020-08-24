@@ -22,7 +22,7 @@ import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
 import { language, conf } from 'monaco-languages/release/esm/yaml/yaml';
 import * as yamlLanguageServer from 'yaml-language-server';
 import { registerCustomThemes, DEFAULT_CHE_THEME } from '../../services/monaco-theme-register';
-import { load, dump } from 'js-yaml';
+import { safeLoad, safeDump } from 'js-yaml';
 import $ from 'jquery';
 
 import './DevfileEditor.styl';
@@ -149,7 +149,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
   }
 
   private stringify(devfile: che.WorkspaceDevfile): string {
-    return dump(devfile, { 'indent': 1 });
+    return safeDump(devfile);
   }
 
   public componentDidUpdate(): void {
@@ -219,7 +219,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
       <div className='devfile-editor'>
         <div className='monaco'>&nbsp;</div>
         <div className='error'>{errorMessage}</div>
-        <a target='_blank' rel='noopener noreferrer' href={href}>Docs: Devfile Structure</a>
+        <a target='_blank' rel='noopener noreferrer' href={href}>Devfile Documentation</a>
       </div>
     );
   }
@@ -259,7 +259,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
 
     let devfile: che.WorkspaceDevfile;
     try {
-      devfile = load(newValue);
+      devfile = safeLoad(newValue);
     } catch (e) {
       console.error('DevfileEditor parse error', e);
       return;
@@ -314,7 +314,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
         const document = createDocument(model);
         return yamlService.doComplete(document, m2p.asPosition(position.lineNumber, position.column), true)
           .then(list => {
-            const completionResult: any = p2m.asCompletionResult(list, {} as any);
+            const completionResult = p2m.asCompletionResult(list, {} as monaco.IRange);
             if (!completionResult || !completionResult.suggestions) {
               return completionResult;
             }
@@ -329,9 +329,9 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
             return { suggestions };
           });
       },
-      resolveCompletionItem(item: monaco.languages.CompletionItem) {
+      async resolveCompletionItem(model: monaco.editor.ITextModel, range: monaco.IRange, item: monaco.languages.CompletionItem) {
         return yamlService.doResolve(m2p.asCompletionItem(item))
-          .then(result => p2m.asCompletionItem(result, {} as any));
+          .then(result => p2m.asCompletionItem(result, range));
       },
     } as any);
     languages.registerDocumentSymbolProvider(LANGUAGE_ID, {

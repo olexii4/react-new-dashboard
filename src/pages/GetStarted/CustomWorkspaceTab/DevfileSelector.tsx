@@ -26,15 +26,21 @@ import {
 } from '@patternfly/react-core';
 import { AppState } from '../../../store';
 import * as DevfileRegistriesStore from '../../../store/DevfileRegistries';
+import * as FactoryResolverStore from '../../../store/FactoryResolver';
 import { DevfileSelect } from './DevfileSelect';
 import { DevfileLocationInput } from './DevfileLocationInput';
 import { AlertItem } from '../../../services/types';
+import { safeLoad } from 'js-yaml';
+
+import styles from './DevfileSelector.module.css';
 
 type Props = {
   devfileRegistries: DevfileRegistriesStore.State;
-  onDevfile: (devfile: string) => void;
+  onDevfile: (devfile: che.WorkspaceDevfile) => void;
+  onClear?: () => void;
 }
-  & DevfileRegistriesStore.ActionCreators;
+  & DevfileRegistriesStore.ActionCreators
+  & FactoryResolverStore.ActionCreators;
 type State = {
   alerts: AlertItem[];
   metadata: che.DevfileMetaData[];
@@ -57,41 +63,52 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
     this.devfileLocationRef = React.createRef();
   }
 
-  private onDevfileSelected(meta: che.DevfileMetaData): void {
+  private onDevfileClear(): void {
+    if (this.props.onClear) {
+      this.props.onClear();
+    }
+  }
+
+  private async onDevfileSelected(meta: che.DevfileMetaData): Promise<void> {
     // clear location input
     this.devfileLocationRef.current?.clearInput();
-
     try {
-      this.loadDevfile(meta.links.self);
-    } catch {
-      // noop
+      const devfileContent = await this.props.requestDevfile(meta.links.self);
+      const devfile = safeLoad(devfileContent);
+      this.props.onDevfile(devfile);
+    } catch (e) {
+      let errorMessage = 'Failed to load devfile.';
+      console.warn(errorMessage, e);
+      if (typeof e === 'object' && e.toString) {
+        errorMessage = `${errorMessage} ${e}`;
+      }
+      this.showAlert({
+        key: 'load-devfile-failed',
+        title: errorMessage,
+        variant: AlertVariant.warning,
+      });
+      throw new Error(e);
     }
   }
 
   private async onLocationChanged(location: string): Promise<void> {
     // clear devfile select
     this.devfileSelectRef.current?.clearSelect();
-
     try {
-      await this.loadDevfile(location);
-    } catch {
-      this.devfileLocationRef.current?.invalidateInput();
-    }
-  }
-
-  private async loadDevfile(location: string): Promise<void> {
-    try {
-      const devfileContent = await this.props.requestDevfile(location);
+      const devfileContent = await this.props.requestFactoryResolver(location);
       this.props.onDevfile(devfileContent);
     } catch (e) {
-      console.warn('Failed to load devfile.', e);
-
+      this.devfileLocationRef.current?.invalidateInput();
+      let errorMessage = 'Failed to load factory resolver.';
+      console.warn(errorMessage, e);
+      if (typeof e === 'object' && e.toString) {
+        errorMessage = `${errorMessage} ${e}`;
+      }
       this.showAlert({
-        key: 'load-devfile-failed',
-        title: 'Failed to load devfile.',
+        key: 'load-factory-resolver-failed',
+        title: errorMessage,
         variant: AlertVariant.warning,
       });
-
       throw new Error(e);
     }
   }
@@ -133,13 +150,13 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
           <Flex direction={{ default: 'column', lg: 'row' }} >
             <Flex
               direction={{ default: 'row' }}
-              grow={{ default: 'grow' }}
             >
-              <FlexItem grow={{ default: 'grow' }}>
+              <FlexItem grow={{ default: 'grow' }} className={styles.templateSelector}>
                 <DevfileSelect
                   ref={this.devfileSelectRef}
                   metadata={metadata}
                   onSelect={meta => this.onDevfileSelected(meta)}
+                  onClear={() => this.onDevfileClear()}
                 />
               </FlexItem>
               <span>or</span>
@@ -161,6 +178,7 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
 export default connect(
   (state: AppState) => ({
     devfileRegistries: state.devfileRegistries,
+    factoryResolver: state.factoryResolver,
   }),
-  DevfileRegistriesStore.actionCreators,
+  Object.assign(DevfileRegistriesStore.actionCreators, FactoryResolverStore.actionCreators)
 )(DevfileSelectorFormGroup);

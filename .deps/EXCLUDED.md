@@ -1,6 +1,7 @@
 | Packages | Resolved CQs |
 | --- | --- |
 | `che-dashboard-e2e@1.0.0` | - |
+| `@eclipse-che/api@7.5.0-SNAPSHOT` | - |
 | `websocket@1.0.23` | [CQ22360](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22360) |
 | `@babel/parser@7.10.2` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `@types/axios@0.14.0` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |

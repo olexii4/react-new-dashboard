@@ -11,58 +11,174 @@
  */
 
 import React from 'react';
-import { FormGroup, Tooltip, Switch } from '@patternfly/react-core';
+import {
+  FormGroup,
+  Button,
+  Modal,
+  ModalVariant,
+  Select,
+  SelectOption,
+  SelectVariant,
+  SelectDirection,
+  TextContent,
+  Text
+} from '@patternfly/react-core';
+import { connect } from 'react-redux';
+import { AppState } from '../../../store';
+import * as WorkspaceStore from '../../../store/Workspaces';
+import * as BrandingStore from '../../../store/Branding';
+
+import styles from './StorageType.module.css';
 
 export enum StorageType {
-  'async' = 'Asynchronous',
-  'ephemeral' = 'Ephemeral',
-  'persistent' = 'Persistent',
+  async = 'Asynchronous',
+  ephemeral = 'Ephemeral',
+  persistent = 'Persistent',
 }
 
 type Props = {
-  storageType: StorageType;
-  onChange: (storageType: StorageType) => void;
-};
+  storageType?: StorageType;
+  onChange?: (storageType: StorageType) => void;
+} & {
+  brandingStore: BrandingStore.State;
+  workspaces: WorkspaceStore.WorkspacesState,
+}
 type State = {
-  storageType: StorageType;
+  isOpen?: boolean;
+  selected?: string;
+  isModalOpen?: boolean;
 };
 
 export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
+  storageTypes: StorageType[] = [];
+  preferredType: string;
+  options: any[] = [];
 
   constructor(props: Props) {
     super(props);
 
     this.state = {
-      storageType: this.props.storageType,
+      isOpen: false,
+      isModalOpen: false,
     };
-  }
 
-  private handleChange(storageType: StorageType): void {
-    this.setState({ storageType });
-    this.props.onChange(storageType);
+    const settings = this.props.workspaces.settings;
+    if (settings) {
+      const available_types = settings['che.workspace.storage.available_types'];
+      if (available_types) {
+        this.storageTypes = available_types.split(',') as StorageType[];
+        this.preferredType = settings['che.workspace.storage.preferred_type'];
+        this.storageTypes.forEach(type => {
+          this.options.push({ value: StorageType[type] });
+        });
+      }
+    }
   }
 
   public componentDidUpdate(prevProps: Props): void {
     if (prevProps.storageType !== this.props.storageType) {
-      this.setState({
-        storageType: this.props.storageType,
-      });
+      const selected = this.props.storageType;
+      this.setState({ selected });
     }
   }
 
-  public render(): React.ReactNode {
-    const isTemporary = this.state.storageType;
+  public componentDidMount(): void {
+    const selected = this.props.storageType ? this.props.storageType : this.preferredType;
+    this.setState({ selected });
+  }
 
-    const fieldId = 'storage-type';
+  private handleToggle(isOpen: boolean): void {
+    this.setState({ isOpen });
+  }
+
+  private handleSelect(event, selection): void {
+    if (this.props.onChange) {
+      this.props.onChange(selection);
+    }
+    this.setState({
+      selected: selection,
+      isOpen: false
+    });
+  }
+
+  private handleModalToggle(): void {
+    this.setState(({ isModalOpen }) => ({
+      isModalOpen: !isModalOpen
+    }));
+  }
+
+  private getModalContent(): React.ReactNode {
+    const hasAsync = this.storageTypes.some(type => StorageType[type] === StorageType.async);
+    const getAsync = hasAsync ?
+      <Text><span className={styles.experimentalStorageType}> Experimental feature </span><br />
+        <b>Asynchronous Storage </b>
+        is combination of Ephemeral and Persistent storages. It allows for faster I / O and keeps your changes,
+        it does backup the workspace on stop and restores it on start.</Text> : '';
+    const hasPersistent = this.storageTypes.some(type => StorageType[type] === StorageType.persistent);
+    const getPersistent = hasPersistent ?
+      <Text><b>Persistent Storage</b> is slow I/O but persistent.</Text> : '';
+    const hasEphemeral = this.storageTypes.some(type => StorageType[type] === StorageType.ephemeral);
+    const getEphemeral = hasEphemeral ?
+      <Text><b>Ephemeral Storage</b> allows for faster I/O but may have limited
+        storage and is not persistent.</Text> : '';
+    const href = this.props.brandingStore.data.docs.storageTypes;
+
+    return (<TextContent>
+      {getPersistent}
+      {getEphemeral}
+      {getAsync}
+      <Text><a rel="noreferrer" target="_blank" href={href}>Open documentation page</a></Text>
+    </TextContent>);
+  }
+
+  public render(): React.ReactNode {
+    const { isOpen, selected, isModalOpen } = this.state;
+
     return (
       <FormGroup
         label="Storage Type"
-        fieldId={fieldId}
+        fieldId="storage-type"
       >
-
+        <Select
+          className={styles.storageTypeSelector}
+          aria-label="Storage Type Selector"
+          aria-labelledby="storage-type-selector-id-1"
+          variant={SelectVariant.single}
+          direction={SelectDirection.down}
+          onToggle={_isOpen => this.handleToggle(_isOpen)}
+          onSelect={(event, selection) => this.handleSelect(event, selection)}
+          selections={selected}
+          isOpen={isOpen}
+        >
+          {this.options.map((option, index) => (
+            <SelectOption
+              key={`storage-type-selector-option-${index}`}
+              value={option.value}
+              isPlaceholder={option.isPlaceholder}
+            />
+          ))}
+        </Select>
+        <Button variant="link" onClick={() => this.handleModalToggle()}>
+          Learn more about storage types
+        </Button>
+        <Modal
+          variant={ModalVariant.small}
+          isOpen={isModalOpen}
+          aria-label="Storage types info"
+          showClose={true}
+          aria-describedby="storage-types-info"
+          onClose={() => this.handleModalToggle()}
+        >
+          {this.getModalContent()}
+        </Modal>
       </FormGroup>
     );
   }
-
 }
 
+export default connect(
+  (state: AppState) => ({
+    brandingStore: state.branding,
+    workspaces: state.workspaces,
+  }),
+)(StorageTypeFormGroup);

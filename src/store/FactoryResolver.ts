@@ -12,47 +12,47 @@
 
 import { Action, Reducer } from 'redux';
 import { AppThunkAction, AppState } from './';
-import { fetchKubernetesNamespace } from '../services/api/kubernetes-namespace';
+import { fetchFactoryResolver } from '../services/api/factory-resolver';
 
 export interface State {
   isLoading: boolean;
-  namespaces: che.KubernetesNamespace[];
+  resolver: { location?: string; devfile?: che.WorkspaceDevfile; }
 }
 
-interface RequestNamespacesAction {
-  type: 'REQUEST_NAMESPACES';
+interface RequestFactoryResolverAction {
+  type: 'REQUEST_FACTORY_RESOLVER';
 }
 
-interface ReceiveNamespacesAction {
-  type: 'RECEIVE_NAMESPACES';
-  namespaces: che.KubernetesNamespace[];
+interface ReceiveFactoryResolverAction {
+  type: 'RECEIVE_FACTORY_RESOLVER';
+  resolver: { location?: string; devfile?: che.WorkspaceDevfile; }
 }
 
-type KnownAction = RequestNamespacesAction
-  | ReceiveNamespacesAction;
+type KnownAction = RequestFactoryResolverAction
+  | ReceiveFactoryResolverAction;
 
 // todo proper type instead of 'any'
 export type ActionCreators = {
-  requestNamespaces: () => any;
+  requestFactoryResolver: (location: string) => any;
 };
 
 export const actionCreators: ActionCreators = {
 
-  requestNamespaces: (): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<Array<che.KubernetesNamespace>> => {
+  requestFactoryResolver: (location: string): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<che.WorkspaceDevfile> => {
     const appState: AppState = getState();
     if (!appState || !appState.infrastructureNamespace) {
       // todo throw a nice error
       throw Error('something unexpected happened');
     }
 
-    dispatch({ type: 'REQUEST_NAMESPACES' });
+    dispatch({ type: 'REQUEST_FACTORY_RESOLVER' });
 
     try {
-      const namespaces = await fetchKubernetesNamespace();
-      dispatch({ type: 'RECEIVE_NAMESPACES', namespaces });
-      return namespaces;
+      const devfile: che.WorkspaceDevfile = await fetchFactoryResolver(location);
+      dispatch({ type: 'RECEIVE_FACTORY_RESOLVER', resolver: { location: location, devfile: devfile } });
+      return devfile;
     } catch (e) {
-      throw new Error('Failed to request list of available kubernetes namespaces, \n' + e);
+      throw new Error('Failed to request factory resolver, \n' + e);
     }
   },
 
@@ -60,7 +60,7 @@ export const actionCreators: ActionCreators = {
 
 const unloadedState: State = {
   isLoading: false,
-  namespaces: [],
+  resolver: {}
 };
 
 export const reducer: Reducer<State> = (state: State | undefined, incomingAction: Action): State => {
@@ -70,13 +70,13 @@ export const reducer: Reducer<State> = (state: State | undefined, incomingAction
 
   const action = incomingAction as KnownAction;
   switch (action.type) {
-    case 'REQUEST_NAMESPACES':
+    case 'REQUEST_FACTORY_RESOLVER':
       return Object.assign({}, state, {
         isLoading: true,
       });
-    case 'RECEIVE_NAMESPACES':
+    case 'RECEIVE_FACTORY_RESOLVER':
       return Object.assign({}, state, {
-        namespaces: action.namespaces,
+        plugins: action.resolver,
       });
     default:
       return state;

@@ -207,7 +207,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
           <Title headingLevel={'h1'} >{title}</Title>
         </PageSection>
         <PageSection variant={PageSectionVariants.light} padding={{ default: 'noPadding' }}>
-          <Tabs isFilled
+          <Tabs
             activeKey={activeTabKey}
             onSelect={(event, tabKey) => this.handleTabClick(event, tabKey)}>
             <Tab eventKey={GET_STARTED_TAB_KEY}

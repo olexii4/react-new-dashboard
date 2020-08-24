@@ -126,6 +126,10 @@ describe('Navigation Recent List', () => {
 
 function createFakeStore(workspaces: che.Workspace[]): Store {
   const initialState: AppState = {
+    factoryResolver: {
+      isLoading: false,
+      resolver: {},
+    },
     plugins: {
       isLoading: false,
       plugins: [],

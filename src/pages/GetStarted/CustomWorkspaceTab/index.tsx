@@ -12,17 +12,11 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { load } from 'js-yaml';
-import {
-  Button,
-  Form,
-  PageSection,
-  PageSectionVariants, Tab, TextContent,
-} from '@patternfly/react-core';
+import { Button, Form, PageSection, PageSectionVariants, } from '@patternfly/react-core';
 import { AppState } from '../../../store';
 import DevfileEditor, { DevfileEditor as Editor } from '../../../components/DevfileEditor';
 import * as WorkspaceStore from '../../../store/Workspaces';
-import { StorageTypeFormGroup } from './StorageType';
+import StorageTypeFormGroup, { StorageType } from './StorageType';
 import { WorkspaceNameFormGroup } from './WorkspaceName';
 import DevfileSelectorFormGroup from './DevfileSelector';
 import InfrastructureNamespaceFormGroup from './InfrastructureNamespace';
@@ -32,7 +26,7 @@ type Props = {
   onDevfile: (devfile: che.WorkspaceDevfile, InfrastructureNamespace: string | undefined) => Promise<void>;
 };
 type State = {
-  isTemporary: boolean;
+  storageType: StorageType;
   devfile: che.WorkspaceDevfile;
   namespace?: che.KubernetesNamespace;
   generateName?: string;
@@ -46,34 +40,26 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const isTemporary = this.props.workspaces.settings['che.workspace.persist_volumes.default'] === 'false';
-    const generateName = 'wksp-';
-    const devfile = this.buildInitialDevfile(isTemporary, generateName);
-
-    this.state = {
-      isTemporary,
-      devfile,
-      generateName,
-      workspaceName: '',
-    };
-
+    const devfile = this.buildInitialDevfile();
+    const storageType = this.getStorageType(devfile);
+    const workspaceName = devfile.metadata.name ? devfile.metadata.name : '';
+    const generateName = !workspaceName ? devfile.metadata.generateName : '';
+    this.state = { devfile, storageType, generateName, workspaceName };
     this.devfileEditorRef = React.createRef<Editor>();
   }
 
-  private buildInitialDevfile(isTemporary: boolean, generateName: string): che.WorkspaceDevfile {
+  private buildInitialDevfile(generateName?: string): che.WorkspaceDevfile {
     const devfile = {
       apiVersion: '1.0.0',
       metadata: {
-        generateName,
+        generateName: generateName ? generateName : 'wksp-'
       },
     } as che.WorkspaceDevfile;
-
-    if (isTemporary) {
+    if (this.props.workspaces.settings['che.workspace.persist_volumes.default'] === 'false') {
       devfile.attributes = {
-        persistVolumes: 'false',
+        persistVolumes: 'false'
       };
     }
-
     return devfile;
   }
 
@@ -81,67 +67,109 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
     this.setState({ namespace });
   }
 
-  private handleWorkspaceNameChange(name: string): void {
-    const devfile = this.state.devfile;
-
-    devfile.metadata.name = name;
-
+  private handleWorkspaceNameChange(workspaceName: string, workspaceDevfile?: che.WorkspaceDevfile): void {
+    const devfile = workspaceDevfile ? workspaceDevfile : this.state.devfile;
+    if (!devfile) {
+      return;
+    }
+    if (workspaceName) {
+      devfile.metadata.name = workspaceName;
+      delete devfile.metadata.generateName;
+      const generateName = '';
+      this.setState({ workspaceName, generateName });
+    }
     this.setState({ devfile });
-    this.updateEditor(devfile);
+    this.updateEditor();
   }
 
-  private handleTemporaryStorageChange(isTemporary: boolean): void {
-    const devfile = this.state.devfile;
-
-    if (isTemporary) {
-      if (!devfile.attributes) {
-        devfile.attributes = {};
-      }
-      devfile.attributes.persistVolumes = 'false';
-    } else {
-      if (!devfile.attributes) {
-        return;
-      }
-      delete devfile.attributes.persistVolumes;
-      if (Object.keys(devfile.attributes).length === 0) {
-        delete devfile.attributes;
-      }
+  private handleStorageChange(storageType: StorageType, workspaceDevfile?: che.WorkspaceDevfile): void {
+    const devfile = workspaceDevfile ? workspaceDevfile : this.state.devfile;
+    if (!devfile) {
+      return;
+    }
+    switch (storageType) {
+      case StorageType.persistent:
+        if (devfile.attributes) {
+          delete devfile.attributes.persistVolumes;
+          delete devfile.attributes.asyncPersist;
+          if (Object.keys(devfile.attributes).length === 0) {
+            delete devfile.attributes;
+          }
+        }
+        break;
+      case StorageType.ephemeral:
+        if (!devfile.attributes) {
+          devfile.attributes = {};
+        }
+        devfile.attributes.persistVolumes = 'false';
+        delete devfile.attributes.asyncPersist;
+        break;
+      case StorageType.async:
+        if (!devfile.attributes) {
+          devfile.attributes = {};
+        }
+        devfile.attributes.persistVolumes = 'false';
+        devfile.attributes.asyncPersist = 'true';
+        break;
     }
 
+    this.setState({ storageType, devfile });
+    this.updateEditor();
+  }
+
+  private handleNewDevfile(devfileContent?: che.WorkspaceDevfile): void {
+    const devfile = devfileContent ? devfileContent : this.buildInitialDevfile();
+    const { storageType, workspaceName, namespace } = this.state;
     this.setState({ devfile });
+    if (namespace) {
+      this.handleInfrastructureNamespaceChange(namespace);
+    }
+    if (workspaceName) {
+      this.handleWorkspaceNameChange(workspaceName, devfile);
+    }
+    if (storageType) {
+      this.handleStorageChange(storageType, devfile);
+    }
     this.updateEditor(devfile);
   }
 
-  private handleNewDevfile(devfileContent: string): void {
-    const devfile = load(devfileContent);
-    this.setState({ devfile });
-    this.updateEditor(devfile);
+  private getStorageType(devfile: che.WorkspaceDevfile): StorageType {
+    let storageType: StorageType;
+    // storage type
+    if (devfile.attributes && devfile.attributes.persistVolumes === 'false') {
+      const isAsync = devfile.attributes && devfile.attributes.asyncPersist === 'true';
+      if (isAsync) {
+        storageType = StorageType.async;
+      } else {
+        storageType = StorageType.ephemeral;
+      }
+    } else {
+      storageType = StorageType.persistent;
+    }
+    return storageType;
   }
 
   private handleDevfileChange(devfile: che.WorkspaceDevfile, isValid: boolean): void {
     if (!isValid) {
       return;
     }
-
-    // temporary storage
-    const isTemporary = !!devfile.attributes && devfile.attributes?.persistVolumes === 'false';
-    if (isTemporary !== this.state.isTemporary) {
-      this.setState({ isTemporary });
+    this.setState({ devfile });
+    const storageType = this.getStorageType(devfile);
+    if (storageType !== this.state.storageType) {
+      this.setState({ storageType });
     }
-
-    // workspace name
     const workspaceName = devfile.metadata.name || '';
+    if (workspaceName !== this.state.workspaceName) {
+      this.setState({ workspaceName });
+    }
     const generateName = devfile.metadata.generateName;
-    if (workspaceName !== this.state.workspaceName || generateName !== this.state.generateName) {
-      this.setState({
-        workspaceName,
-        generateName,
-      });
+    if (generateName !== this.state.generateName) {
+      this.setState({ generateName });
     }
   }
 
-  private updateEditor(devfile: che.WorkspaceDevfile): void {
-    this.devfileEditorRef.current?.updateContent(devfile);
+  private updateEditor(devfile?: che.WorkspaceDevfile): void {
+    this.devfileEditorRef.current?.updateContent(devfile ? devfile : this.state.devfile);
   }
 
   private handleCreate(): Promise<void> {
@@ -149,8 +177,7 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
   }
 
   public render(): React.ReactElement {
-    const { devfile, isTemporary, generateName, workspaceName } = this.state;
-
+    const { devfile, storageType, generateName, workspaceName } = this.state;
     return (
       <React.Fragment>
         <PageSection
@@ -165,10 +192,10 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
               name={workspaceName}
               onChange={_name => this.handleWorkspaceNameChange(_name)}
             />
-            {/*            <StorageTypeFormGroup
-              storageType={isTemporary}
-              onChange={_isTemporary => this.handleTemporaryStorageChange(_isTemporary)}
-            />*/}
+            <StorageTypeFormGroup
+              storageType={storageType}
+              onChange={_storageType => this.handleStorageChange(_storageType)}
+            />
           </Form>
         </PageSection>
         <PageSection
@@ -178,6 +205,7 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
           <Form>
             <DevfileSelectorFormGroup
               onDevfile={devfile => this.handleNewDevfile(devfile)}
+              onClear={() => this.handleNewDevfile()}
             />
           </Form>
         </PageSection>

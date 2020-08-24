@@ -25,7 +25,7 @@ describe('Devfile Selector', () => {
 
   function renderComponent(
     store: Store,
-    handleDevfile: (devfile: string) => void = (): void => undefined,
+    handleDevfile: (devfile: che.WorkspaceDevfile) => void = (): void => undefined,
   ): RenderResult {
     return render(
       <Provider store={store}>
@@ -79,7 +79,6 @@ describe('Devfile Selector', () => {
 
     /* enter devfile location */
     fireEvent.change(locationTextbox, { target: { value: 'http://resource/location' } });
-    fireEvent.click(loadButton);
 
     /* check if select is clear */
     const selected = screen.queryByText('Java Maven');
@@ -92,6 +91,10 @@ describe('Devfile Selector', () => {
 
 function createFakeStore(metadata: che.DevfileMetaData[]): Store {
   const initialState: AppState = {
+    factoryResolver: {
+      isLoading: false,
+      resolver: {},
+    },
     plugins: {
       isLoading: false,
       plugins: [],

@@ -68,6 +68,7 @@
     "yaml-language-server": "^0.7.2"
   },
   "devDependencies": {
+    "@eclipse-che/api": "^7.5.0-SNAPSHOT",
     "@testing-library/dom": "^7.16.2",
     "@testing-library/jest-dom": "^5.10.1",
     "@testing-library/react": "^10.3.0",

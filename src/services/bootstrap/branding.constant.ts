@@ -41,6 +41,7 @@ export type BrandingDocs = {
   converting: string;
   certificate: string;
   faq?: string;
+  storageTypes: string,
 }
 
 export type BrandingWorkspace = {
@@ -98,7 +99,8 @@ export const BRANDING_DEFAULT: BrandingData = {
     organization: 'https://www.eclipse.org/che/docs/organizations.html',
     converting: 'https://www.eclipse.org/che/docs/che-7/converting-a-che-6-workspace-to-a-che-7-devfile/',
     certificate: 'https://www.eclipse.org/che/docs/che-7/setup-che-in-tls-mode-with-self-signed-certificate/',
-    general: 'https://www.eclipse.org/che/docs/che-7'
+    general: 'https://www.eclipse.org/che/docs/che-7',
+    storageTypes: 'https://www.eclipse.org/che/docs/che-7/using-different-type-of-storage/',
   },
   configuration: {
     menu: {

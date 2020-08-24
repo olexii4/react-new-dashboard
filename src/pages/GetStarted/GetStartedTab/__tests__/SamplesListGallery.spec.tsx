@@ -81,6 +81,10 @@ describe('Samples List Gallery', () => {
 
 function createFakeStore(metadata?: che.DevfileMetaData[]): Store {
   const initialState: AppState = {
+    factoryResolver: {
+      isLoading: false,
+      resolver: {},
+    },
     plugins: {
       isLoading: false,
       plugins: [],
