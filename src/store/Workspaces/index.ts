@@ -11,7 +11,7 @@
  */
 
 import { Action, Reducer } from 'redux';
-import { AppThunkAction, AppState } from './';
+import { AppThunkAction, AppState } from '../';
 import {
   createWorkspaceFromDevfile,
   deleteWorkspace,
@@ -20,10 +20,10 @@ import {
   startWorkspace,
   stopWorkspace,
   updateWorkspace,
-} from '../services/api/workspace';
-import { container } from '../inversify.config';
-import { CheJsonRpcApi } from '../services/json-rpc/JsonRpcApiFactory';
-import { JsonRpcMasterApi } from '../services/json-rpc/JsonRpcMasterApi';
+} from '../../services/api/workspace';
+import { container } from '../../inversify.config';
+import { CheJsonRpcApi } from '../../services/json-rpc/JsonRpcApiFactory';
+import { JsonRpcMasterApi } from '../../services/json-rpc/JsonRpcMasterApi';
 
 // This state defines the type of data maintained in the Redux store.
 export interface WorkspacesState {
