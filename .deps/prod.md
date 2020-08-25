@@ -107,6 +107,7 @@
 | [`regexp.prototype.flags@1.3.0`](git://github.com/es-shims/RegExp.prototype.flags.git) | MIT | clearlydefined |
 | [`request-light@0.2.5`](https://github.com/microsoft/node-request-light) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`requires-port@1.0.0`](https://github.com/unshiftio/requires-port) | MIT | clearlydefined |
+| [`reselect@4.0.0`](https://github.com/reduxjs/reselect.git) | MIT | clearlydefined |
 | [`resolve-pathname@3.0.0`](https://github.com/mjackson/resolve-pathname.git) | MIT | clearlydefined |
 | [`safe-buffer@5.2.1`](git://github.com/feross/safe-buffer.git) | MIT | clearlydefined |
 | [`scheduler@0.19.1`](https://github.com/facebook/react.git) | MIT | clearlydefined |
