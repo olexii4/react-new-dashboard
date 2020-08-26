@@ -41,7 +41,6 @@ type Props = {
   WorkspaceState.ActionCreators;
 type State = {
   activePath: string;
-  recent: Array<che.Workspace>;
 };
 
 export class Navigation extends React.Component<Props, State> {
@@ -50,11 +49,9 @@ export class Navigation extends React.Component<Props, State> {
     super(props);
 
     const activePath = this.props.history.location.pathname;
-    const recent = this.props.getRecent(5);
 
     this.state = {
       activePath,
-      recent,
     };
   }
 
@@ -64,7 +61,8 @@ export class Navigation extends React.Component<Props, State> {
 
   public render(): React.ReactElement {
     const { theme } = this.props;
-    const { activePath, recent } = this.state;
+    const { activePath } = this.state;
+    const recent = this.props.getRecent(5);
 
     return (
       <Nav
