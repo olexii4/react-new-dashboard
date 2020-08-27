@@ -64,7 +64,7 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
     const rows = this.props.workspaces.workspaces.map((workspace: che.Workspace) => ({
       cells: [
         <span key={`${workspace.id}_1`} onClick={(): void => onRowClick(workspace)}>
-          <WorkspaceIndicator status={workspace.status} />
+          <WorkspaceIndicator key={`${workspace.id}_1_1`} status={workspace.status} />
           {workspace.namespace}/{workspace.devfile.metadata.name}
         </span>,
         <span key={`${workspace.id}_2`} onClick={(): void => onRowClick(workspace)}>
