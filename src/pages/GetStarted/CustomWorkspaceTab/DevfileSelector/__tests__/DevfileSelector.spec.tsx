@@ -18,8 +18,8 @@ import React from 'react';
 import thunk from 'redux-thunk';
 import { RenderResult, render, screen, fireEvent } from '@testing-library/react';
 import DevfileSelectorFormGroup from '../DevfileSelector';
-import { AppState } from '../../../../store';
-import mockMetadata from '../../../GetStarted/__tests__/devfileMetadata.json';
+import { AppState } from '../../../../../store';
+import mockMetadata from '../../../__tests__/devfileMetadata.json';
 
 describe('Devfile Selector', () => {
 

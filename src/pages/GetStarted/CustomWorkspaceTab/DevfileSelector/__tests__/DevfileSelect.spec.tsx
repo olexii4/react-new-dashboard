@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { RenderResult, render, screen, fireEvent } from '@testing-library/react';
-import mockMetadata from '../../../GetStarted/__tests__/devfileMetadata.json';
+import mockMetadata from '../../../__tests__/devfileMetadata.json';
 import { DevfileSelect } from '../DevfileSelect';
 
 describe('Infrastructure Namespace Select', () => {

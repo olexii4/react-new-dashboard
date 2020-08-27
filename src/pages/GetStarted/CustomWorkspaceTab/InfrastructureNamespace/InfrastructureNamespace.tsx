@@ -14,8 +14,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormGroup, Tooltip, TextInput } from '@patternfly/react-core';
 import { QuestionCircleIcon } from '@patternfly/react-icons';
-import { AppState } from '../../../store';
-import * as InfrastructureNamespaceStore from '../../../store/InfrastructureNamespace';
+import { AppState } from '../../../../store';
+import * as InfrastructureNamespaceStore from '../../../../store/InfrastructureNamespace';
 import { InfrastructureNamespaceSelect } from './InfrastructureNamespaceSelect';
 
 import styles from './InfrastructureNamespace.module.css';

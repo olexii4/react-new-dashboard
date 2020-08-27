@@ -131,21 +131,20 @@ export class WorkspaceNameFormGroup extends React.PureComponent<Props, State> {
         helperTextInvalidIcon={<ExclamationCircleIcon />}
         validated={validated}
       >
-        <div className={styles.workspaceName}>
-          <TextInput
-            value={name}
-            isRequired
-            type="text"
-            id={fieldId}
-            aria-describedby="workspace-name-helper"
-            name="workspace-name"
-            onChange={_name => this.handleChange(_name)}
-            minLength={MIN_LENGTH}
-            maxLength={MAX_LENGTH}
-            placeholder={placeholder}
-            validated={validated}
-          />
-        </div>
+        <TextInput
+          className={styles.workspaceName}
+          value={name}
+          isRequired
+          type="text"
+          id={fieldId}
+          aria-describedby="workspace-name-helper"
+          name="workspace-name"
+          onChange={_name => this.handleChange(_name)}
+          minLength={MIN_LENGTH}
+          maxLength={MAX_LENGTH}
+          placeholder={placeholder}
+          validated={validated}
+        />
       </FormGroup>
     );
   }

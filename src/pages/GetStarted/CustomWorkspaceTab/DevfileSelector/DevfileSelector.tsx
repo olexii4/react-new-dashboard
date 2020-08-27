@@ -24,12 +24,12 @@ import {
   TextContent,
   TextVariants,
 } from '@patternfly/react-core';
-import { AppState } from '../../../store';
-import * as DevfileRegistriesStore from '../../../store/DevfileRegistries';
-import * as FactoryResolverStore from '../../../store/FactoryResolver';
+import { AppState } from '../../../../store';
+import * as DevfileRegistriesStore from '../../../../store/DevfileRegistries';
+import * as FactoryResolverStore from '../../../../store/FactoryResolver';
 import { DevfileSelect } from './DevfileSelect';
 import { DevfileLocationInput } from './DevfileLocationInput';
-import { AlertItem } from '../../../services/types';
+import { AlertItem } from '../../../../services/types';
 import { safeLoad } from 'js-yaml';
 
 import styles from './DevfileSelector.module.css';
@@ -63,13 +63,13 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
     this.devfileLocationRef = React.createRef();
   }
 
-  private onDevfileClear(): void {
+  private handleDevfileClear(): void {
     if (this.props.onClear) {
       this.props.onClear();
     }
   }
 
-  private async onDevfileSelected(meta: che.DevfileMetaData): Promise<void> {
+  private async handleDevfileSelect(meta: che.DevfileMetaData): Promise<void> {
     // clear location input
     this.devfileLocationRef.current?.clearInput();
     try {
@@ -79,7 +79,7 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
     } catch (e) {
       let errorMessage = 'Failed to load devfile.';
       console.warn(errorMessage, e);
-      if (typeof e === 'object' && e.toString) {
+      if (e) {
         errorMessage = `${errorMessage} ${e}`;
       }
       this.showAlert({
@@ -101,7 +101,7 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
       this.devfileLocationRef.current?.invalidateInput();
       let errorMessage = 'Failed to load factory resolver.';
       console.warn(errorMessage, e);
-      if (typeof e === 'object' && e.toString) {
+      if (e) {
         errorMessage = `${errorMessage} ${e}`;
       }
       this.showAlert({
@@ -155,8 +155,8 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
                 <DevfileSelect
                   ref={this.devfileSelectRef}
                   metadata={metadata}
-                  onSelect={meta => this.onDevfileSelected(meta)}
-                  onClear={() => this.onDevfileClear()}
+                  onSelect={meta => this.handleDevfileSelect(meta)}
+                  onClear={() => this.handleDevfileClear()}
                 />
               </FlexItem>
               <span>or</span>
