@@ -16,7 +16,7 @@ import { Button, Form, PageSection, PageSectionVariants, } from '@patternfly/rea
 import { AppState } from '../../../store';
 import DevfileEditor, { DevfileEditor as Editor } from '../../../components/DevfileEditor';
 import * as WorkspaceStore from '../../../store/Workspaces';
-import StorageTypeFormGroup, { StorageType } from './StorageType/storageType';
+import StorageTypeFormGroup, { StorageType } from './StorageType';
 import { WorkspaceNameFormGroup } from './WorkspaceName';
 import DevfileSelectorFormGroup from './DevfileSelector';
 import InfrastructureNamespaceFormGroup from './InfrastructureNamespace';
