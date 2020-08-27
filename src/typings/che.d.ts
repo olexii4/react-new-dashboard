@@ -64,7 +64,7 @@ declare namespace che {
 
   export interface WorkspaceConfigAttributes {
     persistVolumes?: 'false' | 'true';
-    asyncPersist?: any;
+    asyncPersist?: 'false' | 'true';
     editor?: string;
     plugins?: string;
   }

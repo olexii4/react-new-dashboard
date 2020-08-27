@@ -16,10 +16,10 @@ import { Button, Form, PageSection, PageSectionVariants, } from '@patternfly/rea
 import { AppState } from '../../../store';
 import DevfileEditor, { DevfileEditor as Editor } from '../../../components/DevfileEditor';
 import * as WorkspaceStore from '../../../store/Workspaces';
-import StorageTypeFormGroup, { StorageType } from './StorageType/StorageType';
-import { WorkspaceNameFormGroup } from './WorkspaceName/WorkspaceName';
-import DevfileSelectorFormGroup from './DevfileSelector/DevfileSelector';
-import InfrastructureNamespaceFormGroup from './InfrastructureNamespace/InfrastructureNamespace';
+import StorageTypeFormGroup, { StorageType } from './StorageType/storageType';
+import { WorkspaceNameFormGroup } from './WorkspaceName';
+import DevfileSelectorFormGroup from './DevfileSelector';
+import InfrastructureNamespaceFormGroup from './InfrastructureNamespace';
 
 type Props = {
   workspaces: WorkspaceStore.WorkspacesState,
@@ -79,7 +79,7 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
       this.setState({ workspaceName, generateName });
     }
     this.setState({ devfile });
-    this.updateEditor();
+    this.updateEditor(devfile);
   }
 
   private handleStorageChange(storageType: StorageType, workspaceDevfile?: che.WorkspaceDevfile): void {
@@ -114,23 +114,24 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
     }
 
     this.setState({ storageType, devfile });
-    this.updateEditor();
+    this.updateEditor(devfile);
   }
 
   private handleNewDevfile(devfileContent?: che.WorkspaceDevfile): void {
     const devfile = devfileContent ? devfileContent : this.buildInitialDevfile();
-    const { storageType, workspaceName, namespace } = this.state;
-    this.setState({ devfile });
-    if (namespace) {
-      this.handleInfrastructureNamespaceChange(namespace);
-    }
+    const { storageType, workspaceName } = this.state;
+
     if (workspaceName) {
       this.handleWorkspaceNameChange(workspaceName, devfile);
     }
     if (storageType) {
       this.handleStorageChange(storageType, devfile);
     }
-    this.updateEditor(devfile);
+
+    if (!workspaceName && !storageType) {
+      this.setState({ devfile });
+      this.updateEditor(devfile);
+    }
   }
 
   private getStorageType(devfile: che.WorkspaceDevfile): StorageType {
@@ -168,8 +169,8 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
     }
   }
 
-  private updateEditor(devfile?: che.WorkspaceDevfile): void {
-    this.devfileEditorRef.current?.updateContent(devfile ? devfile : this.state.devfile);
+  private updateEditor(devfile: che.WorkspaceDevfile): void {
+    this.devfileEditorRef.current?.updateContent(devfile);
   }
 
   private handleCreate(): Promise<void> {

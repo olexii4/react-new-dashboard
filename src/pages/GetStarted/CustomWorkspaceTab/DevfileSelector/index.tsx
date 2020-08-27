@@ -32,7 +32,7 @@ import { DevfileLocationInput } from './DevfileLocationInput';
 import { AlertItem } from '../../../../services/types';
 import { safeLoad } from 'js-yaml';
 
-import styles from './DevfileSelector.module.css';
+import styles from './index.module.css';
 
 type Props = {
   devfileRegistries: DevfileRegistriesStore.State;
@@ -79,9 +79,7 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
     } catch (e) {
       let errorMessage = 'Failed to load devfile.';
       console.warn(errorMessage, e);
-      if (e) {
-        errorMessage = `${errorMessage} ${e}`;
-      }
+      errorMessage += ` ${e}`;
       this.showAlert({
         key: 'load-devfile-failed',
         title: errorMessage,
@@ -99,11 +97,9 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
       this.props.onDevfile(devfileContent);
     } catch (e) {
       this.devfileLocationRef.current?.invalidateInput();
-      let errorMessage = 'Failed to load factory resolver.';
+      let errorMessage = 'Failed to resolve or load the devfile.';
       console.warn(errorMessage, e);
-      if (e) {
-        errorMessage = `${errorMessage} ${e}`;
-      }
+      errorMessage += ` ${e}`;
       this.showAlert({
         key: 'load-factory-resolver-failed',
         title: errorMessage,

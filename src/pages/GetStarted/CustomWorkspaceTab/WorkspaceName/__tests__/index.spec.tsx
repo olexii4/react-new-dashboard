@@ -12,7 +12,7 @@
 
 import React from 'react';
 import { RenderResult, render, screen, fireEvent } from '@testing-library/react';
-import { WorkspaceNameFormGroup } from '../WorkspaceName';
+import { WorkspaceNameFormGroup } from '../';
 
 describe('Workspace Name Input', () => {
 

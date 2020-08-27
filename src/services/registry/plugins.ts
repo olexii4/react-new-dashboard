@@ -10,11 +10,14 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import Axios from 'axios';
+import axios from 'axios';
+
+// create new instance of `axios` to avoid adding an authorization header
+const axiosInstance = axios.create();
 
 export async function fetchPlugins(registryUrl: string, headers?: { [name: string]: string | undefined; }): Promise<che.Plugin[]> {
   try {
-    const response = await Axios({
+    const response = await axiosInstance.request({
       'method': 'GET',
       'url': `${registryUrl}/plugins/`,
       'headers': headers ? headers : { 'Authorization': undefined }

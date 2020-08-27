@@ -14,7 +14,7 @@ import React from 'react';
 import { FormGroup, TextInput, ValidatedOptions } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 
-import styles from './WorkspaceName.module.css';
+import styles from './index.module.css';
 
 const MIN_LENGTH = 3;
 const MAX_LENGTH = 100;

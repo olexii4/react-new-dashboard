@@ -17,7 +17,7 @@ import mockAxios from 'axios';
 import React from 'react';
 import thunk from 'redux-thunk';
 import { RenderResult, render, screen, fireEvent } from '@testing-library/react';
-import DevfileSelectorFormGroup from '../DevfileSelector';
+import DevfileSelectorFormGroup from '../';
 import { AppState } from '../../../../../store';
 import mockMetadata from '../../../__tests__/devfileMetadata.json';
 

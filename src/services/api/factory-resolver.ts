@@ -20,19 +20,11 @@ export async function fetchFactoryResolver(url: string, headers?: { [name: strin
       'headers': headers ? headers : { 'Authorization': undefined },
       'data': { url }
     });
+
     if (!response || !response.data || !response.data.devfile) {
-      return Promise.reject({
-        data: {
-          message: 'The specified link does not contain a valid Devfile.'
-        }
-      });
-    }
-    if (response.data.source === 'repo') {
-      return Promise.reject({
-        data: {
-          message: 'devfile.yaml not found in the specified GitHub repository root.'
-        }
-      });
+      throw new Error('The specified link does not contain a valid Devfile.');
+    } else if (response.data.source === 'repo') {
+      throw new Error('devfile.yaml not found in the specified GitHub repository root.');
     }
 
     return response.data.devfile;

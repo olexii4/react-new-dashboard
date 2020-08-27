@@ -12,7 +12,7 @@
 
 import { Action, Reducer } from 'redux';
 import { AppThunkAction, AppState } from './';
-import { fetchPlugins } from '../services/api/plugins';
+import { fetchPlugins } from '../services/registry/plugins';
 
 export interface State {
   isLoading: boolean;

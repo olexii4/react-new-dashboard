@@ -18,7 +18,7 @@ import { AppState } from '../../../../store';
 import * as InfrastructureNamespaceStore from '../../../../store/InfrastructureNamespace';
 import { InfrastructureNamespaceSelect } from './InfrastructureNamespaceSelect';
 
-import styles from './InfrastructureNamespace.module.css';
+import styles from './index.module.css';
 
 type Props = {
   onChange: (namespace: che.KubernetesNamespace) => void;

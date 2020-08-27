@@ -28,7 +28,7 @@ import { AppState } from '../../../../store';
 import * as WorkspaceStore from '../../../../store/Workspaces';
 import * as BrandingStore from '../../../../store/Branding';
 
-import styles from './StorageType.module.css';
+import styles from './index.module.css';
 
 export enum StorageType {
   async = 'Asynchronous',
@@ -52,10 +52,7 @@ type State = {
 export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
   storageTypes: StorageType[] = [];
   preferredType: string;
-  options: {
-    value: string;
-    isPlaceholder?: boolean;
-  }[] = [];
+  options: string[] = [];
 
   constructor(props: Props) {
     super(props);
@@ -73,7 +70,7 @@ export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
         this.preferredType = settings['che.workspace.storage.preferred_type'];
         this.storageTypes.forEach(type => {
           const value = StorageType[type];
-          this.options.push({ value });
+          this.options.push(value);
         });
       }
     }
@@ -113,18 +110,18 @@ export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
 
   private getModalContent(): React.ReactNode {
     const hasAsync = this.storageTypes.some(type => StorageType[type] === StorageType.async);
-    const asyncTypeDescr = (hasAsync ?
-      <Text><span className={styles.experimentalStorageType}> Experimental feature </span><br />
+    const asyncTypeDescr = hasAsync ?
+      (<Text><span className={styles.experimentalStorageType}> Experimental feature </span><br />
         <b>Asynchronous Storage </b>
         is combination of Ephemeral and Persistent storages. It allows for faster I / O and keeps your changes,
-        it does backup the workspace on stop and restores it on start.</Text> : '');
+        it does backup the workspace on stop and restores it on start.</Text>) : '';
     const hasPersistent = this.storageTypes.some(type => StorageType[type] === StorageType.persistent);
-    const persistentTypeDescr = (hasPersistent ?
-      <Text><b>Persistent Storage</b> is slow I/O but persistent.</Text> : '');
+    const persistentTypeDescr = hasPersistent ?
+      (<Text><b>Persistent Storage</b> is slow I/O but persistent.</Text>) : '';
     const hasEphemeral = this.storageTypes.some(type => StorageType[type] === StorageType.ephemeral);
-    const ephemeralTypeDescr = (hasEphemeral ?
-      <Text><b>Ephemeral Storage</b> allows for faster I/O but may have limited
-        storage and is not persistent.</Text> : '');
+    const ephemeralTypeDescr = hasEphemeral ?
+      (<Text><b>Ephemeral Storage</b> allows for faster I/O but may have limited
+        storage and is not persistent.</Text>) : '';
     const href = this.props.brandingStore.data.docs.storageTypes;
 
     return (<TextContent>
@@ -154,11 +151,10 @@ export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
           selections={selected}
           isOpen={isOpen}
         >
-          {this.options.map((option) => (
+          {this.options.map((option: string) => (
             <SelectOption
-              key={option.value}
-              value={option.value}
-              isPlaceholder={option.isPlaceholder}
+              key={option}
+              value={option}
             />
           ))}
         </Select>
