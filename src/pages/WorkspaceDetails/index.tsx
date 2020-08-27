@@ -116,6 +116,7 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
 
   private updateEditor(devfile: che.WorkspaceDevfile): void {
     this.devfileEditorRef.current?.updateContent(devfile);
+    this.setState({ isDevfileValid: true });
   }
 
   public render(): React.ReactElement {
@@ -209,8 +210,13 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
   }
 
   // TODO rework this temporary solution
+  private sortObject(o: che.WorkspaceDevfile): che.WorkspaceDevfile {
+    return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {} as che.WorkspaceDevfile);
+  }
+
+  // TODO rework this temporary solution
   private isEqualObject(a: che.WorkspaceDevfile, b: che.WorkspaceDevfile): boolean {
-    return JSON.stringify(a, Object.keys(a).sort()) == JSON.stringify(b, Object.keys(b).sort());
+    return JSON.stringify(this.sortObject(a)) == JSON.stringify(this.sortObject(b));
   }
 }
 
