@@ -102,6 +102,13 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
     const items = this.props.plugins.plugins;
     const components = jsonSchema && jsonSchema.properties ? jsonSchema.properties.components : undefined;
     if (components) {
+      const mountSources = components.items.properties.mountSources;
+
+      // TODO remove this temporary solution
+      if (mountSources && mountSources.default === 'false') {
+        delete mountSources.default;
+      }
+
       jsonSchema.additionalProperties = true;
       if (!components.defaultSnippets) {
         components.defaultSnippets = [];

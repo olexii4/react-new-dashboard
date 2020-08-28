@@ -13,16 +13,24 @@
 import React from 'react';
 import { RenderResult, render, screen } from '@testing-library/react';
 import TemporaryStorageSwitch from '../TemporaryStorageSwitch';
+import thunk from 'redux-thunk';
+import createMockStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
+import { Store } from 'redux';
+import { AppState } from '../../../../store';
+import mockMetadata from '../../__tests__/devfileMetadata.json';
 
 describe('Temporary Storage Switch', () => {
 
   const mockOnChange = jest.fn();
 
-  function renderSwitch(persistVolumesDefault: 'true' | 'false'): RenderResult {
+  function renderSwitch(store: Store, persistVolumesDefault: 'true' | 'false'): RenderResult {
     return render(
-      <TemporaryStorageSwitch
-        persistVolumesDefault={persistVolumesDefault}
-        onChange={mockOnChange} />
+      <Provider store={store}>
+        <TemporaryStorageSwitch
+          persistVolumesDefault={persistVolumesDefault}
+          onChange={mockOnChange} />
+      </Provider>
     );
   }
 
@@ -31,7 +39,8 @@ describe('Temporary Storage Switch', () => {
   });
 
   it('should be initially switched on', () => {
-    renderSwitch('false');
+    const store = createFakeStoreWithMetadata();
+    renderSwitch(store, 'false');
     const switchInput = screen.getByRole('checkbox') as HTMLInputElement;
     expect(switchInput.checked).toBeTruthy();
 
@@ -41,7 +50,8 @@ describe('Temporary Storage Switch', () => {
   });
 
   it('should be initially switched off', () => {
-    renderSwitch('true');
+    const store = createFakeStoreWithMetadata();
+    renderSwitch(store, 'true');
     const switchInput = screen.getByRole('checkbox') as HTMLInputElement;
     expect(switchInput.checked).toBeFalsy();
 
@@ -51,3 +61,38 @@ describe('Temporary Storage Switch', () => {
   });
 
 });
+
+function createFakeStore(metadata?: che.DevfileMetaData[]): Store {
+  const initialState: AppState = {
+    factoryResolver: {
+      isLoading: false,
+      resolver: {},
+    },
+    plugins: {
+      isLoading: false,
+      plugins: [],
+    },
+    workspaces: {} as any,
+    branding: {
+      data: {
+        docs: {
+          storageTypes: 'https://docs.location'
+        }
+      }
+    } as any,
+    devfileMetadataFilter: {
+      filter: undefined,
+      found: metadata || []
+    },
+    devfileRegistries: {} as any,
+    user: {} as any,
+    infrastructureNamespace: {} as any,
+  };
+  const middleware = [thunk];
+  const mockStore = createMockStore(middleware);
+  return mockStore(initialState);
+}
+
+function createFakeStoreWithMetadata(): Store {
+  return createFakeStore(mockMetadata);
+}

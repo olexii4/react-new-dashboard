@@ -74,7 +74,13 @@ function createFakeStore(metadata?: che.DevfileMetaData[]): Store {
       plugins: [],
     },
     workspaces: {} as any,
-    branding: {} as any,
+    branding: {
+      data: {
+        docs: {
+          storageTypes: 'https://docs.location'
+        }
+      }
+    } as any,
     devfileMetadataFilter: {
       filter: undefined,
       found: metadata || []
