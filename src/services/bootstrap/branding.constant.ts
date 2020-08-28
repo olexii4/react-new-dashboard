@@ -42,6 +42,7 @@ export type BrandingDocs = {
   certificate: string;
   faq?: string;
   storageTypes: string,
+  webSocketTroubleshooting: string,
 }
 
 export type BrandingWorkspace = {
@@ -100,7 +101,8 @@ export const BRANDING_DEFAULT: BrandingData = {
     converting: 'https://www.eclipse.org/che/docs/che-7/converting-a-che-6-workspace-to-a-che-7-devfile/',
     certificate: 'https://www.eclipse.org/che/docs/che-7/setup-che-in-tls-mode-with-self-signed-certificate/',
     general: 'https://www.eclipse.org/che/docs/che-7',
-    storageTypes: 'https://www.eclipse.org/che/docs/che-7/using-different-type-of-storage/',
+    storageTypes: 'https://www.eclipse.org/che/docs/che-7/configuring-storage-types/',
+    webSocketTroubleshooting: 'https://www.eclipse.org/che/docs/che-7/troubleshooting-network-problems/#troubleshooting-websocket-secure-connections_troubleshooting-network-problems',
   },
   configuration: {
     menu: {

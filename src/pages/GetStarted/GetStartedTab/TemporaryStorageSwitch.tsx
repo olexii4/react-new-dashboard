@@ -13,14 +13,20 @@
 import React, { FormEvent } from 'react';
 import {
   Switch,
+  Text,
   Tooltip,
   TooltipPosition
 } from '@patternfly/react-core';
+import { connect } from 'react-redux';
+import { AppState } from '../../../store';
+import * as BrandingStore from '../../../store/Branding';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
 type TemporaryStorageSwitchProps = {
   persistVolumesDefault: string;
   onChange: (temporary: boolean) => void;
+} & {
+  brandingStore: BrandingStore.State;
 };
 
 type TemporaryStorageSwitchState = {
@@ -45,6 +51,7 @@ export class TemporaryStorageSwitch extends React.PureComponent<TemporaryStorage
   }
 
   render(): React.ReactElement {
+    const href = this.props.brandingStore.data.docs.storageTypes;
     const isChecked = this.state.isChecked;
     return (
       <React.Fragment>
@@ -59,10 +66,16 @@ export class TemporaryStorageSwitch extends React.PureComponent<TemporaryStorage
         <span style={{ marginLeft: '10px' }}>
           <Tooltip
             id="temporary-storage-tooltip"
+            exitDelay={8000}
             isContentLeftAligned={true}
             position={TooltipPosition.top}
             content={
-              <div>Temporary Storage allows for faster I/O but may have limited storage and is not persistent.</div>
+              <React.Fragment>
+                Temporary Storage allows for faster I/O but may have limited storage and is not persistent.
+                <Text>
+                  <a rel="noreferrer" target="_blank" href={href}>Open documentation page</a>
+                </Text>
+              </React.Fragment>
             }
           >
             <OutlinedQuestionCircleIcon />
@@ -73,3 +86,9 @@ export class TemporaryStorageSwitch extends React.PureComponent<TemporaryStorage
   }
 
 }
+
+export default connect(
+  (state: AppState) => ({
+    brandingStore: state.branding,
+  }),
+)(TemporaryStorageSwitch);

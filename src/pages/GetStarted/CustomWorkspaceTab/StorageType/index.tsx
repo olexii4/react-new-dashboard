@@ -41,7 +41,7 @@ type Props = {
   onChange?: (storageType: StorageType) => void;
 } & {
   brandingStore: BrandingStore.State;
-  workspaces: WorkspaceStore.WorkspacesState,
+  workspaces: WorkspaceStore.WorkspacesState;
 }
 type State = {
   isOpen?: boolean;
