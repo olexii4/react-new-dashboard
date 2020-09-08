@@ -71,6 +71,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
   );
 
   private skipNextOnChange: boolean;
+  private sortKeys: (key1: keyof che.WorkspaceDevfile, key2: keyof che.WorkspaceDevfile) => -1 | 0 | 1;
 
   constructor(props: Props) {
     super(props);
@@ -143,6 +144,28 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
     registerCustomThemes();
     // define the default
     Monaco.editor.setTheme(EDITOR_THEME);
+
+    const sortOrder: Array<keyof che.WorkspaceDevfile> = ['apiVersion', 'metadata', 'attributes', 'projects', 'components', 'commands'];
+    this.sortKeys = (key1, key2) => {
+      const index1 = sortOrder.indexOf(key1);
+      const index2 = sortOrder.indexOf(key2);
+      if (index1 === -1 && index2 === -1) {
+        return 0;
+      }
+      if (index1 === -1) {
+        return 1;
+      }
+      if (index2 === -1) {
+        return -1;
+      }
+      if (index1 < index2) {
+        return -1;
+      }
+      if (index1 > index2) {
+        return 1;
+      }
+      return 0;
+    };
   }
 
   public updateContent(devfile: che.WorkspaceDevfile): void {
@@ -157,6 +180,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
   private stringify(devfile: che.WorkspaceDevfile): string {
     return safeDump(devfile, {
       lineWidth: 9999,
+      sortKeys: this.sortKeys,
     });
   }
 
