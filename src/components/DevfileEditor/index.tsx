@@ -155,7 +155,9 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
   }
 
   private stringify(devfile: che.WorkspaceDevfile): string {
-    return safeDump(devfile);
+    return safeDump(devfile, {
+      lineWidth: 9999,
+    });
   }
 
   public componentDidUpdate(): void {
