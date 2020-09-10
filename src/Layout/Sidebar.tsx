@@ -27,7 +27,6 @@ type Props = {
 export default class Sidebar extends React.PureComponent<Props> {
 
   public render(): React.ReactElement {
-    // todo isManaged?
     const { isManaged, isNavOpen, history, theme } = this.props;
 
     return (
