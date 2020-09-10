@@ -10,8 +10,10 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
+import { Store } from 'redux';
 import { container } from '../../inversify.config';
 import { KeycloakSetup } from './KeycloakSetup';
+import { AppState } from '../../store';
 import * as BrandingStore from '../../store/Branding';
 import * as UserStore from '../../store/User';
 import * as WorkspacesStore from '../../store/Workspaces';
@@ -20,7 +22,6 @@ import * as DevfileMetadataFiltersStore from '../../store/DevfileFilters';
 import * as InfrastructureNamespaceStore from '../../store/InfrastructureNamespace';
 import * as Plugins from '../../store/Plugins';
 import { Keycloak } from '../keycloak/Keycloak';
-import { Store } from 'redux';
 
 /**
  * This class prepares all init data.
@@ -29,9 +30,9 @@ import { Store } from 'redux';
 export class PreloadData {
   private keycloakSetup: KeycloakSetup;
   private keycloak: Keycloak;
-  private store: Store;
+  private store: Store<AppState>;
 
-  constructor(store: Store) {
+  constructor(store: Store<AppState>) {
     this.store = store;
     this.keycloakSetup = container.get(KeycloakSetup);
     this.keycloak = container.get(Keycloak);
@@ -72,7 +73,7 @@ export class PreloadData {
 
   private async updateWorkspaces(): Promise<void> {
     const { requestWorkspaces } = WorkspacesStore.actionCreators;
-    await requestWorkspaces()(this.store.dispatch, this.store.getState);
+    await requestWorkspaces()(this.store.dispatch, this.store.getState, undefined);
   }
 
   private async updatePlugins(settings: che.WorkspaceSettings): Promise<void> {
@@ -87,7 +88,9 @@ export class PreloadData {
 
   private async updateWorkspaceSettings(): Promise<che.WorkspaceSettings> {
     const { requestSettings } = WorkspacesStore.actionCreators;
-    return requestSettings()(this.store.dispatch, this.store.getState);
+    await requestSettings()(this.store.dispatch, this.store.getState, undefined);
+
+    return this.store.getState().workspaces.settings;
   }
 
   private async updateRegistriesMetadata(settings: che.WorkspaceSettings): Promise<void> {
