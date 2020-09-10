@@ -11,15 +11,16 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
-import { Nav } from '@patternfly/react-core';
+import { connect, ConnectedProps } from 'react-redux';
 import { History } from 'history';
+import { Nav } from '@patternfly/react-core';
 
 import { ThemeVariant } from '../themeVariant';
 import { AppState } from '../../store';
 import NavigationMainList from './MainList';
 import NavigationRecentList from './RecentList';
-import * as WorkspaceState from '../../store/Workspaces';
+import * as WorkspacesStore from '../../store/Workspaces';
+import { selectRecentWorkspaces } from '../../store/Workspaces/selectors';
 
 export interface NavigationItemObject {
   to: string,
@@ -32,13 +33,13 @@ export interface NavigationRecentItemObject {
   status: string | undefined;
 }
 
-type Props = {
-  history: History;
-  theme: ThemeVariant;
-} & {
-  workspaceStore: WorkspaceState.State;
-} &
-  WorkspaceState.ActionCreators;
+type Props =
+  MergedProps
+  & {
+    history: History;
+    theme: ThemeVariant;
+  };
+
 type State = {
   activePath: string;
 };
@@ -60,9 +61,10 @@ export class Navigation extends React.Component<Props, State> {
   }
 
   public render(): React.ReactElement {
-    const { theme } = this.props;
+    const { theme, recentWorkspaces } = this.props;
     const { activePath } = this.state;
-    const recent = this.props.getRecent(5);
+
+    const recent = recentWorkspaces || [];
 
     return (
       <Nav
@@ -78,11 +80,14 @@ export class Navigation extends React.Component<Props, State> {
 
 }
 
-export default connect(
-  (state: AppState) => {
-    return {
-      workspaceStore: state.workspaces,
-    };
-  },
-  WorkspaceState.actionCreators,
-)(Navigation);
+const mapStateToProps = (state: AppState) => ({
+  recentWorkspaces: selectRecentWorkspaces(state),
+});
+const connector = connect(
+  mapStateToProps,
+  WorkspacesStore.actionCreators,
+);
+
+type MergedProps = ConnectedProps<typeof connector>;
+
+export default connector(Navigation);
