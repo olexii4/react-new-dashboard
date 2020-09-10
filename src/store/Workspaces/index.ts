@@ -109,144 +109,22 @@ export type ActionCreators = {
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 export const actionCreators: ActionCreators = {
 
-  requestWorkspaces: (): AppThunkAction<KnownAction> => (dispatch, getState): Promise<Array<che.Workspace>> => {
+  requestWorkspaces: (): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<void> => {
     const appState = getState();
 
-    if (appState && appState.workspaces) {
+    // Lazy initialization of jsonRpcMasterApi
+    if (!jsonRpcMasterApi) {
+      // TODO change this test implementation to the real one
+      const jsonRpcApiLocation = new URL(window.location.href).origin.replace('http', 'ws') + appState.branding.data.websocketContext;
+      jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
+    }
 
-      // Lazy initialization of jsonRpcMasterApi
-      if (!jsonRpcMasterApi) {
-        // TODO change this test implementation to the real one
-        const jsonRpcApiLocation = new URL(window.location.href).origin.replace('http', 'ws') + appState.branding.data.websocketContext;
-        jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
-      }
-
-      const promise = fetchWorkspaces();
-      promise.then(workspaces => {
-        jsonRpcMasterApi.unSubscribeAllWorkspaceStatus();
-        workspaces.forEach(workspace => {
-          jsonRpcMasterApi.subscribeWorkspaceStatus(workspace.id as string, (message: any) => {
-            const status = message.error ? 'ERROR' : message.status;
-            if (WorkspaceStatus[status]) {
-              workspace.status = status;
-              dispatch({ type: 'UPDATE_WORKSPACE', workspace });
-            }
-          });
-        });
-        dispatch({ type: 'RECEIVE_WORKSPACES', workspaces });
-      }).catch(error => {
-        dispatch({ type: 'RECEIVE_ERROR' });
-        return Promise.reject(error);
-      });
-      dispatch({ type: 'REQUEST_WORKSPACES' });
-      return promise;
-    }
-    return Promise.reject();
-  },
-  requestSettings: (): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.WorkspaceSettings> => {
-    const appState = getState();
-    if (appState && appState.workspaces) {
-      const promise = fetchSettings();
-      promise
-        .then(settings => {
-          dispatch({ type: 'RECEIVE_SETTINGS', settings });
-        })
-        .catch(error => {
-          dispatch({ type: 'RECEIVE_ERROR' });
-          return Promise.reject(error);
-        });
-      dispatch({ type: 'REQUEST_WORKSPACES' });
-      return promise;
-    }
-    return Promise.reject(new Error('something went wrong with "Workspaces" state.'));
-  },
-  startWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<che.Workspace> => {
-    const appState = getState();
-    if (!appState || !appState.workspaces) {
-      throw new Error('Cannot start a workspace. Application store is not ready yet.');
-    }
+    dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
-      dispatch({ type: 'REQUEST_WORKSPACES' });
-      const workspace = await startWorkspace(workspaceId);
-      dispatch({ type: 'UPDATE_WORKSPACE', workspace });
-      return workspace;
-    } catch (e) {
-      dispatch({ type: 'RECEIVE_ERROR' });
-      throw new Error(`Failed to start the workspace, ID: ${workspaceId}, ` + e);
-    }
-  },
-  stopWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
-    const appState = getState();
-    if (appState && appState.workspaces) {
-      const promise = stopWorkspace(workspaceId);
-      promise.then(workspace => {
-        if (workspace) {
-          dispatch({ type: 'UPDATE_WORKSPACE', workspace });
-        }
-      }).catch(error => {
-        dispatch({ type: 'RECEIVE_ERROR' });
-        return Promise.reject(error);
-      });
-      dispatch({ type: 'REQUEST_WORKSPACES' });
-      return promise;
-    }
-    return Promise.reject();
-  },
-  deleteWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
-    const appState = getState();
-    if (appState && appState.workspaces) {
-      const promise = deleteWorkspace(workspaceId);
-      promise.then(() => {
-        dispatch({ type: 'DELETE_WORKSPACE', workspaceId });
-      }).catch(error => {
-        dispatch({ type: 'RECEIVE_ERROR' });
-        return Promise.reject(error);
-      });
-      dispatch({ type: 'REQUEST_WORKSPACES' });
-      return promise;
-    }
-    return Promise.reject();
-  },
-  updateWorkspace: (workspace: che.Workspace): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
-    const appState = getState();
-    if (appState && appState.workspaces) {
-      const promise = updateWorkspace(workspace);
-      promise.then(workspace => {
-        dispatch({ type: 'UPDATE_WORKSPACE', workspace });
-      }).catch(error => {
-        dispatch({ type: 'RECEIVE_ERROR' });
-        return Promise.reject(error);
-      });
-      dispatch({ type: 'REQUEST_WORKSPACES' });
-      return promise;
-    }
-    return Promise.reject();
-  },
-  createWorkspaceFromDevfile: (
-    devfile: che.WorkspaceDevfile,
-    cheNamespace: string | undefined,
-    infrastructureNamespace: string | undefined,
-    attributes: { [key: string]: string } = {},
-  ): AppThunkAction<KnownAction> => (dispatch, getState): Promise<che.Workspace> => {
-
-    const appState = getState();
-    if (appState && appState.workspaces) {
-
-      // Lazy initialization of jsonRpcMasterApi
-      if (!jsonRpcMasterApi) {
-        // TODO change this test implementation to the real one
-        const jsonRpcApiLocation = new URL(window.location.href).origin.replace('http', 'ws') + appState.branding.data.websocketContext;
-        jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
-      }
-
-      const promise = createWorkspaceFromDevfile(
-        devfile,
-        cheNamespace,
-        infrastructureNamespace,
-        attributes);
-      promise.then(workspace => {
-        dispatch({ type: 'ADD_WORKSPACE', workspace });
+      const workspaces = await fetchWorkspaces();
+      jsonRpcMasterApi.unSubscribeAllWorkspaceStatus();
+      workspaces.forEach(workspace => {
         jsonRpcMasterApi.subscribeWorkspaceStatus(workspace.id as string, (message: any) => {
           const status = message.error ? 'ERROR' : message.status;
           if (WorkspaceStatus[status]) {
@@ -254,16 +132,112 @@ export const actionCreators: ActionCreators = {
             dispatch({ type: 'UPDATE_WORKSPACE', workspace });
           }
         });
-      })
-        .catch(error => {
-          dispatch({ type: 'RECEIVE_ERROR' });
-          return Promise.reject(new Error(error));
-        });
-      dispatch({ type: 'REQUEST_WORKSPACES' });
-      return promise;
+      });
+      dispatch({ type: 'RECEIVE_WORKSPACES', workspaces });
+    } catch (e) {
+      dispatch({ type: 'RECEIVE_ERROR' });
+      throw new Error('Failed to request workspaces: \n' + e);
     }
-    // todo what kind of error?
-    return Promise.reject(new Error('something went wrong with "Workspaces" state.'));
+
+  },
+
+  requestSettings: (): AppThunkAction<KnownAction> => async (dispatch): Promise<void> => {
+    dispatch({ type: 'REQUEST_WORKSPACES' });
+
+    try {
+      const settings = await fetchSettings();
+      dispatch({ type: 'RECEIVE_SETTINGS', settings });
+    } catch (e) {
+      dispatch({ type: 'RECEIVE_ERROR' });
+      throw new Error('Failed to fetch settings, \n' + e);
+    }
+  },
+
+  startWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => async (dispatch): Promise<void> => {
+    dispatch({ type: 'REQUEST_WORKSPACES' });
+
+    try {
+      const workspace = await startWorkspace(workspaceId);
+      dispatch({ type: 'UPDATE_WORKSPACE', workspace });
+    } catch (e) {
+      dispatch({ type: 'RECEIVE_ERROR' });
+      throw new Error(`Failed to start the workspace, ID: ${workspaceId}, ` + e);
+    }
+  },
+
+  stopWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => async (dispatch): Promise<void> => {
+    dispatch({ type: 'REQUEST_WORKSPACES' });
+
+    try {
+      const workspace = await stopWorkspace(workspaceId);
+      dispatch({ type: 'UPDATE_WORKSPACE', workspace });
+    } catch (e) {
+      dispatch({ type: 'RECEIVE_ERROR' });
+      throw new Error(`Failed to stop the workspace, ID: ${workspaceId}, ` + e);
+    }
+  },
+
+  deleteWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => async (dispatch): Promise<void> => {
+    dispatch({ type: 'REQUEST_WORKSPACES' });
+
+    try {
+      await deleteWorkspace(workspaceId);
+      dispatch({ type: 'DELETE_WORKSPACE', workspaceId });
+    } catch (e) {
+      dispatch({ type: 'RECEIVE_ERROR' });
+      throw new Error(`Failed to delete the workspace, ID: ${workspaceId}, ` + e);
+    }
+  },
+
+  updateWorkspace: (workspace: che.Workspace): AppThunkAction<KnownAction> => async (dispatch): Promise<void> => {
+    dispatch({ type: 'REQUEST_WORKSPACES' });
+
+    try {
+      const updatedWorkspace = await updateWorkspace(workspace);
+      dispatch({ type: 'UPDATE_WORKSPACE', workspace: updatedWorkspace });
+    } catch (e) {
+      dispatch({ type: 'RECEIVE_ERROR' });
+      throw new Error(`Failed to update the workspace, ID: ${workspace.id}, ` + e);
+    }
+  },
+
+  createWorkspaceFromDevfile: (
+    devfile: che.WorkspaceDevfile,
+    cheNamespace: string | undefined,
+    infrastructureNamespace: string | undefined,
+    attributes: { [key: string]: string } = {},
+  ): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<void> => {
+
+    const appState = getState();
+
+    // Lazy initialization of jsonRpcMasterApi
+    if (!jsonRpcMasterApi) {
+      // TODO change this test implementation to the real one
+      const jsonRpcApiLocation = new URL(window.location.href).origin.replace('http', 'ws') + appState.branding.data.websocketContext;
+      jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
+    }
+
+    dispatch({ type: 'REQUEST_WORKSPACES' });
+    try {
+      const workspace = await createWorkspaceFromDevfile(
+        devfile,
+        cheNamespace,
+        infrastructureNamespace,
+        attributes
+      );
+      dispatch({ type: 'UPDATE_WORKSPACE', workspace });
+
+      jsonRpcMasterApi.subscribeWorkspaceStatus(workspace.id, (message: any) => {
+        const status = message.error ? 'ERROR' : message.status;
+        if (WorkspaceStatus[status]) {
+          workspace.status = status;
+          dispatch({ type: 'UPDATE_WORKSPACE', workspace });
+        }
+      });
+    } catch (e) {
+      dispatch({ type: 'RECEIVE_ERROR' });
+      throw new Error('Failed to create a new workspace from the devfile: \n' + e);
+    }
   },
 
   getById: (id: string): AppThunkAction<KnownAction> =>
