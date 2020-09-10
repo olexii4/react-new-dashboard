@@ -72,6 +72,16 @@ interface ReceiveSettingsAction {
   settings: che.WorkspaceSettings;
 }
 
+interface StoreWorkspaceQualifiedName {
+  type: 'STORE_WORKSPACE_NAME';
+  namespace: string;
+  workspaceName: string;
+}
+
+interface ClearWorkspaceQualifiedName {
+  type: 'CLEAR_WORKSPACE_NAME';
+}
+
 type KnownAction =
   RequestWorkspacesAction
   | ReceiveErrorAction
@@ -79,7 +89,9 @@ type KnownAction =
   | UpdateWorkspaceAction
   | DeleteWorkspaceAction
   | AddWorkspaceAction
-  | ReceiveSettingsAction;
+  | ReceiveSettingsAction
+  | StoreWorkspaceQualifiedName
+  | ClearWorkspaceQualifiedName;
 
 export enum WorkspaceStatus {
   RUNNING = 1,
@@ -336,6 +348,24 @@ export const reducer: Reducer<State> = (state: State | undefined, action: KnownA
       );
     default:
       return state;
+    case 'STORE_WORKSPACE_NAME':
+      return Object.assign(
+        {},
+        state,
+        {
+          namespace: action.namespace,
+          workspaceName: action.workspaceName,
+        } as StatePartial,
+      );
+    case 'CLEAR_WORKSPACE_NAME':
+      return Object.assign(
+        {},
+        state,
+        {
+          namespace: '',
+          workspaceName: '',
+        } as StatePartial,
+      );
   }
 
 };
