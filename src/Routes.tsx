@@ -18,7 +18,7 @@ import { ROUTE } from './route.enum';
 const GetStarted = React.lazy(() => import('./pages/GetStarted'));
 const WorkspacesList = React.lazy(() => import('./pages/WorkspacesList'));
 const Administration = React.lazy(() => import('./pages/Administration'));
-const WorkspaceDetails = React.lazy(() => import('./pages/WorkspaceDetails'));
+const WorkspaceDetails = React.lazy(() => import('./containers/WorkspaceDetails'));
 const IdeIframe = React.lazy(() => import('./pages/IdeIframe'));
 
 export interface RouteItem {

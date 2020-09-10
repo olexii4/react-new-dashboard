@@ -11,8 +11,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
+import { connect, ConnectedProps } from 'react-redux';
 import { History } from 'history';
 import {
   PageSection,
@@ -26,29 +25,33 @@ import {
   AlertActionCloseButton,
   AlertGroup
 } from '@patternfly/react-core';
+
 import WorkspaceIndicator from '../../components/workspace/Indicator';
 import CheProgress from '../../components/Progress';
 import { AppState } from '../../store';
 import * as WorkspacesStore from '../../store/Workspaces';
 import DevfileEditor, { DevfileEditor as Editor } from '../../components/DevfileEditor';
+import { selectWorkspaceByQualifiedName, selectIsLoading } from '../../store/Workspaces/selectors';
 
 import './WorkspaceDetails.styl';
 
 const SECTION_THEME = PageSectionVariants.light;
 
 type Props =
-  // state we've requested from the Redux store
-  WorkspacesStore.State
-  & WorkspacesStore.ActionCreators // ... plus action creators we've requested
-  & { history: History } // ... plus history
-  & RouteComponentProps<{ namespace: string; workspaceName: string }>; // incoming parameters
+  // selectors
+  {
+    isLoading: boolean,
+    workspace: che.Workspace | null | undefined,
+  }
+  & { history: History }
+  & MergedProps;
 
 type State = {
   activeTabKey: number;
-  workspace: che.Workspace;
+  workspace: che.Workspace | undefined;
   alertVisible: boolean;
   isDevfileValid: boolean;
-  hasRequestErrors: boolean;
+  hasRequestErrors: boolean; // todo provide error handling
 };
 
 class WorkspaceDetails extends React.PureComponent<Props, State> {
@@ -57,22 +60,15 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
   private showAlert: (variant: 'success' | 'danger', title: string, timeDelay?: number) => void;
   private hideAlert: () => void;
   private readonly handleTabClick: (event: any, tabIndex: any) => void;
-  private readonly cancelChanges: (workspaceId: string | undefined) => void;
+  private readonly cancelChanges: () => void;
 
   private devfileEditorRef: React.RefObject<Editor>;
 
   constructor(props: Props) {
     super(props);
 
-    const { namespace, workspaceName } = this.props.match.params;
-    const workspace = this.props.getByQualifiedName(namespace, workspaceName);
-    if (!workspace) {
-      this.props.history.push('/');
-      return;
-    }
-
     this.state = {
-      workspace: Object.assign({}, workspace),
+      workspace: this.props.workspace ? Object.assign({}, this.props.workspace) : undefined,
       activeTabKey: 4,
       alertVisible: false,
       isDevfileValid: true,
@@ -83,14 +79,9 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
     this.handleTabClick = (event: any, tabIndex: any): void => {
       this.setState({ activeTabKey: tabIndex });
     };
-    this.cancelChanges = (workspaceId: string | undefined): void => {
+    this.cancelChanges = (): void => {
       clearTimeout(this.timeoutId);
-      const workspace = this.props.workspaces.find(workspace => {
-        return workspace.id === workspaceId;
-      });
-      if (workspace) {
-        this.setState({ workspace: Object.assign({}, workspace) });
-      }
+      this.setState({ workspace: Object.assign({}, this.props.workspace) });
     };
     this.showAlert = (variant: 'success' | 'danger', title: string, timeDelay?: number): void => {
       this.alert = { variant, title };
@@ -103,18 +94,6 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
     this.devfileEditorRef = React.createRef<Editor>();
   }
 
-  public componentDidUpdate(): void {
-    const workspaceNext = this.props.getById(this.state.workspace.id);
-
-    const statusChanged = this.state.workspace.status !== workspaceNext.status;
-    const devfileChanged = this.isEqualObject(this.state.workspace.devfile, workspaceNext.devfile) === false;
-    if (statusChanged || devfileChanged) {
-      this.setState({
-        workspace: Object.assign({}, workspaceNext),
-      });
-    }
-  }
-
   private updateEditor(devfile: che.WorkspaceDevfile): void {
     this.devfileEditorRef.current?.updateContent(devfile);
     this.setState({ isDevfileValid: true });
@@ -122,6 +101,15 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
 
   public render(): React.ReactElement {
     const { workspace, alertVisible } = this.state;
+
+    if (this.props.isLoading) {
+      return <div>Workspace is loading...</div>;
+    }
+
+    if (!workspace) {
+      return <div>Workspace not found</div>;
+    }
+
     const workspaceName = workspace.devfile.metadata.name;
 
     return (
@@ -192,20 +180,21 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
       return;
     }
     if (!this.isEqualObject(workspace.devfile, newDevfile)) {
-      this.timeoutId = setTimeout(() => {
-        const newWorkspace = Object.assign({}, workspace);
-        newWorkspace.devfile = newDevfile;
-        this.props.updateWorkspace(newWorkspace).then((workspace: che.Workspace) => {
+      // todo refactor
+      this.timeoutId = setTimeout(async () => {
+        const newWorkspaceObj = Object.assign({}, workspace);
+        newWorkspaceObj.devfile = newDevfile;
+        try {
+          await this.props.updateWorkspace(newWorkspaceObj);
           this.setState({ hasRequestErrors: false });
-          this.setState({ workspace });
           this.showAlert('success', 'Workspace has been updated', 1000);
+
           const url = `/workspace/${workspace.namespace}/${workspace.devfile.metadata.name}`;
           this.props.history.replace(url);
-        }).catch((error: { data?: { message?: string } }) => {
+        } catch (e) {
           this.setState({ hasRequestErrors: true });
-          const message = error.data && error.data.message ? error.data.message : 'Unknown error';
-          this.showAlert('danger', message, 10000);
-        });
+          this.showAlert('danger', e, 10000);
+        }
       }, 2000);
     }
   }
@@ -221,7 +210,15 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
   }
 }
 
-export default connect(
-  (state: AppState) => state.workspaces,  // Selects which state properties are merged into the component's props
-  WorkspacesStore.actionCreators // Selects which action creators are merged into the component's props
-)(WorkspaceDetails);
+const mapStateToProps = (state: AppState) => ({
+  isLoading: selectIsLoading(state),
+  workspace: selectWorkspaceByQualifiedName(state),
+});
+
+const connector = connect(
+  mapStateToProps,
+  WorkspacesStore.actionCreators
+);
+
+type MergedProps = ConnectedProps<typeof connector>
+export default connector(WorkspaceDetails);
