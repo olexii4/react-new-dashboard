@@ -298,63 +298,74 @@ const unloadedState: State = {
   isLoading: false,
 };
 
-export const reducer: Reducer<WorkspacesState> = (state: WorkspacesState | undefined, incomingAction: Action): WorkspacesState => {
+type StatePartial = {
+  [key in keyof State]: State[key];
+};
+
+export const reducer: Reducer<State> = (state: State | undefined, action: KnownAction): State => {
   if (state === undefined) {
     return unloadedState;
   }
 
-  const action = incomingAction as KnownAction;
   switch (action.type) {
     case 'REQUEST_WORKSPACES':
-      return {
-        workspaces: state.workspaces,
-        settings: state.settings,
-        isLoading: true
-      };
+      return Object.assign(
+        {},
+        state,
+        { isLoading: true, } as StatePartial,
+      );
     case 'RECEIVE_ERROR':
-      return {
-        workspaces: state.workspaces,
-        settings: state.settings,
-        isLoading: false
-      };
+      return Object.assign(
+        {},
+        state,
+        { isLoading: false, } as StatePartial
+      );
     case 'UPDATE_WORKSPACE':
-      return {
-        workspaces: state.workspaces.map((workspace: che.Workspace) => {
-          return workspace.id === action.workspace.id ? action.workspace : workspace;
-        }),
-        settings: state.settings,
-        isLoading: false
-      };
-    case 'ADD_WORKSPACE':
-      return {
-        workspaces: state.workspaces.concat([action.workspace]),
-        settings: state.settings,
-        isLoading: false
-      };
-    case 'DELETE_WORKSPACE':
-      return {
-        workspaces: state.workspaces.filter(workspace => workspace.id !== action.workspaceId),
-        settings: state.settings,
-        isLoading: false
-      };
-    case 'RECEIVE_WORKSPACES':
-      if (action) {
-        return {
-          workspaces: action.workspaces,
-          settings: state.settings,
-          isLoading: false
-        };
-      }
-      break;
-    case 'RECEIVE_SETTINGS':
-      if (action) {
-        return {
-          workspaces: state.workspaces,
-          settings: action.settings,
+      return Object.assign(
+        {},
+        state,
+        {
           isLoading: false,
-        };
-      }
+          workspaces: state.workspaces.map(workspace => workspace.id === action.workspace.id ? action.workspace : workspace),
+        } as StatePartial
+      );
+    case 'ADD_WORKSPACE':
+      return Object.assign(
+        {},
+        state,
+        {
+          workspaces: state.workspaces.concat([action.workspace]),
+        } as StatePartial,
+      );
+    case 'DELETE_WORKSPACE':
+      return Object.assign(
+        {},
+        state,
+        {
+          isLoading: false,
+          workspaces: state.workspaces.filter(workspace => workspace.id !== action.workspaceId),
+        } as StatePartial,
+      );
+    case 'RECEIVE_WORKSPACES':
+      return Object.assign(
+        {},
+        state,
+        {
+          isLoading: false,
+          workspaces: action.workspaces,
+        } as StatePartial,
+      );
+    case 'RECEIVE_SETTINGS':
+      return Object.assign(
+        {},
+        state,
+        {
+          isLoading: false,
+          settings: action.settings,
+        } as StatePartial,
+      );
+    default:
+      return state;
   }
 
-  return state;
 };
