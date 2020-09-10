@@ -10,40 +10,51 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import * as Workspaces from './Workspaces';
+import { Action } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 import * as Plugins from './Plugins';
 import * as FactoryResolver from './FactoryResolver';
-import * as DevfileRegistries from './DevfileRegistries';
-import * as DevfileMetadataFilter from './DevfileFilters';
-import * as InfrastructureNamespace from './InfrastructureNamespace';
-import * as Branding from './Branding';
+import * as WorkspacesStore from './Workspaces';
+import * as DevfileRegistriesStore from './DevfileRegistries';
+import * as DevfileMetadataFilterStore from './DevfileFilters';
+import * as InfrastructureNamespaceStore from './InfrastructureNamespace';
+import * as BrandingStore from './Branding';
 import userReducer from './User';
 
 // the top-level state object
 export interface AppState {
-  branding: Branding.State;
-  devfileMetadataFilter: DevfileMetadataFilter.MetadataFilterState;
-  devfileRegistries: DevfileRegistries.State;
-  infrastructureNamespace: InfrastructureNamespace.State;
+  branding: BrandingStore.State;
+  devfileMetadataFilter: DevfileMetadataFilterStore.MetadataFilterState;
+  devfileRegistries: DevfileRegistriesStore.State;
+  infrastructureNamespace: InfrastructureNamespaceStore.State;
   user: any;
-  workspaces: Workspaces.State;
+  workspaces: WorkspacesStore.State;
   plugins: Plugins.State;
   factoryResolver: FactoryResolver.State;
 }
 
 export const reducers = {
-  workspaces: Workspaces.reducer,
-  devfileRegistries: DevfileRegistries.reducer,
-  devfileMetadataFilter: DevfileMetadataFilter.reducer,
-  branding: Branding.reducer,
+  workspaces: WorkspacesStore.reducer,
+  devfileRegistries: DevfileRegistriesStore.reducer,
+  devfileMetadataFilter: DevfileMetadataFilterStore.reducer,
+  branding: BrandingStore.reducer,
   user: userReducer,
-  infrastructureNamespace: InfrastructureNamespace.reducer,
+  infrastructureNamespace: InfrastructureNamespaceStore.reducer,
   plugins: Plugins.reducer,
   factoryResolver: FactoryResolver.reducer,
 };
 
 // this type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are
 // correctly typed to match your store.
+/**
+ * @deprecated
+ */
 export interface AppThunkAction<TAction> {
   (dispatch: (action: TAction) => void, getState: () => AppState): void;
 }
+export type AppThunk<ActionType extends Action, ReturnType = void> = ThunkAction<
+  ReturnType,
+  AppState,
+  unknown,
+  ActionType
+>;

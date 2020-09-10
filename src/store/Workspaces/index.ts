@@ -10,8 +10,8 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { Action, Reducer } from 'redux';
-import { AppThunkAction, AppState } from '../';
+import { Reducer } from 'redux';
+import { AppThunk } from '../';
 import {
   createWorkspaceFromDevfile,
   deleteWorkspace,
@@ -30,6 +30,13 @@ export interface State {
   isLoading: boolean;
   settings: che.WorkspaceSettings;
   workspaces: che.Workspace[];
+
+  // current workspace qualified name
+  namespace: string;
+  workspaceName: string;
+
+  // number of recent workspaces
+  recentNumber: number;
 }
 
 interface RequestWorkspacesAction {
@@ -87,29 +94,27 @@ const cheJsonRpcApi = container.get(CheJsonRpcApi);
 let jsonRpcMasterApi: JsonRpcMasterApi;
 
 export type ActionCreators = {
-  requestWorkspaces: () => any;
-  startWorkspace: (workspaceId: string) => any;
-  stopWorkspace: (workspaceId: string) => any;
-  deleteWorkspace: (workspaceId: string) => any;
-  updateWorkspace: (workspace: che.Workspace) => any;
+  requestWorkspaces: () => AppThunk<KnownAction, Promise<void>>;
+  startWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
+  stopWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
+  deleteWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
+  updateWorkspace: (workspace: che.Workspace) => AppThunk<KnownAction, Promise<void>>;
   createWorkspaceFromDevfile: (
     devfile: che.WorkspaceDevfile,
     cheNamespace: string | undefined,
     infrastructureNamespace: string | undefined,
     attributes: { [key: string]: string },
-  ) => any;
-  requestSettings: () => any;
+  ) => AppThunk<KnownAction, Promise<che.Workspace>>;
+  requestSettings: () => AppThunk<KnownAction, Promise<void>>;
 
-  getById: (id: string) => any;
-  getByQualifiedName: (cheNamespace: string, name: string) => any;
-  getRecent: (num: number) => any;
+  storeWorkspaceQualifiedName: (namespace: string, workspaceName: string) => AppThunk<StoreWorkspaceQualifiedName>;
 };
 
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 export const actionCreators: ActionCreators = {
 
-  requestWorkspaces: (): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<void> => {
+  requestWorkspaces: (): AppThunk<KnownAction, Promise<void>> => async (dispatch, getState): Promise<void> => {
     const appState = getState();
 
     // Lazy initialization of jsonRpcMasterApi
@@ -141,7 +146,7 @@ export const actionCreators: ActionCreators = {
 
   },
 
-  requestSettings: (): AppThunkAction<KnownAction> => async (dispatch): Promise<void> => {
+  requestSettings: (): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
@@ -153,7 +158,7 @@ export const actionCreators: ActionCreators = {
     }
   },
 
-  startWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => async (dispatch): Promise<void> => {
+  startWorkspace: (workspaceId: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
@@ -165,7 +170,7 @@ export const actionCreators: ActionCreators = {
     }
   },
 
-  stopWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => async (dispatch): Promise<void> => {
+  stopWorkspace: (workspaceId: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
@@ -177,7 +182,7 @@ export const actionCreators: ActionCreators = {
     }
   },
 
-  deleteWorkspace: (workspaceId: string): AppThunkAction<KnownAction> => async (dispatch): Promise<void> => {
+  deleteWorkspace: (workspaceId: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
@@ -189,7 +194,7 @@ export const actionCreators: ActionCreators = {
     }
   },
 
-  updateWorkspace: (workspace: che.Workspace): AppThunkAction<KnownAction> => async (dispatch): Promise<void> => {
+  updateWorkspace: (workspace: che.Workspace): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
@@ -206,7 +211,7 @@ export const actionCreators: ActionCreators = {
     cheNamespace: string | undefined,
     infrastructureNamespace: string | undefined,
     attributes: { [key: string]: string } = {},
-  ): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<void> => {
+  ): AppThunk<KnownAction, Promise<che.Workspace>> => async (dispatch, getState): Promise<che.Workspace> => {
 
     const appState = getState();
 
@@ -234,68 +239,33 @@ export const actionCreators: ActionCreators = {
           dispatch({ type: 'UPDATE_WORKSPACE', workspace });
         }
       });
+
+      return workspace;
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
       throw new Error('Failed to create a new workspace from the devfile: \n' + e);
     }
   },
 
-  getById: (id: string): AppThunkAction<KnownAction> =>
-    (dispatch, getState): che.Workspace | undefined => {
-      const appState: AppState = getState();
-      if (!appState || !appState.workspaces) {
-        // todo throw a nice error
-        throw Error('something unexpected happened.');
-      }
+  storeWorkspaceQualifiedName: (namespace: string, workspaceName: string): AppThunk<KnownAction> => (dispatch): void => {
+    dispatch({
+      type: 'STORE_WORKSPACE_NAME',
+      namespace,
+      workspaceName,
+    });
+  },
 
-      return appState.workspaces.workspaces
-        .find(workspace => workspace.id === id);
-    },
-
-  getByQualifiedName: (cheNamespace: string, name: string): AppThunkAction<KnownAction> =>
-    (dispatch, getState): che.Workspace | undefined => {
-      const appState: AppState = getState();
-      if (!appState || !appState.workspaces) {
-        // todo throw a nice error
-        throw Error('something unexpected happened.');
-      }
-
-      return appState.workspaces.workspaces
-        .find(workspace =>
-          workspace.namespace === cheNamespace
-          && workspace.devfile.metadata.name === name);
-    },
-
-  getRecent: (num: number): AppThunkAction<KnownAction> =>
-    (dispatch, getState): Array<che.Workspace> => {
-      const appState: AppState = getState();
-      if (!appState || !appState.workspaces) {
-        // todo throw a nice error
-        throw Error('something unexpected happened.');
-      }
-
-      return appState.workspaces.workspaces
-        // sort workspaces by the updating/creating time
-        .sort((a, b) => {
-          const timeA = (a.attributes && (a.attributes.updated || a.attributes.created)) || 0;
-          const timeB = (b.attributes && (b.attributes.updated || b.attributes.created)) || 0;
-          if (timeA > timeB) {
-            return -1;
-          } else if (timeA < timeB) {
-            return 1;
-          } else {
-            return 0;
-          }
-        })
-        // return necessary number of workspaces
-        .slice(0, num);
-    },
 };
 
 const unloadedState: State = {
   workspaces: [],
   settings: {} as che.WorkspaceSettings,
   isLoading: false,
+
+  namespace: '',
+  workspaceName: '',
+
+  recentNumber: 5,
 };
 
 type StatePartial = {
