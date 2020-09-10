@@ -37,7 +37,8 @@ import './WorkspaceDetails.styl';
 const SECTION_THEME = PageSectionVariants.light;
 
 type Props =
-  WorkspacesStore.WorkspacesState // ... state we've requested from the Redux store
+  // state we've requested from the Redux store
+  WorkspacesStore.State
   & WorkspacesStore.ActionCreators // ... plus action creators we've requested
   & { history: History } // ... plus history
   & RouteComponentProps<{ namespace: string; workspaceName: string }>; // incoming parameters

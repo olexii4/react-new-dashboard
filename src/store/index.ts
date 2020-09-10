@@ -26,7 +26,7 @@ export interface AppState {
   devfileRegistries: DevfileRegistries.State;
   infrastructureNamespace: InfrastructureNamespace.State;
   user: any;
-  workspaces: Workspaces.WorkspacesState;
+  workspaces: Workspaces.State;
   plugins: Plugins.State;
   factoryResolver: FactoryResolver.State;
 }

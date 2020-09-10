@@ -27,7 +27,7 @@ import SamplesListGallery from './SamplesListGallery';
 type Props = {
   onDevfile: (devfileContent: string, stackName: string) => Promise<void>;
 } & {
-  workspaces: WorkspacesStore.WorkspacesState;
+  workspaces: WorkspacesStore.State;
 }// ... state we've requested from the Redux store
   & WorkspacesStore.ActionCreators; // ... plus action creators we've requested;
 type State = {

@@ -22,7 +22,7 @@ import DevfileSelectorFormGroup from './DevfileSelector';
 import InfrastructureNamespaceFormGroup from './InfrastructureNamespace';
 
 type Props = {
-  workspaces: WorkspaceStore.WorkspacesState,
+  workspaces: WorkspaceStore.State,
   onDevfile: (devfile: che.WorkspaceDevfile, InfrastructureNamespace: string | undefined) => Promise<void>;
 };
 type State = {

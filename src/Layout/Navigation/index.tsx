@@ -36,7 +36,7 @@ type Props = {
   history: History;
   theme: ThemeVariant;
 } & {
-  workspaceStore: WorkspaceState.WorkspacesState;
+  workspaceStore: WorkspaceState.State;
 } &
   WorkspaceState.ActionCreators;
 type State = {

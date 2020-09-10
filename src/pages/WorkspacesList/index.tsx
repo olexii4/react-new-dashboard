@@ -30,7 +30,7 @@ const SECTION_THEME = PageSectionVariants.light;
 
 // At runtime, Redux will merge together...
 type WorkspacesProps = {
-  workspaces: WorkspacesStore.WorkspacesState;
+  workspaces: WorkspacesStore.State;
   branding: BrandingStore.State;
 } // ... state we've requested from the Redux store
   & WorkspacesStore.ActionCreators // ... plus action creators we've requested

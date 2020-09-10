@@ -26,7 +26,7 @@ import { CheJsonRpcApi } from '../../services/json-rpc/JsonRpcApiFactory';
 import { JsonRpcMasterApi } from '../../services/json-rpc/JsonRpcMasterApi';
 
 // This state defines the type of data maintained in the Redux store.
-export interface WorkspacesState {
+export interface State {
   isLoading: boolean;
   settings: che.WorkspaceSettings;
   workspaces: che.Workspace[];
@@ -318,7 +318,7 @@ export const actionCreators: ActionCreators = {
     },
 };
 
-const unloadedState: WorkspacesState = {
+const unloadedState: State = {
   workspaces: [],
   settings: {} as che.WorkspaceSettings,
   isLoading: false,
