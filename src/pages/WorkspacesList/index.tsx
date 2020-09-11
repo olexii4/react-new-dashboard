@@ -11,7 +11,8 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { History } from 'history';
 import { AppState } from '../../store';
 import * as WorkspacesStore from '../../store/Workspaces';
 import { Button, PageSection, PageSectionVariants, Text } from '@patternfly/react-core';
@@ -20,26 +21,25 @@ import { Table, TableBody, TableHeader } from '@patternfly/react-table';
 import WorkspaceIndicator from '../../components/workspace/Indicator';
 import WorkspaceStatus from '../../components/workspace/Status';
 import WorkspaceDeleteAction from '../../components/workspace/DeleteAction';
-import * as BrandingStore from '../../store/Branding';
 import { Debounce } from '../../services/debounce/Debounce';
 import { container } from '../../inversify.config';
+import { selectIsLoading, selectAllWorkspaces } from '../../store/Workspaces/selectors';
 
 import './WorkspacesList.styl';
 
 const SECTION_THEME = PageSectionVariants.light;
 
 // At runtime, Redux will merge together...
-type WorkspacesProps = {
-  workspaces: WorkspacesStore.State;
-  branding: BrandingStore.State;
-} // ... state we've requested from the Redux store
-  & WorkspacesStore.ActionCreators // ... plus action creators we've requested
-  & { history: any };
+type Props =
+  MappedProps
+  & {
+    history: History
+  };
 
-export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
+export class WorkspacesList extends React.PureComponent<Props> {
   private debounce: Debounce;
 
-  constructor(props: WorkspacesProps) {
+  constructor(props: Props) {
     super(props);
 
     this.debounce = container.get(Debounce);
@@ -60,8 +60,10 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
       this.props.history.push(`/workspace/${workspace.namespace}/${workspace.devfile.metadata.name}`);
     };
 
+    const allWorkspaces = this.props.allWorkspaces || [];
+
     const columns = ['NAME', 'RAM', 'PROJECTS', 'STACK', 'ACTIONS'];
-    const rows = this.props.workspaces.workspaces.map((workspace: che.Workspace) => ({
+    const rows = allWorkspaces.map((workspace: che.Workspace) => ({
       cells: [
         <span key={`${workspace.id}_1`} onClick={(): void => onRowClick(workspace)}>
           <WorkspaceIndicator key={`${workspace.id}_1_1`} status={workspace.status} />
@@ -102,7 +104,7 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
           Create workspaces from stacks that define projects, runtimes, and commands.
                     <a href={workspace}>Learn more.</a>
         </Text>
-        <CheProgress isLoading={this.props.workspaces.isLoading} />
+        <CheProgress isLoading={this.props.isLoading} />
         <PageSection variant={SECTION_THEME} className='header-buttons'>
           <Button onClick={(): void => this.props.history.push('/')} variant='primary'>
             Add Workspace
@@ -132,10 +134,18 @@ export class WorkspacesList extends React.PureComponent<WorkspacesProps> {
   }
 }
 
-export default connect(
-  (state: AppState) => {
-    const { workspaces, branding } = state;
-    return { workspaces, branding }; // Selects which state properties are merged into the component's props
-  },
-  WorkspacesStore.actionCreators // Selects which action creators are merged into the component's props
-)(WorkspacesList);
+const mapStateToProps = (state: AppState) => {
+  const { branding } = state;
+  return {
+    branding,
+    isLoading: selectIsLoading(state),
+    allWorkspaces: selectAllWorkspaces(state),
+  };
+};
+
+const connector = connect(
+  mapStateToProps,
+  WorkspacesStore.actionCreators,
+);
+type MappedProps = ConnectedProps<typeof connector>;
+export default connector(WorkspacesList);
