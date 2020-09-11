@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { Page } from '@patternfly/react-core';
 import { History } from 'history';
 
@@ -21,19 +21,16 @@ import { ThemeVariant } from './themeVariant';
 import { AppState } from '../store';
 import { container } from '../inversify.config';
 import { Keycloak } from '../services/keycloak/Keycloak';
-import * as BrandingStore from '../store/Branding';
-import * as UserStore from '../store/User';
 
 const THEME_KEY = 'theme';
 const IS_MANAGED_SIDEBAR = false;
 
-type Props = {
-  children: React.ReactNode;
-  history: History;
-} & {
-  brandingStore: BrandingStore.State;
-  userStore: UserStore.UserState;
-};
+type Props =
+  MergedProps
+  & {
+    children: React.ReactNode;
+    history: History;
+  };
 type State = {
   isSidebarVisible: boolean;
   isHeaderVisible: boolean;
@@ -137,11 +134,14 @@ export class Layout extends React.PureComponent<Props, State> {
 
 }
 
-export default connect(
-  (state: AppState) => {
-    return {
-      brandingStore: state.branding,
-      userStore: state.user,
-    };
-  }
-)(Layout);
+const mapStateToProps = (state: AppState) => ({
+  brandingStore: state.branding,
+  userStore: state.user,
+});
+
+const connector = connect(
+  mapStateToProps
+);
+
+type MergedProps = ConnectedProps<typeof connector>
+export default connector(Layout);

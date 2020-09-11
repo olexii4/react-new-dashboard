@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import {
   Alert,
   AlertActionCloseButton,
@@ -34,13 +34,13 @@ import { safeLoad } from 'js-yaml';
 
 import styles from './index.module.css';
 
-type Props = {
-  devfileRegistries: DevfileRegistriesStore.State;
-  onDevfile: (devfile: che.WorkspaceDevfile) => void;
-  onClear?: () => void;
-}
-  & DevfileRegistriesStore.ActionCreators
-  & FactoryResolverStore.ActionCreators;
+type Props =
+  MergedProps
+  & {
+    devfileRegistries: DevfileRegistriesStore.State;
+    onDevfile: (devfile: che.WorkspaceDevfile) => void;
+    onClear?: () => void;
+  };
 type State = {
   alerts: AlertItem[];
   metadata: che.DevfileMetaData[];
@@ -73,7 +73,7 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
     // clear location input
     this.devfileLocationRef.current?.clearInput();
     try {
-      const devfileContent = await this.props.requestDevfile(meta.links.self);
+      const devfileContent = await this.props.requestDevfile(meta.links.self) as string;
       const devfile = safeLoad(devfileContent);
       this.props.onDevfile(devfile);
     } catch (e) {
@@ -93,7 +93,7 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
     // clear devfile select
     this.devfileSelectRef.current?.clearSelect();
     try {
-      const devfileContent = await this.props.requestFactoryResolver(location);
+      const devfileContent = await this.props.requestFactoryResolver(location) as che.WorkspaceDevfile;
       this.props.onDevfile(devfileContent);
     } catch (e) {
       this.devfileLocationRef.current?.invalidateInput();
@@ -171,10 +171,18 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
 
 }
 
-export default connect(
-  (state: AppState) => ({
-    devfileRegistries: state.devfileRegistries,
-    factoryResolver: state.factoryResolver,
-  }),
-  Object.assign(DevfileRegistriesStore.actionCreators, FactoryResolverStore.actionCreators)
-)(DevfileSelectorFormGroup);
+const mapStateToProps = (state: AppState) => ({
+  devfileRegistries: state.devfileRegistries,
+  factoryResolver: state.factoryResolver,
+});
+
+const connector = connect(
+  mapStateToProps,
+  {
+    ...DevfileRegistriesStore.actionCreators,
+    ...FactoryResolverStore.actionCreators,
+  }
+);
+
+type MergedProps = ConnectedProps<typeof connector>;
+export default connector(DevfileSelectorFormGroup);

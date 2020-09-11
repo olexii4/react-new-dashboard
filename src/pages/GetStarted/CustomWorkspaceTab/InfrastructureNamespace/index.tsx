@@ -11,21 +11,19 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { FormGroup, Tooltip, TextInput } from '@patternfly/react-core';
 import { QuestionCircleIcon } from '@patternfly/react-icons';
 import { AppState } from '../../../../store';
-import * as InfrastructureNamespaceStore from '../../../../store/InfrastructureNamespace';
 import { InfrastructureNamespaceSelect } from './InfrastructureNamespaceSelect';
 
 import styles from './index.module.css';
 
-type Props = {
-  onChange: (namespace: che.KubernetesNamespace) => void;
-
-  // infrastructure namespace store
-  infrastructureNamespace: InfrastructureNamespaceStore.State,
-};
+type Props =
+  MergedProps
+  & {
+    onChange: (namespace: che.KubernetesNamespace) => void;
+  };
 
 export class InfrastructureNamespaceFormGroup extends React.PureComponent<Props> {
 
@@ -93,8 +91,13 @@ export class InfrastructureNamespaceFormGroup extends React.PureComponent<Props>
   }
 }
 
-export default connect(
-  (state: AppState) => ({
-    infrastructureNamespace: state.infrastructureNamespace,
-  }),
-)(InfrastructureNamespaceFormGroup);
+const mapStateToProps = (state: AppState) => ({
+  infrastructureNamespace: state.infrastructureNamespace,
+});
+
+const connector = connect(
+  mapStateToProps
+);
+
+type MergedProps = ConnectedProps<typeof connector>;
+export default connector(InfrastructureNamespaceFormGroup);

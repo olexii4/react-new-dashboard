@@ -23,12 +23,11 @@ import {
   TextContent,
   Text
 } from '@patternfly/react-core';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { AppState } from '../../../../store';
-import * as WorkspaceStore from '../../../../store/Workspaces';
-import * as BrandingStore from '../../../../store/Branding';
 
 import styles from './index.module.css';
+import { selectSettings } from '../../../../store/Workspaces/selectors';
 
 export enum StorageType {
   async = 'Asynchronous',
@@ -36,13 +35,12 @@ export enum StorageType {
   persistent = 'Persistent',
 }
 
-type Props = {
-  storageType?: StorageType;
-  onChange?: (storageType: StorageType) => void;
-} & {
-  brandingStore: BrandingStore.State;
-  workspaces: WorkspaceStore.WorkspacesState;
-}
+type Props =
+  MergedProps
+  & {
+    storageType?: StorageType;
+    onChange?: (storageType: StorageType) => void;
+  };
 type State = {
   isOpen?: boolean;
   selected?: string;
@@ -62,7 +60,7 @@ export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
       isModalOpen: false,
     };
 
-    const settings = this.props.workspaces.settings;
+    const settings = this.props.settings;
     if (settings) {
       const available_types = settings['che.workspace.storage.available_types'];
       if (available_types) {
@@ -176,9 +174,14 @@ export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
   }
 }
 
-export default connect(
-  (state: AppState) => ({
-    brandingStore: state.branding,
-    workspaces: state.workspaces,
-  }),
-)(StorageTypeFormGroup);
+const mapStateToProps = (state: AppState) => ({
+  brandingStore: state.branding,
+  settings: selectSettings(state),
+});
+
+const connector = connect(
+  mapStateToProps,
+);
+
+type MergedProps = ConnectedProps<typeof connector>;
+export default connector(StorageTypeFormGroup);

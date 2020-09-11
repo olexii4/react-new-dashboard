@@ -11,11 +11,8 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { AppState } from '../../store';
-import * as DevfileRegistriesStore from '../../store/DevfileRegistries';
-import * as PluginsStore from '../../store/Plugins';
-import * as BrandingStore from '../../store/Branding';
 import { DisposableCollection } from '../../services/disposable';
 import * as monacoConversion from 'monaco-languageclient/lib/monaco-converter';
 import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
@@ -42,11 +39,8 @@ const MONACO_CONFIG: Monaco.IEditorConstructionOptions = {
   scrollBeyondLastLine: false,
 };
 
-type Props = {
-  devfileRegistries: DevfileRegistriesStore.State;
-  plugins: PluginsStore.State;
-  branding: BrandingStore.State;
-} // Redux store
+type Props =
+  MergedProps
   & {
     devfile: che.WorkspaceDevfile;
     decorationPattern?: string;
@@ -411,12 +405,18 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
   }
 }
 
-export default connect(
-  (state: AppState) => {
-    const { devfileRegistries, plugins, branding } = state;
-    return { devfileRegistries, plugins, branding }; // Properties are merged into the component's props
-  },
+const mapStateToProps = (state: AppState) => ({
+  branding: state.branding,
+  devfileRegistries: state.devfileRegistries,
+  plugins: state.plugins,
+});
+
+const connector = connect(
+  mapStateToProps,
   null,
   null,
   { forwardRef: true }
-)(DevfileEditor);
+);
+
+type MergedProps = ConnectedProps<typeof connector>;
+export default connector(DevfileEditor);
