@@ -35,7 +35,7 @@ import { safeLoad } from 'js-yaml';
 import styles from './index.module.css';
 
 type Props =
-  MergedProps
+  MappedProps
   & {
     devfileRegistries: DevfileRegistriesStore.State;
     onDevfile: (devfile: che.WorkspaceDevfile) => void;
@@ -184,5 +184,5 @@ const connector = connect(
   }
 );
 
-type MergedProps = ConnectedProps<typeof connector>;
+type MappedProps = ConnectedProps<typeof connector>;
 export default connector(DevfileSelectorFormGroup);

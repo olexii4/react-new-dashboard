@@ -20,7 +20,7 @@ import { InfrastructureNamespaceSelect } from './InfrastructureNamespaceSelect';
 import styles from './index.module.css';
 
 type Props =
-  MergedProps
+  MappedProps
   & {
     onChange: (namespace: che.KubernetesNamespace) => void;
   };
@@ -99,5 +99,5 @@ const connector = connect(
   mapStateToProps
 );
 
-type MergedProps = ConnectedProps<typeof connector>;
+type MappedProps = ConnectedProps<typeof connector>;
 export default connector(InfrastructureNamespaceFormGroup);

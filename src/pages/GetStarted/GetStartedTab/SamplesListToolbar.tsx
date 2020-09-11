@@ -10,7 +10,7 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import React from 'react';
 import Pluralize from 'react-pluralize';
 import {
@@ -25,11 +25,12 @@ import TemporaryStorageSwitch from './TemporaryStorageSwitch';
 import * as DevfileFiltersStore from '../../../store/DevfileFilters';
 import { AppState } from '../../../store';
 
-type SamplesListToolbarProps = {
-  persistVolumesDefault: string;
-  onTemporaryStorageChange: (temporary: boolean) => void;
-  metadataFilter: DevfileFiltersStore.MetadataFilterState;
-} & DevfileFiltersStore.ActionCreators;
+type SamplesListToolbarProps =
+  MappedProps
+  & {
+    persistVolumesDefault: string;
+    onTemporaryStorageChange: (temporary: boolean) => void;
+  };
 type SamplesListToolbarState = {
   searchValue: string;
 }
@@ -97,9 +98,14 @@ export class SamplesListToolbar extends React.PureComponent<SamplesListToolbarPr
 
 }
 
-export default connect(
-  (state: AppState) => ({
-    metadataFilter: state.devfileMetadataFilter,
-  }),
-  DevfileFiltersStore.actionCreators
-)(SamplesListToolbar);
+const mapStateToProps = (state: AppState) => ({
+  metadataFilter: state.devfileMetadataFilter,
+});
+
+const connector = connect(
+  mapStateToProps,
+  DevfileFiltersStore.actionCreators,
+);
+
+type MappedProps = ConnectedProps<typeof connector>;
+export default connector(SamplesListToolbar);

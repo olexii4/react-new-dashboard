@@ -26,7 +26,7 @@ const THEME_KEY = 'theme';
 const IS_MANAGED_SIDEBAR = false;
 
 type Props =
-  MergedProps
+  MappedProps
   & {
     children: React.ReactNode;
     history: History;
@@ -143,5 +143,5 @@ const connector = connect(
   mapStateToProps
 );
 
-type MergedProps = ConnectedProps<typeof connector>
+type MappedProps = ConnectedProps<typeof connector>
 export default connector(Layout);

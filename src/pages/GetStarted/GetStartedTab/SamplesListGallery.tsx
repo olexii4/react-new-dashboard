@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import {
   Alert,
   AlertActionCloseButton,
@@ -33,12 +33,11 @@ import { SampleCard } from './SampleCard';
 import { SearchIcon } from '@patternfly/react-icons';
 import { AlertItem } from '../../../services/types';
 
-type Props = {
-  metadataFilter: DevfileFiltersStore.MetadataFilterState;
-  onCardClick: (devfileContent: string, stackName: string) => void;
-}
-  & DevfileRegistriesStore.ActionCreators
-  & DevfileFiltersStore.ActionCreators;
+type Props =
+  MappedProps
+  & {
+    onCardClick: (devfileContent: string, stackName: string) => void;
+  };
 type State = {
   alerts: AlertItem[];
 };
@@ -86,7 +85,7 @@ export class SamplesListGallery extends React.PureComponent<Props, State> {
 
   private async fetchDevfile(meta: che.DevfileMetaData): Promise<void> {
     try {
-      const devfile = await this.props.requestDevfile(meta.links.self);
+      const devfile = await this.props.requestDevfile(meta.links.self) as string;
       this.props.onCardClick(devfile, meta.displayName);
     } catch (e) {
       console.warn('Failed to load devfile.', e);
@@ -123,7 +122,7 @@ export class SamplesListGallery extends React.PureComponent<Props, State> {
         <EmptyStatePrimary>
           <Button
             variant='link'
-            onClick={(): void => this.props.showAll()}>
+            onClick={(): void => this.props.showAll() as void}>
             Clear filter
             </Button>
         </EmptyStatePrimary>
@@ -133,11 +132,17 @@ export class SamplesListGallery extends React.PureComponent<Props, State> {
 
 }
 
-export default connect(
-  (state: AppState) => ({
-    metadataFilter: state.devfileMetadataFilter,
-  }), {
-  ...DevfileRegistriesStore.actionCreators,
-  ...DevfileFiltersStore.actionCreators,
-}
-)(SamplesListGallery);
+const mapStateToProps = (state: AppState) => ({
+  metadataFilter: state.devfileMetadataFilter,
+});
+
+const connector = connect(
+  mapStateToProps,
+  {
+    ...DevfileRegistriesStore.actionCreators,
+    ...DevfileFiltersStore.actionCreators,
+  }
+);
+
+type MappedProps = ConnectedProps<typeof connector>;
+export default connector(SamplesListGallery);

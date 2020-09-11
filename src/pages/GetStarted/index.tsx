@@ -26,7 +26,6 @@ import {
   Tabs,
   Title,
 } from '@patternfly/react-core';
-import * as BrandingStore from '../../store/Branding';
 import * as WorkspaceStore from '../../store/Workspaces';
 import { AppState } from '../../store';
 import { AlertItem } from '../../services/types';
@@ -41,7 +40,7 @@ const CUSTOM_WORKSPACE_TAB_KEY = '#custom-workspace';
 type Props = {
   history: History;
 }
-  & MergedProps;
+  & MappedProps;
 
 type State = {
   activeTabKey: string;
@@ -259,5 +258,5 @@ const connector = connect(
   WorkspaceStore.actionCreators
 );
 
-type MergedProps = ConnectedProps<typeof connector>;
+type MappedProps = ConnectedProps<typeof connector>;
 export default connector(GetStarted);

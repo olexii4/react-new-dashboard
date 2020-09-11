@@ -40,7 +40,7 @@ const MONACO_CONFIG: Monaco.IEditorConstructionOptions = {
 };
 
 type Props =
-  MergedProps
+  MappedProps
   & {
     devfile: che.WorkspaceDevfile;
     decorationPattern?: string;
@@ -418,5 +418,5 @@ const connector = connect(
   { forwardRef: true }
 );
 
-type MergedProps = ConnectedProps<typeof connector>;
+type MappedProps = ConnectedProps<typeof connector>;
 export default connector(DevfileEditor);

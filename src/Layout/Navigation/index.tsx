@@ -34,7 +34,7 @@ export interface NavigationRecentItemObject {
 }
 
 type Props =
-  MergedProps
+  MappedProps
   & {
     history: History;
     theme: ThemeVariant;
@@ -88,6 +88,6 @@ const connector = connect(
   WorkspacesStore.actionCreators,
 );
 
-type MergedProps = ConnectedProps<typeof connector>;
+type MappedProps = ConnectedProps<typeof connector>;
 
 export default connector(Navigation);

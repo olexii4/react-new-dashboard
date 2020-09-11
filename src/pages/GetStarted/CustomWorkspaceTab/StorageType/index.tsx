@@ -36,7 +36,7 @@ export enum StorageType {
 }
 
 type Props =
-  MergedProps
+  MappedProps
   & {
     storageType?: StorageType;
     onChange?: (storageType: StorageType) => void;
@@ -183,5 +183,5 @@ const connector = connect(
   mapStateToProps,
 );
 
-type MergedProps = ConnectedProps<typeof connector>;
+type MappedProps = ConnectedProps<typeof connector>;
 export default connector(StorageTypeFormGroup);

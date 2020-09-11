@@ -24,7 +24,7 @@ import {
 import WorkspaceDetailsPage from '../pages/WorkspaceDetails';
 
 type Props =
-  MergedProps
+  MappedProps
   & { history: History }
   & RouteComponentProps<{ namespace: string; workspaceName: string }>; // incoming parameters
 
@@ -64,5 +64,5 @@ const connector = connect(
   WorkspacesStore.actionCreators
 );
 
-type MergedProps = ConnectedProps<typeof connector>;
+type MappedProps = ConnectedProps<typeof connector>;
 export default connector(WorkspaceDetails);

@@ -44,7 +44,7 @@ type Props =
     workspace: che.Workspace | null | undefined,
   }
   & { history: History }
-  & MergedProps;
+  & MappedProps;
 
 type State = {
   activeTabKey: number;
@@ -220,5 +220,5 @@ const connector = connect(
   WorkspacesStore.actionCreators
 );
 
-type MergedProps = ConnectedProps<typeof connector>
+type MappedProps = ConnectedProps<typeof connector>
 export default connector(WorkspaceDetails);
