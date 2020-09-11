@@ -12,7 +12,7 @@
 
 import React, { Suspense } from 'react';
 import { History } from 'history';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { load } from 'js-yaml';
 import {
   Alert,
@@ -39,9 +39,9 @@ const GET_STARTED_TAB_KEY = '#get-started';
 const CUSTOM_WORKSPACE_TAB_KEY = '#custom-workspace';
 
 type Props = {
-  branding: BrandingStore.State;
   history: History;
-} & WorkspaceStore.ActionCreators;
+}
+  & MergedProps;
 
 type State = {
   activeTabKey: string;
@@ -250,10 +250,14 @@ export class GetStarted extends React.PureComponent<Props, State> {
   }
 }
 
-export default connect(
-  (state: AppState) => {
-    const { branding } = state;
-    return { branding };
-  },
-  WorkspaceStore.actionCreators,
-)(GetStarted);
+const mapStateToProps = (state: AppState) => ({
+  branding: state.branding,
+});
+
+const connector = connect(
+  mapStateToProps,
+  WorkspaceStore.actionCreators
+);
+
+type MergedProps = ConnectedProps<typeof connector>;
+export default connector(GetStarted);
