@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import {
   PageSection,
   PageSectionVariants,
@@ -22,14 +22,13 @@ import CheProgress from '../../../components/Progress';
 import { SamplesListHeader } from './SamplesListHeader';
 import SamplesListToolbar from './SamplesListToolbar';
 import SamplesListGallery from './SamplesListGallery';
+import { selectIsLoading, selectSettings } from '../../../store/Workspaces/selectors';
 
 // At runtime, Redux will merge together...
 type Props = {
   onDevfile: (devfileContent: string, stackName: string) => Promise<void>;
-} & {
-  workspaces: WorkspacesStore.State;
-}// ... state we've requested from the Redux store
-  & WorkspacesStore.ActionCreators; // ... plus action creators we've requested;
+}
+  & MappedProps;
 type State = {
   temporary: boolean;
 };
@@ -54,8 +53,8 @@ export class SamplesListTab extends React.Component<Props, State> {
   }
 
   public render(): React.ReactElement {
-    const isLoading = this.props.workspaces.isLoading;
-    const persistVolumesDefault = this.props.workspaces.settings['che.workspace.persist_volumes.default'];
+    const isLoading = this.props.isLoading;
+    const persistVolumesDefault = this.props.settings['che.workspace.persist_volumes.default'];
 
     return (
       <React.Fragment>
@@ -75,9 +74,14 @@ export class SamplesListTab extends React.Component<Props, State> {
   }
 }
 
-export default connect(
-  (state: AppState) => ({
-    workspaces: state.workspaces,
-  }), // Selects which state properties are merged into the component's props(devfileMetadata and workspaces)
-  WorkspacesStore.actionCreators, // Selects which action creators are merged into the component's props
-)(SamplesListTab);
+const mapStateToProps = (state: AppState) => ({
+  isLoading: selectIsLoading(state),
+  settings: selectSettings(state),
+});
+
+const connector = connect(
+  mapStateToProps,
+  WorkspacesStore.actionCreators
+);
+type MappedProps = ConnectedProps<typeof connector>;
+export default connector(SamplesListTab);
