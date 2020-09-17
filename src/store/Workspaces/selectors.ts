@@ -13,20 +13,20 @@
 import { createSelector } from 'reselect';
 import { AppState } from '../';
 
-const selectWorkspacesState = (state: AppState) => state.workspaces;
+const selectState = (state: AppState) => state.workspaces;
 
 export const selectIsLoading = createSelector(
-  selectWorkspacesState,
+  selectState,
   state => state.isLoading,
 );
 
 export const selectSettings = createSelector(
-  selectWorkspacesState,
+  selectState,
   state => state.settings,
 );
 
 export const selectAllWorkspaces = createSelector(
-  selectWorkspacesState,
+  selectState,
   state => {
     if (state.isLoading || state.workspaces.length === 0) {
       return null;
@@ -36,14 +36,25 @@ export const selectAllWorkspaces = createSelector(
 );
 
 export const selectWorkspaceByQualifiedName = createSelector(
-  selectWorkspacesState,
+  selectState,
   selectAllWorkspaces,
-  (state, allWorkspace) => {
-    if (!allWorkspace) {
+  (state, allWorkspaces) => {
+    if (!allWorkspaces) {
       return null;
     }
-    return allWorkspace.find(workspace =>
+    return allWorkspaces.find(workspace =>
       workspace.namespace === state.namespace && workspace.devfile.metadata.name === state.workspaceName);
+  }
+);
+
+export const selectWorkspaceById = createSelector(
+  selectState,
+  selectAllWorkspaces,
+  (state, allWorkspaces) => {
+    if (!allWorkspaces) {
+      return null;
+    }
+    return allWorkspaces.find(workspace => workspace.id === state.workspaceId);
   }
 );
 
@@ -53,7 +64,6 @@ export const selectAllWorkspacesSortedByTime = createSelector(
     if (!allWorkspaces) {
       return null;
     }
-
     return allWorkspaces.sort(sortByTimeFn);
   }
 );
@@ -72,7 +82,7 @@ const sortByTimeFn = (workspaceA: che.Workspace, workspaceB: che.Workspace): -1 
 };
 
 export const selectRecentWorkspaces = createSelector(
-  selectWorkspacesState,
+  selectState,
   selectAllWorkspacesSortedByTime,
   (state, workspacesSortedByTime) => {
     if (!workspacesSortedByTime) {

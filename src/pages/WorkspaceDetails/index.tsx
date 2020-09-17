@@ -31,7 +31,7 @@ import CheProgress from '../../components/Progress';
 import { AppState } from '../../store';
 import * as WorkspacesStore from '../../store/Workspaces';
 import DevfileEditor, { DevfileEditor as Editor } from '../../components/DevfileEditor';
-import { selectWorkspaceByQualifiedName, selectIsLoading } from '../../store/Workspaces/selectors';
+import { selectIsLoading, selectWorkspaceById } from '../../store/Workspaces/selectors';
 
 import './WorkspaceDetails.styl';
 
@@ -94,6 +94,19 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
     this.devfileEditorRef = React.createRef<Editor>();
   }
 
+  componentDidUpdate(): void {
+    if (
+      this.props.workspace &&
+      (
+        !this.state.workspace ||
+        this.isEqualObject(this.props.workspace.devfile, this.state.workspace?.devfile) === false
+      )
+    ) {
+      this.setState({ workspace: this.props.workspace });
+      this.updateEditor(this.props.workspace.devfile);
+    }
+  }
+
   private updateEditor(devfile: che.WorkspaceDevfile): void {
     this.devfileEditorRef.current?.updateContent(devfile);
     this.setState({ isDevfileValid: true });
@@ -107,7 +120,7 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
     }
 
     if (!workspace) {
-      return <div>Workspace not found</div>;
+      return <div>Workspace not found.</div>;
     }
 
     const workspaceName = workspace.devfile.metadata.name;
@@ -179,24 +192,29 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
     if (!isValid) {
       return;
     }
-    if (!this.isEqualObject(workspace.devfile, newDevfile)) {
-      // todo refactor
-      this.timeoutId = setTimeout(async () => {
-        const newWorkspaceObj = Object.assign({}, workspace);
-        newWorkspaceObj.devfile = newDevfile;
-        try {
-          await this.props.updateWorkspace(newWorkspaceObj);
-          this.setState({ hasRequestErrors: false });
-          this.showAlert('success', 'Workspace has been updated', 1000);
-
-          const url = `/workspace/${workspace.namespace}/${workspace.devfile.metadata.name}`;
-          this.props.history.replace(url);
-        } catch (e) {
-          this.setState({ hasRequestErrors: true });
-          this.showAlert('danger', e, 10000);
-        }
-      }, 2000);
+    if (this.isEqualObject(workspace.devfile, newDevfile)) {
+      return;
     }
+
+    this.timeoutId = setTimeout(async () => {
+      const newWorkspaceObj = Object.assign({}, workspace);
+      newWorkspaceObj.devfile = newDevfile;
+
+      const namespace = newWorkspaceObj.namespace;
+      const workspaceName = newWorkspaceObj.devfile.metadata.name;
+
+      try {
+        await this.props.updateWorkspace(newWorkspaceObj);
+        this.setState({ hasRequestErrors: false });
+        this.showAlert('success', 'Workspace has been updated', 2000);
+
+        const pathname = `/workspace/${namespace}/${workspaceName}`;
+        this.props.history.replace({ pathname });
+      } catch (e) {
+        this.setState({ hasRequestErrors: true });
+        this.showAlert('danger', e, 10000);
+      }
+    }, 2000);
   }
 
   // TODO rework this temporary solution
@@ -212,7 +230,7 @@ class WorkspaceDetails extends React.PureComponent<Props, State> {
 
 const mapStateToProps = (state: AppState) => ({
   isLoading: selectIsLoading(state),
-  workspace: selectWorkspaceByQualifiedName(state),
+  workspace: selectWorkspaceById(state),
 });
 
 const connector = connect(

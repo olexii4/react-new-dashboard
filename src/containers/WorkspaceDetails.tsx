@@ -34,7 +34,11 @@ export class WorkspaceDetails extends React.PureComponent<Props> {
     super(props);
 
     const { namespace, workspaceName } = this.props.match.params;
-    this.props.storeWorkspaceQualifiedName(namespace, workspaceName);
+    const workspace = this.props.allWorkspaces?.find(workspace =>
+      workspace.namespace === namespace && workspace.devfile.metadata.name === workspaceName);
+    if (workspace) {
+      this.props.setWorkspaceId(workspace.id);
+    }
   }
 
   componentDidMount() {

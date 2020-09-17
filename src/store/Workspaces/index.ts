@@ -24,6 +24,7 @@ import {
 import { container } from '../../inversify.config';
 import { CheJsonRpcApi } from '../../services/json-rpc/JsonRpcApiFactory';
 import { JsonRpcMasterApi } from '../../services/json-rpc/JsonRpcMasterApi';
+import { selectWorkspaceById } from './selectors';
 
 // This state defines the type of data maintained in the Redux store.
 export interface State {
@@ -34,6 +35,7 @@ export interface State {
   // current workspace qualified name
   namespace: string;
   workspaceName: string;
+  workspaceId: string;
 
   // number of recent workspaces
   recentNumber: number;
@@ -72,14 +74,23 @@ interface ReceiveSettingsAction {
   settings: che.WorkspaceSettings;
 }
 
-interface StoreWorkspaceQualifiedName {
-  type: 'STORE_WORKSPACE_NAME';
+interface SetWorkspaceQualifiedName {
+  type: 'SET_WORKSPACE_NAME';
   namespace: string;
   workspaceName: string;
 }
 
 interface ClearWorkspaceQualifiedName {
   type: 'CLEAR_WORKSPACE_NAME';
+}
+
+interface SetWorkspaceId {
+  type: 'SET_WORKSPACE_ID';
+  workspaceId: string;
+}
+
+interface ClearWorkspaceId {
+  type: 'CLEAR_WORKSPACE_ID';
 }
 
 type KnownAction =
@@ -90,8 +101,10 @@ type KnownAction =
   | DeleteWorkspaceAction
   | AddWorkspaceAction
   | ReceiveSettingsAction
-  | StoreWorkspaceQualifiedName
-  | ClearWorkspaceQualifiedName;
+  | SetWorkspaceQualifiedName
+  | ClearWorkspaceQualifiedName
+  | SetWorkspaceId
+  | ClearWorkspaceId;
 
 export enum WorkspaceStatus {
   RUNNING = 1,
@@ -119,7 +132,10 @@ export type ActionCreators = {
   ) => AppThunk<KnownAction, Promise<che.Workspace>>;
   requestSettings: () => AppThunk<KnownAction, Promise<void>>;
 
-  storeWorkspaceQualifiedName: (namespace: string, workspaceName: string) => AppThunk<StoreWorkspaceQualifiedName>;
+  setWorkspaceQualifiedName: (namespace: string, workspaceName: string) => AppThunk<SetWorkspaceQualifiedName>;
+  clearWorkspaceQualifiedName: () => AppThunk<ClearWorkspaceQualifiedName>;
+  setWorkspaceId: (workspaceId: string) => AppThunk<SetWorkspaceId>;
+  clearWorkspaceId: () => AppThunk<ClearWorkspaceId>;
 };
 
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -259,13 +275,28 @@ export const actionCreators: ActionCreators = {
     }
   },
 
-  storeWorkspaceQualifiedName: (namespace: string, workspaceName: string): AppThunk<KnownAction> => (dispatch): void => {
+  setWorkspaceQualifiedName: (namespace: string, workspaceName: string): AppThunk<SetWorkspaceQualifiedName> => dispatch => {
     dispatch({
-      type: 'STORE_WORKSPACE_NAME',
+      type: 'SET_WORKSPACE_NAME',
       namespace,
       workspaceName,
     });
   },
+
+  clearWorkspaceQualifiedName: (): AppThunk<ClearWorkspaceQualifiedName> => dispatch => {
+    dispatch({ type: 'CLEAR_WORKSPACE_NAME' });
+  },
+
+  setWorkspaceId: (workspaceId: string): AppThunk<SetWorkspaceId> => dispatch => {
+    dispatch({
+      type: 'SET_WORKSPACE_ID',
+      workspaceId,
+    });
+  },
+
+  clearWorkspaceId: (): AppThunk<ClearWorkspaceId> => dispatch => {
+    dispatch({ type: 'CLEAR_WORKSPACE_ID' });
+  }
 
 };
 
@@ -276,6 +307,7 @@ const unloadedState: State = {
 
   namespace: '',
   workspaceName: '',
+  workspaceId: '',
 
   recentNumber: 5,
 };
@@ -346,9 +378,7 @@ export const reducer: Reducer<State> = (state: State | undefined, action: KnownA
           settings: action.settings,
         } as StatePartial,
       );
-    default:
-      return state;
-    case 'STORE_WORKSPACE_NAME':
+    case 'SET_WORKSPACE_NAME':
       return Object.assign(
         {},
         state,
@@ -366,6 +396,24 @@ export const reducer: Reducer<State> = (state: State | undefined, action: KnownA
           workspaceName: '',
         } as StatePartial,
       );
+    case 'SET_WORKSPACE_ID':
+      return Object.assign(
+        {},
+        state,
+        {
+          workspaceId: action.workspaceId,
+        } as StatePartial,
+      );
+    case 'CLEAR_WORKSPACE_ID':
+      return Object.assign(
+        {},
+        state,
+        {
+          workspaceId: '',
+        }
+      );
+    default:
+      return state;
   }
 
 };
