@@ -35,7 +35,6 @@
 | [`@babel/types@7.10.2`](https://github.com/babel/babel.git) | MIT | clearlydefined |
 | [`@bcoe/v8-coverage@0.2.3`](git://github.com/demurgos/v8-coverage.git) | MIT | clearlydefined |
 | [`@cnakazawa/watch@1.0.4`](git://github.com/mikeal/watch.git) | Apache-2.0 | clearlydefined |
-| `@eclipse-che/api@7.5.0-SNAPSHOT` | EPL-2.0 | - |
 | [`@istanbuljs/load-nyc-config@1.1.0`](git+https://github.com/istanbuljs/load-nyc-config.git) | ISC | clearlydefined |
 | [`@istanbuljs/schema@0.1.2`](git+https://github.com/istanbuljs/schema.git) | MIT | clearlydefined |
 | [`@jest/console@26.0.1`](https://github.com/facebook/jest.git) | MIT | clearlydefined |
@@ -510,7 +509,6 @@
 | [`is-alphanumerical@1.0.4`](https://github.com/wooorm/is-alphanumerical.git) | MIT | clearlydefined |
 | [`is-arrayish@0.2.1`](https://github.com/qix-/node-is-arrayish.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`is-binary-path@1.0.1`](https://github.com/sindresorhus/is-binary-path.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
-| [`is-buffer@2.0.4`](git://github.com/feross/is-buffer.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`is-ci@2.0.0`](https://github.com/watson/is-ci.git) | MIT | clearlydefined |
 | [`is-data-descriptor@1.0.0`](https://github.com/jonschlinkert/is-data-descriptor.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`is-decimal@1.0.4`](https://github.com/wooorm/is-decimal.git) | MIT | clearlydefined |
@@ -535,7 +533,6 @@
 | [`is-stream@1.1.0`](https://github.com/sindresorhus/is-stream.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`is-string@1.0.5`](git://github.com/ljharb/is-string.git) | MIT | clearlydefined |
 | [`is-supported-regexp-flag@1.0.1`](https://github.com/sindresorhus/is-supported-regexp-flag.git) | MIT | clearlydefined |
-| [`is-typedarray@1.0.0`](git://github.com/hughsk/is-typedarray.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`is-whitespace-character@1.0.4`](https://github.com/wooorm/is-whitespace-character.git) | MIT | clearlydefined |
 | [`is-windows@1.0.2`](https://github.com/jonschlinkert/is-windows.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`is-word-character@1.0.4`](https://github.com/wooorm/is-word-character.git) | MIT | clearlydefined |
@@ -660,7 +657,6 @@
 | [`multicast-dns-service-types@1.1.0`](https://github.com/mafintosh/multicast-dns-service-types.git) | MIT | clearlydefined |
 | [`multicast-dns@6.2.3`](https://github.com/mafintosh/multicast-dns.git) | MIT | clearlydefined |
 | [`mute-stream@0.0.8`](git://github.com/isaacs/mute-stream) | ISC | clearlydefined |
-| [`nan@2.14.1`](git://github.com/nodejs/nan.git) | MIT | [CQ22352](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22352) |
 | [`nanomatch@1.2.13`](https://github.com/micromatch/nanomatch.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`natural-compare@1.4.0`](git://github.com/litejs/natural-compare-lite.git) | MIT | clearlydefined |
 | [`negotiator@0.6.2`](https://github.com/jshttp/negotiator.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
@@ -944,7 +940,6 @@
 | [`type-check@0.3.2`](git://github.com/gkz/type-check.git) | MIT | clearlydefined |
 | [`type-detect@4.0.8`](git+ssh://git@github.com/chaijs/type-detect.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`type-is@1.6.18`](https://github.com/jshttp/type-is.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
-| [`typedarray-to-buffer@3.1.5`](git://github.com/feross/typedarray-to-buffer.git) | MIT | clearlydefined |
 | [`typedarray@0.0.6`](git://github.com/substack/typedarray.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`typescript-formatter@7.2.2`](git@github.com:vvakame/typescript-formatter.git) | MIT | clearlydefined |
 | [`typescript@3.9.5`](https://github.com/Microsoft/TypeScript.git) | Apache-2.0 | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |

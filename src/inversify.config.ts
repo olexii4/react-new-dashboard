@@ -13,17 +13,14 @@
 import { Container } from 'inversify';
 import { KeycloakSetup } from './services/bootstrap/KeycloakSetup';
 import { Keycloak } from './services/keycloak/Keycloak';
-import { WebsocketClient } from './services/json-rpc/WebsocketClient';
 import { Debounce } from './services/debounce/Debounce';
-import { CheJsonRpcApi } from './services/json-rpc/JsonRpcApiFactory';
+import { CheWorkspaceClient } from './services/workspace-client/CheWorkspaceClient';
 
 const container = new Container();
 
 container.bind(KeycloakSetup).toSelf().inSingletonScope();
 container.bind(Keycloak).toSelf().inSingletonScope();
-container.bind(CheJsonRpcApi).toSelf().inSingletonScope();
-
 container.bind(Debounce).toSelf();
-container.bind(WebsocketClient).toSelf();
+container.bind(CheWorkspaceClient).toSelf().inSingletonScope();
 
 export { container };

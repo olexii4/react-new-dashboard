@@ -11,8 +11,10 @@
  */
 
 // This state defines the type of data maintained in the Redux store.
+import { IKeycloakUserInfo } from '../services/keycloak/Keycloak';
+
 export interface UserState {
-  user: che.User | undefined;
+  user: che.User | IKeycloakUserInfo | undefined;
   isLogged: boolean;
 }
 
@@ -24,7 +26,7 @@ export const actionCreators = {
 
 };
 
-export const setUser = (user: che.User): UserAction => {
+export const setUser = (user: che.User | IKeycloakUserInfo): UserAction => {
   return {
     type: 'SET_USER',
     user: user,

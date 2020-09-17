@@ -22,6 +22,7 @@ import * as DevfileMetadataFiltersStore from '../../store/DevfileFilters';
 import * as InfrastructureNamespaceStore from '../../store/InfrastructureNamespace';
 import * as Plugins from '../../store/Plugins';
 import { Keycloak } from '../keycloak/Keycloak';
+import { CheWorkspaceClient } from '../workspace-client/CheWorkspaceClient';
 
 /**
  * This class prepares all init data.
@@ -31,17 +32,22 @@ export class PreloadData {
   private keycloakSetup: KeycloakSetup;
   private keycloak: Keycloak;
   private store: Store<AppState>;
+  private cheWorkspaceClient: CheWorkspaceClient;
 
   constructor(store: Store<AppState>) {
     this.store = store;
     this.keycloakSetup = container.get(KeycloakSetup);
     this.keycloak = container.get(Keycloak);
+    this.cheWorkspaceClient = container.get(CheWorkspaceClient);
   }
 
   async init(): Promise<void> {
     await this.updateBranding();
     await this.updateUser();
     await this.updateKeycloakUserInfo();
+
+    this.updateRestApiClient();
+    await this.updateJsonRpcMasterApi();
 
     this.updateWorkspaces();
     this.updateInfrastructureNamespaces();
@@ -57,6 +63,17 @@ export class PreloadData {
   private async updateBranding(): Promise<void> {
     const { requestBranding } = BrandingStore.actionCreators;
     await requestBranding()(this.store.dispatch, this.store.getState);
+  }
+
+  private updateRestApiClient(): void {
+    return this.cheWorkspaceClient.updateRestApiClient();
+  }
+
+  private async updateJsonRpcMasterApi(): Promise<void> {
+    const state = this.store.getState();
+    const { branding: { data: { websocketContext } } } = state;
+    this.cheWorkspaceClient.setWebsocketContext(websocketContext);
+    return this.cheWorkspaceClient.updateJsonRpcMasterApi();
   }
 
   private setUser(): void {

@@ -14,17 +14,13 @@ import { Reducer } from 'redux';
 import { AppThunk } from '../';
 import {
   createWorkspaceFromDevfile,
-  deleteWorkspace,
-  fetchSettings,
-  fetchWorkspaces,
   startWorkspace,
-  stopWorkspace,
-  updateWorkspace,
 } from '../../services/api/workspace';
 import { container } from '../../inversify.config';
-import { CheJsonRpcApi } from '../../services/json-rpc/JsonRpcApiFactory';
-import { JsonRpcMasterApi } from '../../services/json-rpc/JsonRpcMasterApi';
-import { selectWorkspaceById } from './selectors';
+import { CheWorkspaceClient } from '../../services/workspace-client/CheWorkspaceClient';
+import * as api from '@eclipse-che/api';
+
+const WorkspaceClient = container.get(CheWorkspaceClient);
 
 // This state defines the type of data maintained in the Redux store.
 export interface State {
@@ -115,9 +111,6 @@ export enum WorkspaceStatus {
   ERROR
 }
 
-const cheJsonRpcApi = container.get(CheJsonRpcApi);
-let jsonRpcMasterApi: JsonRpcMasterApi;
-
 export type ActionCreators = {
   requestWorkspaces: () => AppThunk<KnownAction, Promise<void>>;
   startWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
@@ -138,33 +131,37 @@ export type ActionCreators = {
   clearWorkspaceId: () => AppThunk<ClearWorkspaceId>;
 };
 
+const subscribedWorkspaceStatusCallbacks = new Map<string, Function>();
+
+function updateWorkspaceSubscription(workspace, dispatch) {
+  const callback = message => {
+    const status = message.error ? 'ERROR' : message.status;
+    if (WorkspaceStatus[status]) {
+      workspace.status = status;
+      dispatch({ type: 'UPDATE_WORKSPACE', workspace });
+    }
+  };
+  WorkspaceClient.jsonRpcMasterApi.subscribeWorkspaceStatus(workspace.id, callback);
+  subscribedWorkspaceStatusCallbacks.set(workspace.id, callback);
+}
+
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
 // They don't directly mutate state, but they can have external side-effects (such as loading data).
 export const actionCreators: ActionCreators = {
 
-  requestWorkspaces: (): AppThunk<KnownAction, Promise<void>> => async (dispatch, getState): Promise<void> => {
-    const appState = getState();
-
-    // Lazy initialization of jsonRpcMasterApi
-    if (!jsonRpcMasterApi) {
-      // TODO change this test implementation to the real one
-      const jsonRpcApiLocation = new URL(window.location.href).origin.replace('http', 'ws') + appState.branding.data.websocketContext;
-      jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
-    }
-
+  requestWorkspaces: (): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
-      const workspaces = await fetchWorkspaces();
-      jsonRpcMasterApi.unSubscribeAllWorkspaceStatus();
+      const workspaces = await WorkspaceClient.restApiClient.getAll<che.Workspace>();
+      // Unsubscribe
+      subscribedWorkspaceStatusCallbacks.forEach((workspaceStatusCallback: Function, workspaceId: string) => {
+        WorkspaceClient.jsonRpcMasterApi.unSubscribeWorkspaceStatus(workspaceId, workspaceStatusCallback);
+      });
+      subscribedWorkspaceStatusCallbacks.clear();
       workspaces.forEach(workspace => {
-        jsonRpcMasterApi.subscribeWorkspaceStatus(workspace.id as string, (message: any) => {
-          const status = message.error ? 'ERROR' : message.status;
-          if (WorkspaceStatus[status]) {
-            workspace.status = status;
-            dispatch({ type: 'UPDATE_WORKSPACE', workspace });
-          }
-        });
+        // Subscribe
+        updateWorkspaceSubscription(workspace, dispatch);
       });
       dispatch({ type: 'RECEIVE_WORKSPACES', workspaces });
     } catch (e) {
@@ -178,7 +175,7 @@ export const actionCreators: ActionCreators = {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
-      const settings = await fetchSettings();
+      const settings = await WorkspaceClient.restApiClient.getSettings<che.WorkspaceSettings>();
       dispatch({ type: 'RECEIVE_SETTINGS', settings });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
@@ -202,7 +199,7 @@ export const actionCreators: ActionCreators = {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
-      const workspace = await stopWorkspace(workspaceId);
+      const workspace = await WorkspaceClient.restApiClient.stop(workspaceId);
       dispatch({ type: 'UPDATE_WORKSPACE', workspace });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
@@ -214,7 +211,7 @@ export const actionCreators: ActionCreators = {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
-      await deleteWorkspace(workspaceId);
+      await WorkspaceClient.restApiClient.delete(workspaceId);
       dispatch({ type: 'DELETE_WORKSPACE', workspaceId });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
@@ -226,7 +223,7 @@ export const actionCreators: ActionCreators = {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
-      const updatedWorkspace = await updateWorkspace(workspace);
+      const updatedWorkspace = await WorkspaceClient.restApiClient.update(workspace.id, workspace as api.che.workspace.Workspace);
       dispatch({ type: 'UPDATE_WORKSPACE', workspace: updatedWorkspace });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
@@ -239,17 +236,7 @@ export const actionCreators: ActionCreators = {
     cheNamespace: string | undefined,
     infrastructureNamespace: string | undefined,
     attributes: { [key: string]: string } = {},
-  ): AppThunk<KnownAction, Promise<che.Workspace>> => async (dispatch, getState): Promise<che.Workspace> => {
-
-    const appState = getState();
-
-    // Lazy initialization of jsonRpcMasterApi
-    if (!jsonRpcMasterApi) {
-      // TODO change this test implementation to the real one
-      const jsonRpcApiLocation = new URL(window.location.href).origin.replace('http', 'ws') + appState.branding.data.websocketContext;
-      jsonRpcMasterApi = cheJsonRpcApi.getJsonRpcMasterApi(jsonRpcApiLocation);
-    }
-
+  ): AppThunk<KnownAction, Promise<che.Workspace>> => async (dispatch): Promise<che.Workspace> => {
     dispatch({ type: 'REQUEST_WORKSPACES' });
     try {
       const workspace = await createWorkspaceFromDevfile(
@@ -259,14 +246,8 @@ export const actionCreators: ActionCreators = {
         attributes
       );
       dispatch({ type: 'UPDATE_WORKSPACE', workspace });
-
-      jsonRpcMasterApi.subscribeWorkspaceStatus(workspace.id, (message: any) => {
-        const status = message.error ? 'ERROR' : message.status;
-        if (WorkspaceStatus[status]) {
-          workspace.status = status;
-          dispatch({ type: 'UPDATE_WORKSPACE', workspace });
-        }
-      });
+      // Subscribe
+      updateWorkspaceSubscription(workspace, dispatch);
 
       return workspace;
     } catch (e) {
@@ -323,95 +304,55 @@ export const reducer: Reducer<State> = (state: State | undefined, action: KnownA
 
   switch (action.type) {
     case 'REQUEST_WORKSPACES':
-      return Object.assign(
-        {},
-        state,
-        { isLoading: true, } as StatePartial,
-      );
+      return Object.assign({}, state, {
+        isLoading: true,
+      } as StatePartial);
     case 'RECEIVE_ERROR':
-      return Object.assign(
-        {},
-        state,
-        { isLoading: false, } as StatePartial
-      );
+      return Object.assign({}, state, {
+        isLoading: false,
+      } as StatePartial);
     case 'UPDATE_WORKSPACE':
-      return Object.assign(
-        {},
-        state,
-        {
-          isLoading: false,
-          workspaces: state.workspaces.map(workspace => workspace.id === action.workspace.id ? action.workspace : workspace),
-        } as StatePartial
-      );
+      return Object.assign({}, state, {
+        isLoading: false,
+        workspaces: state.workspaces.map(workspace => workspace.id === action.workspace.id ? action.workspace : workspace),
+      } as StatePartial);
     case 'ADD_WORKSPACE':
-      return Object.assign(
-        {},
-        state,
-        {
-          workspaces: state.workspaces.concat([action.workspace]),
-        } as StatePartial,
-      );
+      return Object.assign({}, state, {
+        workspaces: state.workspaces.concat([action.workspace]),
+      } as StatePartial);
     case 'DELETE_WORKSPACE':
-      return Object.assign(
-        {},
-        state,
-        {
-          isLoading: false,
-          workspaces: state.workspaces.filter(workspace => workspace.id !== action.workspaceId),
-        } as StatePartial,
-      );
+      return Object.assign({}, state, {
+        isLoading: false,
+        workspaces: state.workspaces.filter(workspace => workspace.id !== action.workspaceId),
+      } as StatePartial);
     case 'RECEIVE_WORKSPACES':
-      return Object.assign(
-        {},
-        state,
-        {
-          isLoading: false,
-          workspaces: action.workspaces,
-        } as StatePartial,
-      );
+      return Object.assign({}, state, {
+        isLoading: false,
+        workspaces: action.workspaces,
+      } as StatePartial);
     case 'RECEIVE_SETTINGS':
-      return Object.assign(
-        {},
-        state,
-        {
-          isLoading: false,
-          settings: action.settings,
-        } as StatePartial,
-      );
+      return Object.assign({}, state, {
+        isLoading: false,
+        settings: action.settings,
+      } as StatePartial);
     case 'SET_WORKSPACE_NAME':
-      return Object.assign(
-        {},
-        state,
-        {
-          namespace: action.namespace,
-          workspaceName: action.workspaceName,
-        } as StatePartial,
-      );
+      return Object.assign({}, state, {
+        namespace: action.namespace,
+        workspaceName: action.workspaceName,
+      } as StatePartial);
     case 'CLEAR_WORKSPACE_NAME':
-      return Object.assign(
-        {},
-        state,
-        {
-          namespace: '',
-          workspaceName: '',
-        } as StatePartial,
-      );
+      return Object.assign({}, state, {
+        namespace: '',
+        workspaceName: '',
+      } as StatePartial);
     case 'SET_WORKSPACE_ID':
-      return Object.assign(
-        {},
-        state,
-        {
-          workspaceId: action.workspaceId,
-        } as StatePartial,
-      );
+      return Object.assign({}, state, {
+        workspaceId: action.workspaceId,
+      } as StatePartial);
     case 'CLEAR_WORKSPACE_ID':
-      return Object.assign(
-        {},
-        state,
-        {
-          workspaceId: '',
-        }
-      );
+      return Object.assign({}, state, {
+        workspaceId: '',
+      } as StatePartial);
     default:
       return state;
   }

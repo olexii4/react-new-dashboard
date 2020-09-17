@@ -64,7 +64,7 @@ export class KeycloakSetup {
 
     // test API
     try {
-      const keycloak = (window as any)._keycloak;
+      const keycloak = KeycloakSetup.keycloakAuth.keycloak;
       const endpoint = '/api/user';
       const result = await this.testApiAttainability<che.User>(keycloak, endpoint);
       this.user = result;
@@ -85,7 +85,7 @@ export class KeycloakSetup {
   private async loadAdapterScript(src: string): Promise<void> {
     await KeycloakSetup.isDocumentReady;
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const script = document.createElement('script');
       script.type = 'text/javascript';
       script.async = true;
@@ -130,11 +130,11 @@ export class KeycloakSetup {
       useNonce,
     };
 
-    if (!window.Keycloak) {
+    if (!window['Keycloak']) {
       throw new Error('Keycloak Adapter not found.');
     }
 
-    const keycloak = window.Keycloak(keycloakSettings.keycloakAuth.config);
+    const keycloak = window['Keycloak'](keycloakSettings.keycloakAuth.config);
     window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
 
     return new Promise((resolve, reject) => {
@@ -150,7 +150,7 @@ export class KeycloakSetup {
     });
   }
 
-  private async testApiAttainability<T>(keycloak: KeycloakInstance, endpoint: string): Promise<T> {
+  private async testApiAttainability<T>(keycloak: KeycloakInstance | null, endpoint: string): Promise<T> {
     try {
       await this.setAuthorizationHeader(keycloak);
       const response = await axios.get(endpoint);
@@ -160,7 +160,7 @@ export class KeycloakSetup {
     }
   }
 
-  private async setAuthorizationHeader(keycloak: KeycloakInstance): Promise<void> {
+  private async setAuthorizationHeader(keycloak: KeycloakInstance | null): Promise<void> {
     if (!keycloak) {
       return;
     }
@@ -180,13 +180,11 @@ export class KeycloakSetup {
   }
 
   private async updateToken(keycloak: KeycloakInstance): Promise<void> {
-    return new Promise((resolve, reject) => {
-      keycloak.updateToken(5).success(() => {
-        resolve();
-      }).error(() => {
-        reject(new Error('Failed to update token.'));
-      });
-    });
+    try {
+      await keycloak.updateToken(5);
+    } catch (e) {
+      throw new Error('Failed to update token. \n' + e);
+    }
   }
 
 }
