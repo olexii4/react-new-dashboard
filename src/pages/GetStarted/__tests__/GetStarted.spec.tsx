@@ -79,7 +79,6 @@ function createFakeStore(): Store {
         name: 'test'
       },
     } as any,
-    devfileMetadataFilter: {} as any,
     devfileRegistries: {} as any,
     user: {} as any,
     infrastructureNamespace: {} as any,

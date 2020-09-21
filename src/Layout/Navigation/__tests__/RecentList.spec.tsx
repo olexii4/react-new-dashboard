@@ -145,7 +145,6 @@ function createFakeStore(workspaces: che.Workspace[]): Store {
       recentNumber: 5,
     },
     branding: {} as any,
-    devfileMetadataFilter: {} as any,
     devfileRegistries: {} as any,
     user: {} as any,
     infrastructureNamespace: {} as any,

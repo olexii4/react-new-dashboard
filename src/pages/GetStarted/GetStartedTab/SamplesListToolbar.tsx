@@ -22,57 +22,58 @@ import {
   TextInputProps,
 } from '@patternfly/react-core';
 import TemporaryStorageSwitch from './TemporaryStorageSwitch';
-import * as DevfileFiltersStore from '../../../store/DevfileFilters';
+import * as DevfileRegistriesStore from '../../../store/DevfileRegistries';
 import { AppState } from '../../../store';
+import { selectFilterValue, selectMetadataFiltered } from '../../../store/DevfileRegistries/selectors';
 
-type SamplesListToolbarProps =
+type Props =
   MappedProps
   & {
     persistVolumesDefault: string;
     onTemporaryStorageChange: (temporary: boolean) => void;
   };
-type SamplesListToolbarState = {
-  searchValue: string;
+type State = {
+  filterValue: string;
 }
 
-export class SamplesListToolbar extends React.PureComponent<SamplesListToolbarProps, SamplesListToolbarState> {
+export class SamplesListToolbar extends React.PureComponent<Props, State> {
   handleTextInputChange: TextInputProps['onChange'];
   buildSearchBox: (searchValue: string) => React.ReactElement;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
-      searchValue: '',
+      filterValue: '',
     };
 
     this.handleTextInputChange = (searchValue): void => {
-      this.setState({ searchValue });
+      this.setState({ filterValue: searchValue });
       this.props.setFilter(searchValue);
     };
-    this.buildSearchBox = (searchValue: string): React.ReactElement => (
-      <TextInput value={searchValue} type="search" onChange={this.handleTextInputChange} aria-label="Filter samples list" placeholder="Filter by" />
+    this.buildSearchBox = (filterValue: string): React.ReactElement => (
+      <TextInput value={filterValue} type="search" onChange={this.handleTextInputChange} aria-label="Filter samples list" placeholder="Filter by" />
     );
 
   }
 
   componentWillUnmount(): void {
-    this.props.showAll();
+    this.props.clearFilter();
   }
 
   render(): React.ReactElement {
-    const searchValue = this.props.metadataFilter.filter?.search || '';
-    const foundCount = this.props.metadataFilter.found.length;
+    const filterValue = this.props.filterValue || '';
+    const foundCount = this.props.metadataFiltered.length;
 
     return (
       <Flex className={'pf-u-m-md pf-u-mb-0 pf-u-mr-0'}>
         <FlexItem>
-          {this.buildSearchBox(searchValue)}
+          {this.buildSearchBox(filterValue)}
         </FlexItem>
         <FlexItem>
           <TextContent>
             <Text>
-              {this.buildCount(foundCount, searchValue)}
+              {this.buildCount(foundCount, filterValue)}
             </Text>
           </TextContent>
         </FlexItem>
@@ -99,12 +100,13 @@ export class SamplesListToolbar extends React.PureComponent<SamplesListToolbarPr
 }
 
 const mapStateToProps = (state: AppState) => ({
-  metadataFilter: state.devfileMetadataFilter,
+  filterValue: selectFilterValue(state),
+  metadataFiltered: selectMetadataFiltered(state),
 });
 
 const connector = connect(
   mapStateToProps,
-  DevfileFiltersStore.actionCreators,
+  DevfileRegistriesStore.actionCreators,
 );
 
 type MappedProps = ConnectedProps<typeof connector>;

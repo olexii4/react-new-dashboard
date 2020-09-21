@@ -28,12 +28,8 @@ export interface State {
     };
   };
 
-  // current filter
-  filter: MetadataFilter;
-}
-
-export interface MetadataFilter {
-  searchTokens: string[];
+  // current filter value
+  filter: string;
 }
 
 interface RequestMetadataAction {
@@ -66,7 +62,7 @@ interface ReceiveSchemaAction {
 
 interface SetFilterValue extends Action {
   type: 'SET_FILTER',
-  searchTokens: string[];
+  value: string;
 }
 
 interface ClearFilterValue extends Action {
@@ -130,8 +126,7 @@ export const actionCreators: ActionCreators = {
   },
 
   setFilter: (value: string): AppThunk<SetFilterValue, void> => dispatch => {
-    const searchTokens = value.toLowerCase().split(/\s+/);
-    dispatch({ type: 'SET_FILTER', searchTokens });
+    dispatch({ type: 'SET_FILTER', value });
   },
 
   clearFilter: (): AppThunk<ClearFilterValue, void> => dispatch => {
@@ -146,7 +141,7 @@ const unloadedState: State = {
   devfiles: {},
   schema: undefined,
 
-  filter: { searchTokens: [] },
+  filter: '',
 };
 
 export const reducer: Reducer<State> = (state: State | undefined, incomingAction: Action): State => {
@@ -183,16 +178,12 @@ export const reducer: Reducer<State> = (state: State | undefined, incomingAction
       });
     case 'SET_FILTER': {
       return createState(state, {
-        filter: {
-          searchTokens: action.searchTokens,
-        },
+        filter: action.value,
       });
     }
     case 'CLEAR_FILTER': {
       return createState(state, {
-        filter: {
-          searchTokens: [],
-        },
+        filter: '',
       });
     }
     default:

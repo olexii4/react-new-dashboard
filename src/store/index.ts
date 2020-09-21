@@ -16,7 +16,6 @@ import * as Plugins from './Plugins';
 import * as FactoryResolver from './FactoryResolver';
 import * as WorkspacesStore from './Workspaces';
 import * as DevfileRegistriesStore from './DevfileRegistries';
-import * as DevfileMetadataFilterStore from './DevfileFilters';
 import * as InfrastructureNamespaceStore from './InfrastructureNamespace';
 import * as BrandingStore from './Branding';
 import userReducer from './User';
@@ -24,7 +23,6 @@ import userReducer from './User';
 // the top-level state object
 export interface AppState {
   branding: BrandingStore.State;
-  devfileMetadataFilter: DevfileMetadataFilterStore.MetadataFilterState;
   devfileRegistries: DevfileRegistriesStore.State;
   infrastructureNamespace: InfrastructureNamespaceStore.State;
   user: any;
@@ -36,7 +34,6 @@ export interface AppState {
 export const reducers = {
   workspaces: WorkspacesStore.reducer,
   devfileRegistries: DevfileRegistriesStore.reducer,
-  devfileMetadataFilter: DevfileMetadataFilterStore.reducer,
   branding: BrandingStore.reducer,
   user: userReducer,
   infrastructureNamespace: InfrastructureNamespaceStore.reducer,

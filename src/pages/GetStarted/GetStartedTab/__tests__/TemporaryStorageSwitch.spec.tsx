@@ -80,11 +80,13 @@ function createFakeStore(metadata?: che.DevfileMetaData[]): Store {
         }
       }
     } as any,
-    devfileMetadataFilter: {
-      filter: undefined,
-      found: metadata || []
+    devfileRegistries: {
+      isLoading: false,
+      schema: {},
+      metadata: metadata || [],
+      devfiles: {},
+      filter: ''
     },
-    devfileRegistries: {} as any,
     user: {} as any,
     infrastructureNamespace: {} as any,
   };

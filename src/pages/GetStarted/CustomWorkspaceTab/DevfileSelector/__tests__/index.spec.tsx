@@ -101,12 +101,12 @@ function createFakeStore(metadata: che.DevfileMetaData[]): Store {
     },
     workspaces: {} as any,
     branding: {} as any,
-    devfileMetadataFilter: {} as any,
     devfileRegistries: {
       devfiles: {},
       isLoading: false,
       metadata,
-      schema: {}
+      schema: {},
+      filter: '',
     },
     user: {} as any,
     infrastructureNamespace: {} as any,

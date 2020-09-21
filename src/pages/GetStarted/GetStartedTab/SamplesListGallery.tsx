@@ -26,12 +26,12 @@ import {
   Title,
   AlertVariant,
 } from '@patternfly/react-core';
+import { SearchIcon } from '@patternfly/react-icons';
 import { AppState } from '../../../store';
-import * as DevfileFiltersStore from '../../../store/DevfileFilters';
 import * as DevfileRegistriesStore from '../../../store/DevfileRegistries';
 import { SampleCard } from './SampleCard';
-import { SearchIcon } from '@patternfly/react-icons';
 import { AlertItem } from '../../../services/types';
+import { selectMetadataFiltered } from '../../../store/DevfileRegistries/selectors';
 
 type Props =
   MappedProps
@@ -57,7 +57,7 @@ export class SamplesListGallery extends React.PureComponent<Props, State> {
   }
 
   render(): React.ReactElement {
-    const metadata = this.props.metadataFilter.found;
+    const metadata = this.props.metadataFiltered;
     const cards = this.buildCardsList(metadata);
 
     if (cards.length) {
@@ -122,7 +122,7 @@ export class SamplesListGallery extends React.PureComponent<Props, State> {
         <EmptyStatePrimary>
           <Button
             variant='link'
-            onClick={(): void => this.props.showAll() as void}>
+            onClick={(): void => this.props.clearFilter()}>
             Clear filter
             </Button>
         </EmptyStatePrimary>
@@ -133,14 +133,13 @@ export class SamplesListGallery extends React.PureComponent<Props, State> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  metadataFilter: state.devfileMetadataFilter,
+  metadataFiltered: selectMetadataFiltered(state),
 });
 
 const connector = connect(
   mapStateToProps,
   {
     ...DevfileRegistriesStore.actionCreators,
-    ...DevfileFiltersStore.actionCreators,
   }
 );
 

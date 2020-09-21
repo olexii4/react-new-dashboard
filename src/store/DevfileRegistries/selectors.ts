@@ -20,15 +20,26 @@ export const selectMetadata = createSelector(
   state => state.metadata
 );
 
+export const selectFilterValue = createSelector(
+  selectState,
+  state => state.filter
+);
+
+const selectFilterTokens = createSelector(
+  selectFilterValue,
+  value =>
+    value.toLowerCase().split(/\s+/)
+);
+
 export const selectMetadataFiltered = createSelector(
   selectState,
+  selectFilterTokens,
   selectMetadata,
-  (state, metadata) => {
-    const { searchTokens } = state.filter;
-    if (searchTokens.length === 0) {
+  (state, filterTokens, metadata) => {
+    if (filterTokens.length === 0) {
       return metadata;
     }
-    return metadata.filter(meta => matches(meta, searchTokens));
+    return metadata.filter(meta => matches(meta, filterTokens));
   }
 );
 const matches = (meta: che.DevfileMetaData, values: string[]): boolean => {

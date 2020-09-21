@@ -18,7 +18,6 @@ import * as BrandingStore from '../../store/Branding';
 import * as UserStore from '../../store/User';
 import * as WorkspacesStore from '../../store/Workspaces';
 import * as DevfileRegistriesStore from '../../store/DevfileRegistries';
-import * as DevfileMetadataFiltersStore from '../../store/DevfileFilters';
 import * as InfrastructureNamespaceStore from '../../store/InfrastructureNamespace';
 import * as Plugins from '../../store/Plugins';
 import { Keycloak } from '../keycloak/Keycloak';
@@ -56,8 +55,6 @@ export class PreloadData {
     await this.updatePlugins(settings);
     await this.updateRegistriesMetadata(settings);
     await this.updateDevfileSchema();
-
-    this.updateDevfileMetadataFilters();
   }
 
   private async updateBranding(): Promise<void> {
@@ -112,17 +109,12 @@ export class PreloadData {
 
   private async updateRegistriesMetadata(settings: che.WorkspaceSettings): Promise<void> {
     const { requestRegistriesMetadata } = DevfileRegistriesStore.actionCreators;
-    return requestRegistriesMetadata(settings.cheWorkspaceDevfileRegistryUrl || '')(this.store.dispatch, this.store.getState);
-  }
-
-  private updateDevfileMetadataFilters(): void {
-    const { showAll } = DevfileMetadataFiltersStore.actionCreators;
-    return showAll()(this.store.dispatch, this.store.getState);
+    await requestRegistriesMetadata(settings.cheWorkspaceDevfileRegistryUrl || '')(this.store.dispatch, this.store.getState, undefined);
   }
 
   private async updateDevfileSchema(): Promise<void> {
     const { requestJsonSchema } = DevfileRegistriesStore.actionCreators;
-    return requestJsonSchema()(this.store.dispatch, this.store.getState);
+    return requestJsonSchema()(this.store.dispatch, this.store.getState, undefined);
   }
 
   private async updateKeycloakUserInfo(): Promise<void> {

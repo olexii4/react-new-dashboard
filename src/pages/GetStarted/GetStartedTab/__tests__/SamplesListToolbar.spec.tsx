@@ -19,7 +19,7 @@ import { Store } from 'redux';
 import { AppState } from '../../../../store';
 import SamplesListToolbar from '../SamplesListToolbar';
 import mockMetadata from '../../__tests__/devfileMetadata.json';
-import * as DevfileFilterStore from '../../../../store/DevfileFilters';
+import * as DevfileRegistriesStore from '../../../../store/DevfileRegistries';
 
 describe('Samples List Toolbar', () => {
 
@@ -49,16 +49,16 @@ describe('Samples List Toolbar', () => {
 
   it('should call "setFilter" action', () => {
     // mock "setFilter" action
-    const setFilter = DevfileFilterStore.actionCreators.setFilter;
-    DevfileFilterStore.actionCreators.setFilter = jest.fn(arg => setFilter(arg));
+    const setFilter = DevfileRegistriesStore.actionCreators.setFilter;
+    DevfileRegistriesStore.actionCreators.setFilter = jest.fn(arg => setFilter(arg));
 
     renderToolbar();
 
     const filterInput = screen.getByLabelText('Filter samples list') as HTMLInputElement;
     fireEvent.change(filterInput, { target: { value: 'NodeJS Angular Web Application' } });
 
-    expect(DevfileFilterStore.actionCreators.setFilter).toHaveBeenCalledTimes(1);
-    expect(DevfileFilterStore.actionCreators.setFilter).toHaveBeenCalledWith('NodeJS Angular Web Application');
+    expect(DevfileRegistriesStore.actionCreators.setFilter).toHaveBeenCalledTimes(1);
+    expect(DevfileRegistriesStore.actionCreators.setFilter).toHaveBeenCalledWith('NodeJS Angular Web Application');
   });
 
 });
@@ -81,15 +81,12 @@ function createFakeStore(metadata?: che.DevfileMetaData[]): Store {
         }
       }
     } as any,
-    devfileMetadataFilter: {
-      filter: undefined,
-      found: metadata || []
-    },
     devfileRegistries: {
       metadata: metadata || [],
       isLoading: false,
       devfiles: {},
       schema: '',
+      filter: ''
     },
     user: {} as any,
     infrastructureNamespace: {} as any,
