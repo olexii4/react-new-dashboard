@@ -14,7 +14,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { NavItem } from '@patternfly/react-core';
 import { NavigationRecentItemObject } from '.';
-import WorkspaceIndicator from '../../components/workspace/Indicator';
+import WorkspaceIndicator from '../../components/Workspace/Indicator';
 
 function NavigationRecentItem(props: { item: NavigationRecentItemObject, activePath: string }): React.ReactElement {
   const isActive = props.item.to === props.activePath;

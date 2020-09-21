@@ -26,7 +26,7 @@ import {
   AlertGroup
 } from '@patternfly/react-core';
 
-import WorkspaceIndicator from '../../components/workspace/Indicator';
+import WorkspaceIndicator from '../../components/Workspace/Indicator';
 import CheProgress from '../../components/Progress';
 import { AppState } from '../../store';
 import * as WorkspacesStore from '../../store/Workspaces';
