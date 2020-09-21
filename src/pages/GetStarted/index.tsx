@@ -203,9 +203,13 @@ export class GetStarted extends React.PureComponent<Props, State> {
           ))}
         </AlertGroup>
         <PageSection variant={PageSectionVariants.light}>
-          <Title headingLevel={'h1'} >{title}</Title>
+          <Title headingLevel={'h1'}>{title}</Title>
         </PageSection>
-        <PageSection variant={PageSectionVariants.light} padding={{ default: 'noPadding' }}>
+        <PageSection
+          variant={PageSectionVariants.light}
+          padding={{ default: 'noPadding' }}
+          isFilled={false}
+        >
           <Tabs
             activeKey={activeTabKey}
             onSelect={(event, tabKey) => this.handleTabClick(event, tabKey)}>
