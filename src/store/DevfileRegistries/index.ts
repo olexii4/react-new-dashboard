@@ -11,9 +11,10 @@
  */
 
 import { Action, Reducer } from 'redux';
-import { AppState, AppThunk } from '..';
+import { AppThunk } from '..';
 import { fetchRegistriesMetadata, fetchDevfile } from '../../services/registry/devfiles';
 import { fetchDevfileSchema } from '../../services/api/devfile';
+import { createState } from '../helpers';
 
 // This state defines the type of data maintained in the Redux store.
 export interface State {
@@ -126,15 +127,17 @@ export const reducer: Reducer<State> = (state: State | undefined, incomingAction
     case 'REQUEST_METADATA':
     case 'REQUEST_SCHEMA':
     case 'REQUEST_DEVFILE':
-      return Object.assign({}, state, {
+      return createState(state, {
         isLoading: true,
       });
     case 'RECEIVE_METADATA':
-      return Object.assign({}, state, {
+      return createState(state, {
+        isLoading: false,
         metadata: action.metadata,
       });
     case 'RECEIVE_DEVFILE':
-      return Object.assign({}, state, {
+      return createState(state, {
+        isLoading: false,
         devfiles: {
           [action.url]: {
             content: action.devfile,
@@ -142,8 +145,10 @@ export const reducer: Reducer<State> = (state: State | undefined, incomingAction
         }
       });
     case 'RECEIVE_SCHEMA':
-      return Object.assign({}, state, {
-        schema: action.schema
+      return createState(state, {
+        isLoading: false,
+        schema: action.schema,
+      });
       });
     default:
       return state;

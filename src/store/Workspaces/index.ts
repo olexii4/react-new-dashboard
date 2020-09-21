@@ -11,6 +11,7 @@
  */
 
 import { Reducer } from 'redux';
+import * as api from '@eclipse-che/api';
 import { AppThunk } from '../';
 import {
   createWorkspaceFromDevfile,
@@ -18,7 +19,7 @@ import {
 } from '../../services/api/workspace';
 import { container } from '../../inversify.config';
 import { CheWorkspaceClient } from '../../services/workspace-client/CheWorkspaceClient';
-import * as api from '@eclipse-che/api';
+import { createState } from '../helpers';
 
 const WorkspaceClient = container.get(CheWorkspaceClient);
 
@@ -304,55 +305,55 @@ export const reducer: Reducer<State> = (state: State | undefined, action: KnownA
 
   switch (action.type) {
     case 'REQUEST_WORKSPACES':
-      return Object.assign({}, state, {
+      return createState(state, {
         isLoading: true,
-      } as StatePartial);
+      });
     case 'RECEIVE_ERROR':
-      return Object.assign({}, state, {
+      return createState(state, {
         isLoading: false,
-      } as StatePartial);
+      });
     case 'UPDATE_WORKSPACE':
-      return Object.assign({}, state, {
+      return createState(state, {
         isLoading: false,
         workspaces: state.workspaces.map(workspace => workspace.id === action.workspace.id ? action.workspace : workspace),
-      } as StatePartial);
+      });
     case 'ADD_WORKSPACE':
-      return Object.assign({}, state, {
+      return createState(state, {
         workspaces: state.workspaces.concat([action.workspace]),
-      } as StatePartial);
+      });
     case 'DELETE_WORKSPACE':
-      return Object.assign({}, state, {
+      return createState(state, {
         isLoading: false,
         workspaces: state.workspaces.filter(workspace => workspace.id !== action.workspaceId),
-      } as StatePartial);
+      });
     case 'RECEIVE_WORKSPACES':
-      return Object.assign({}, state, {
+      return createState(state, {
         isLoading: false,
         workspaces: action.workspaces,
-      } as StatePartial);
+      });
     case 'RECEIVE_SETTINGS':
-      return Object.assign({}, state, {
+      return createState(state, {
         isLoading: false,
         settings: action.settings,
-      } as StatePartial);
+      });
     case 'SET_WORKSPACE_NAME':
-      return Object.assign({}, state, {
+      return createState(state, {
         namespace: action.namespace,
         workspaceName: action.workspaceName,
-      } as StatePartial);
+      });
     case 'CLEAR_WORKSPACE_NAME':
-      return Object.assign({}, state, {
+      return createState(state, {
         namespace: '',
         workspaceName: '',
-      } as StatePartial);
+      });
     case 'SET_WORKSPACE_ID':
-      return Object.assign({}, state, {
+      return createState(state, {
         workspaceId: action.workspaceId,
-      } as StatePartial);
+      });
     case 'CLEAR_WORKSPACE_ID':
-      return Object.assign({}, state, {
+      return createState(state, {
         workspaceId: '',
-      } as StatePartial);
+      });
     default:
       return state;
   }
