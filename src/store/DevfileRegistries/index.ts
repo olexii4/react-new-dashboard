@@ -11,7 +11,7 @@
  */
 
 import { Action, Reducer } from 'redux';
-import { AppThunkAction, AppState } from '..';
+import { AppState, AppThunk } from '..';
 import { fetchRegistriesMetadata, fetchDevfile } from '../../services/registry/devfiles';
 import { fetchDevfileSchema } from '../../services/api/devfile';
 
@@ -63,29 +63,19 @@ type KnownAction = RequestMetadataAction
   | RequestSchemaAction
   | ReceiveSchemaAction;
 
-// todo proper type instead of 'any'
 export type ActionCreators = {
-  requestRegistriesMetadata: (location: string) => any;
-  requestDevfile: (Location: string) => any;
-  requestJsonSchema: () => any;
+  requestRegistriesMetadata: (location: string) => AppThunk<KnownAction, Promise<che.DevfileMetaData[]>>;
+  requestDevfile: (Location: string) => AppThunk<KnownAction, Promise<string>>;
+  requestJsonSchema: () => AppThunk<KnownAction, any>;
 };
 
-// ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
-// They don't directly mutate state, but they can have external side-effects (such as loading data).
 export const actionCreators: ActionCreators = {
 
   /**
    * Request devfile metadata from available registries. `registryUrls` is space-separated list of urls.
    */
-  requestRegistriesMetadata: (registryUrls: string): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<che.DevfileMetaData[]> => {
-    const appState: AppState = getState();
-    if (!appState || !appState.devfileRegistries) {
-      // todo throw a nice error
-      throw Error('something unexpected happened.');
-    }
-
+  requestRegistriesMetadata: (registryUrls: string): AppThunk<KnownAction, Promise<che.DevfileMetaData[]>> => async (dispatch): Promise<che.DevfileMetaData[]> => {
     dispatch({ type: 'REQUEST_METADATA' });
-
     try {
       const metadata = await fetchRegistriesMetadata(registryUrls);
       dispatch({ type: 'RECEIVE_METADATA', metadata });
@@ -95,15 +85,8 @@ export const actionCreators: ActionCreators = {
     }
   },
 
-  requestDevfile: (url: string): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<string> => {
-    const appState: AppState = getState();
-    if (!appState || !appState.devfileRegistries) {
-      // todo throw a nice error
-      throw Error('something unexpected happened.');
-    }
-
+  requestDevfile: (url: string): AppThunk<KnownAction, Promise<string>> => async (dispatch): Promise<string> => {
     dispatch({ type: 'REQUEST_DEVFILE' });
-
     try {
       const devfile = await fetchDevfile(url);
       dispatch({ type: 'RECEIVE_DEVFILE', devfile, url });
@@ -113,15 +96,8 @@ export const actionCreators: ActionCreators = {
     }
   },
 
-  requestJsonSchema: (): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<any> => {
-    const appState: AppState = getState();
-    if (!appState || !appState.devfileRegistries) {
-      // todo throw a nice error
-      throw Error('something unexpected happened.');
-    }
-
+  requestJsonSchema: (): AppThunk<KnownAction, any> => async (dispatch): Promise<any> => {
     dispatch({ type: 'REQUEST_SCHEMA' });
-
     try {
       const schema = await fetchDevfileSchema();
       dispatch({ type: 'RECEIVE_SCHEMA', schema });
