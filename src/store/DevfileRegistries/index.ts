@@ -11,9 +11,9 @@
  */
 
 import { Action, Reducer } from 'redux';
-import { AppThunkAction, AppState } from '.';
-import { fetchRegistriesMetadata, fetchDevfile } from '../services/registry/devfiles';
-import { fetchDevfileSchema } from '../services/api/devfile';
+import { AppThunkAction, AppState } from '..';
+import { fetchRegistriesMetadata, fetchDevfile } from '../../services/registry/devfiles';
+import { fetchDevfileSchema } from '../../services/api/devfile';
 
 // This state defines the type of data maintained in the Redux store.
 export interface State {
