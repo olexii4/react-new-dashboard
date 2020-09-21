@@ -27,6 +27,13 @@ export interface State {
       error: string;
     };
   };
+
+  // current filter
+  filter: MetadataFilter;
+}
+
+export interface MetadataFilter {
+  searchTokens: string[];
 }
 
 interface RequestMetadataAction {
@@ -57,17 +64,31 @@ interface ReceiveSchemaAction {
   schema: any;
 }
 
+interface SetFilterValue extends Action {
+  type: 'SET_FILTER',
+  searchTokens: string[];
+}
+
+interface ClearFilterValue extends Action {
+  type: 'CLEAR_FILTER',
+}
+
 type KnownAction = RequestMetadataAction
   | ReceiveMetadataAction
   | RequestDevfileAction
   | ReceiveDevfileAction
   | RequestSchemaAction
-  | ReceiveSchemaAction;
+  | ReceiveSchemaAction
+  | SetFilterValue
+  | ClearFilterValue;
 
 export type ActionCreators = {
   requestRegistriesMetadata: (location: string) => AppThunk<KnownAction, Promise<che.DevfileMetaData[]>>;
   requestDevfile: (Location: string) => AppThunk<KnownAction, Promise<string>>;
   requestJsonSchema: () => AppThunk<KnownAction, any>;
+
+  setFilter: (value: string) => AppThunk<SetFilterValue, void>;
+  clearFilter: () => AppThunk<ClearFilterValue, void>;
 };
 
 export const actionCreators: ActionCreators = {
@@ -108,6 +129,15 @@ export const actionCreators: ActionCreators = {
     }
   },
 
+  setFilter: (value: string): AppThunk<SetFilterValue, void> => dispatch => {
+    const searchTokens = value.toLowerCase().split(/\s+/);
+    dispatch({ type: 'SET_FILTER', searchTokens });
+  },
+
+  clearFilter: (): AppThunk<ClearFilterValue, void> => dispatch => {
+    dispatch({ type: 'CLEAR_FILTER' });
+  }
+
 };
 
 const unloadedState: State = {
@@ -115,6 +145,8 @@ const unloadedState: State = {
   metadata: [],
   devfiles: {},
   schema: undefined,
+
+  filter: { searchTokens: [] },
 };
 
 export const reducer: Reducer<State> = (state: State | undefined, incomingAction: Action): State => {
@@ -149,7 +181,20 @@ export const reducer: Reducer<State> = (state: State | undefined, incomingAction
         isLoading: false,
         schema: action.schema,
       });
+    case 'SET_FILTER': {
+      return createState(state, {
+        filter: {
+          searchTokens: action.searchTokens,
+        },
       });
+    }
+    case 'CLEAR_FILTER': {
+      return createState(state, {
+        filter: {
+          searchTokens: [],
+        },
+      });
+    }
     default:
       return state;
   }
