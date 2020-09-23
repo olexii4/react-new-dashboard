@@ -28,9 +28,6 @@ export const selectSettings = createSelector(
 export const selectAllWorkspaces = createSelector(
   selectState,
   state => {
-    if (state.isLoading || state.workspaces.length === 0) {
-      return null;
-    }
     return state.workspaces;
   }
 );
@@ -58,16 +55,52 @@ export const selectWorkspaceById = createSelector(
   }
 );
 
-export const selectAllWorkspacesSortedByTime = createSelector(
+export const selectAllWorkspacesByName = createSelector(
   selectAllWorkspaces,
-  (allWorkspaces) => {
+  allWorkspaces => {
     if (!allWorkspaces) {
       return null;
     }
-    return allWorkspaces.sort(sortByTimeFn);
+    return allWorkspaces.sort(sortByNamespaceNameFn);
   }
 );
-const sortByTimeFn = (workspaceA: che.Workspace, workspaceB: che.Workspace): -1 | 0 | 1 => {
+const sortByNamespaceNameFn = (workspaceA: che.Workspace, workspaceB: che.Workspace): -1 | 0 | 1 => {
+  return sortByNamespaceFn(workspaceA, workspaceB)
+    || sortByNameFn(workspaceA, workspaceB);
+};
+const sortByNamespaceFn = (workspaceA: che.Workspace, workspaceB: che.Workspace): -1 | 0 | 1 => {
+  const namespaceA = workspaceA.namespace || '';
+  const namespaceB = workspaceB.namespace || '';
+  if (namespaceA > namespaceB) {
+    return 1;
+  } else if (namespaceA < namespaceB) {
+    return -1;
+  } else {
+    return 0;
+  }
+};
+const sortByNameFn = (workspaceA: che.Workspace, workspaceB: che.Workspace): -1 | 0 | 1 => {
+  const nameA = workspaceA.devfile.metadata.name || '';
+  const nameB = workspaceB.devfile.metadata.name || '';
+  if (nameA > nameB) {
+    return 1;
+  } else if (nameA < nameB) {
+    return -1;
+  } else {
+    return 0;
+  }
+};
+
+export const selectAllWorkspacesSortedByTime = createSelector(
+  selectAllWorkspaces,
+  allWorkspaces => {
+    if (!allWorkspaces) {
+      return null;
+    }
+    return allWorkspaces.sort(sortByUpdatedTimeFn);
+  }
+);
+const sortByUpdatedTimeFn = (workspaceA: che.Workspace, workspaceB: che.Workspace): -1 | 0 | 1 => {
   const timeA = (workspaceA.attributes
     && (workspaceA.attributes.updated || workspaceA.attributes.created)) || 0;
   const timeB = (workspaceB.attributes
@@ -81,14 +114,18 @@ const sortByTimeFn = (workspaceA: che.Workspace, workspaceB: che.Workspace): -1 
   }
 };
 
-export const selectRecentWorkspaces = createSelector(
+const selectRecentNumber = createSelector(
   selectState,
+  state => state.recentNumber
+);
+export const selectRecentWorkspaces = createSelector(
+  selectRecentNumber,
   selectAllWorkspacesSortedByTime,
-  (state, workspacesSortedByTime) => {
+  (recentNumber, workspacesSortedByTime) => {
     if (!workspacesSortedByTime) {
       return null;
     }
 
-    return workspacesSortedByTime.slice(0, state.recentNumber);
+    return workspacesSortedByTime.slice(0, recentNumber);
   }
 );

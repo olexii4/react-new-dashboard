@@ -20,7 +20,7 @@ declare namespace che {
       [rel: string]: string | undefined;
     };
     temporary?: boolean;
-    status?: string;
+    status: string;
     namespace?: string;
     attributes?: WorkspaceAttributes;
     devfile: WorkspaceDevfile;
@@ -52,8 +52,9 @@ declare namespace che {
   }
 
   export interface WorkspaceAttributes {
-    created: number;
-    updated?: number;
+    created: string;
+    updated?: string;
+    stopped?: string;
     stackId?: string;
     stackName?: string;
     errorMessage?: string;

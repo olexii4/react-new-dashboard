@@ -10,8 +10,9 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { Reducer } from 'redux';
+import { Action, Reducer } from 'redux';
 import * as api from '@eclipse-che/api';
+import { ThunkDispatch } from 'redux-thunk';
 import { AppThunk } from '../';
 import {
   createWorkspaceFromDevfile,
@@ -19,6 +20,7 @@ import {
 } from '../../services/api/workspace';
 import { container } from '../../inversify.config';
 import { CheWorkspaceClient } from '../../services/workspace-client/CheWorkspaceClient';
+import { WorkspaceStatus } from '../../services/api/workspaceStatus';
 import { createState } from '../helpers';
 
 const WorkspaceClient = container.get(CheWorkspaceClient);
@@ -54,6 +56,12 @@ interface ReceiveWorkspacesAction {
 interface UpdateWorkspaceAction {
   type: 'UPDATE_WORKSPACE';
   workspace: che.Workspace;
+}
+
+interface UpdateWorkspaceStatusAction extends Action {
+  type: 'UPDATE_WORKSPACE_STATUS';
+  workspaceId: string;
+  status: string;
 }
 
 interface DeleteWorkspaceAction {
@@ -101,16 +109,8 @@ type KnownAction =
   | SetWorkspaceQualifiedName
   | ClearWorkspaceQualifiedName
   | SetWorkspaceId
-  | ClearWorkspaceId;
-
-export enum WorkspaceStatus {
-  RUNNING = 1,
-  STOPPED,
-  PAUSED,
-  STARTING,
-  STOPPING,
-  ERROR
-}
+  | ClearWorkspaceId
+  | UpdateWorkspaceStatusAction;
 
 export type ActionCreators = {
   requestWorkspaces: () => AppThunk<KnownAction, Promise<void>>;
@@ -132,18 +132,30 @@ export type ActionCreators = {
   clearWorkspaceId: () => AppThunk<ClearWorkspaceId>;
 };
 
-const subscribedWorkspaceStatusCallbacks = new Map<string, Function>();
+type MessageHandler = (message: any) => void;
+const subscribedWorkspaceStatusCallbacks = new Map<string, MessageHandler>();
 
-function updateWorkspaceSubscription(workspace, dispatch) {
-  const callback = message => {
+function subscribeToStatusChange(workspaceId: string, dispatch: ThunkDispatch<State, undefined, UpdateWorkspaceStatusAction>): void {
+  const callback = (message: any) => {
     const status = message.error ? 'ERROR' : message.status;
     if (WorkspaceStatus[status]) {
-      workspace.status = status;
-      dispatch({ type: 'UPDATE_WORKSPACE', workspace });
+      dispatch({
+        type: 'UPDATE_WORKSPACE_STATUS',
+        workspaceId,
+        status,
+      });
     }
   };
-  WorkspaceClient.jsonRpcMasterApi.subscribeWorkspaceStatus(workspace.id, callback);
-  subscribedWorkspaceStatusCallbacks.set(workspace.id, callback);
+  WorkspaceClient.jsonRpcMasterApi.subscribeWorkspaceStatus(workspaceId, callback);
+  subscribedWorkspaceStatusCallbacks.set(workspaceId, callback);
+}
+function unSubscribeToStatusChange(workspaceId: string): void {
+  const callback = subscribedWorkspaceStatusCallbacks.get(workspaceId);
+  if (!callback) {
+    return;
+  }
+  WorkspaceClient.jsonRpcMasterApi.unSubscribeWorkspaceStatus(workspaceId, callback);
+  subscribedWorkspaceStatusCallbacks.delete(workspaceId);
 }
 
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -155,15 +167,17 @@ export const actionCreators: ActionCreators = {
 
     try {
       const workspaces = await WorkspaceClient.restApiClient.getAll<che.Workspace>();
+
       // Unsubscribe
-      subscribedWorkspaceStatusCallbacks.forEach((workspaceStatusCallback: Function, workspaceId: string) => {
-        WorkspaceClient.jsonRpcMasterApi.unSubscribeWorkspaceStatus(workspaceId, workspaceStatusCallback);
+      subscribedWorkspaceStatusCallbacks.forEach((workspaceStatusCallback: MessageHandler, workspaceId: string) => {
+        unSubscribeToStatusChange(workspaceId);
       });
-      subscribedWorkspaceStatusCallbacks.clear();
+
+      // Subscribe
       workspaces.forEach(workspace => {
-        // Subscribe
-        updateWorkspaceSubscription(workspace, dispatch);
+        subscribeToStatusChange(workspace.id, dispatch);
       });
+
       dispatch({ type: 'RECEIVE_WORKSPACES', workspaces });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
@@ -185,8 +199,6 @@ export const actionCreators: ActionCreators = {
   },
 
   startWorkspace: (workspaceId: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
-    dispatch({ type: 'REQUEST_WORKSPACES' });
-
     try {
       const workspace = await startWorkspace(workspaceId);
       dispatch({ type: 'UPDATE_WORKSPACE', workspace });
@@ -197,11 +209,8 @@ export const actionCreators: ActionCreators = {
   },
 
   stopWorkspace: (workspaceId: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
-    dispatch({ type: 'REQUEST_WORKSPACES' });
-
     try {
-      const workspace = await WorkspaceClient.restApiClient.stop(workspaceId);
-      dispatch({ type: 'UPDATE_WORKSPACE', workspace });
+      await WorkspaceClient.restApiClient.stop(workspaceId);
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
       throw new Error(`Failed to stop the workspace, ID: ${workspaceId}, ` + e);
@@ -209,8 +218,6 @@ export const actionCreators: ActionCreators = {
   },
 
   deleteWorkspace: (workspaceId: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
-    dispatch({ type: 'REQUEST_WORKSPACES' });
-
     try {
       await WorkspaceClient.restApiClient.delete(workspaceId);
       dispatch({ type: 'DELETE_WORKSPACE', workspaceId });
@@ -246,9 +253,9 @@ export const actionCreators: ActionCreators = {
         infrastructureNamespace,
         attributes
       );
-      dispatch({ type: 'UPDATE_WORKSPACE', workspace });
+      dispatch({ type: 'ADD_WORKSPACE', workspace });
       // Subscribe
-      updateWorkspaceSubscription(workspace, dispatch);
+      subscribeToStatusChange(workspace.id, dispatch);
 
       return workspace;
     } catch (e) {
@@ -316,6 +323,16 @@ export const reducer: Reducer<State> = (state: State | undefined, action: KnownA
       return createState(state, {
         isLoading: false,
         workspaces: state.workspaces.map(workspace => workspace.id === action.workspace.id ? action.workspace : workspace),
+      });
+    case 'UPDATE_WORKSPACE_STATUS':
+      return createState(state, {
+        workspaces: state.workspaces.map(workspace => {
+          if (workspace.id !== action.workspaceId) {
+            return workspace;
+          }
+          workspace.status = action.status;
+          return workspace;
+        })
       });
     case 'ADD_WORKSPACE':
       return createState(state, {
