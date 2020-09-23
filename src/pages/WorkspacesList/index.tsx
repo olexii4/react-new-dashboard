@@ -13,23 +13,25 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { History } from 'history';
+import { Table, TableBody, TableHeader } from '@patternfly/react-table';
+import { Button, PageSection, PageSectionVariants, Text } from '@patternfly/react-core';
+
+import { container } from '../../inversify.config';
 import { AppState } from '../../store';
 import * as WorkspacesStore from '../../store/Workspaces';
-import { Button, PageSection, PageSectionVariants, Text } from '@patternfly/react-core';
 import CheProgress from '../../components/Progress';
-import { Table, TableBody, TableHeader } from '@patternfly/react-table';
 import WorkspaceIndicator from '../../components/Workspace/Indicator';
-import WorkspaceStatus from '../../components/Workspace/Status';
+import WorkspaceRunAction from '../../components/Workspace/RunAction';
+import WorkspaceStopAction from '../../components/Workspace/StopAction';
 import WorkspaceDeleteAction from '../../components/Workspace/DeleteAction';
 import { Debounce } from '../../services/debounce/Debounce';
-import { container } from '../../inversify.config';
-import { selectIsLoading, selectAllWorkspaces } from '../../store/Workspaces/selectors';
+import { selectIsLoading, selectAllWorkspacesByName } from '../../store/Workspaces/selectors';
+import { WorkspaceStatus } from '../../services/api/workspaceStatus';
 
 import './WorkspacesList.styl';
 
 const SECTION_THEME = PageSectionVariants.light;
 
-// At runtime, Redux will merge together...
 type Props =
   MappedProps
   & {
@@ -45,51 +47,95 @@ export class WorkspacesList extends React.PureComponent<Props> {
     this.debounce = container.get(Debounce);
   }
 
-  // This method is called when the component is first added to the document
-  public componentDidMount(): void {
-    this.ensureDataFetched();
+  private buildWorkspaceRow(workspace: che.Workspace): React.ReactNodeArray {
+    const actions = this.buildActions(workspace);
+    return ([
+      <span
+        key={`${workspace.id}_1`}
+        onClick={() => this.onRowClick(workspace)}
+      >
+        <WorkspaceIndicator
+          key={`${workspace.id}_1_1`}
+          status={workspace.status}
+        />
+        {workspace.namespace}/{workspace.devfile.metadata.name}
+      </span>,
+      <span
+        key={`${workspace.id}_2`}
+        onClick={() => this.onRowClick(workspace)}
+      >
+        -
+      </span>,
+      <span
+        key={`${workspace.id}_3`}
+        onClick={() => this.onRowClick(workspace)}
+      >
+        {workspace.devfile.projects ? workspace.devfile.projects.length : '-'}
+      </span>,
+      <span
+        key={`${workspace.id}_4`}
+        onClick={() => this.onRowClick(workspace)}
+      >
+        {workspace.attributes && workspace.attributes.stackName ? workspace.attributes.stackName : ''}
+      </span>,
+      <span key={`${workspace.id}_5`}>
+        {actions}
+      </span>
+    ]);
   }
 
-  // This method is called when the route parameters change
-  public componentDidUpdate(): void {
-    this.ensureDataFetched();
+  private buildActions(workspace: che.Workspace): React.ReactNode {
+    const disabled = WorkspaceStatus[workspace.status] === WorkspaceStatus.STARTING || WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPING;
+
+    // run and stop actions
+    let runStopAction: React.ReactNode;
+    if (WorkspaceStatus[workspace.status] === WorkspaceStatus.STARTING || WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
+      const stopDisabled = WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPING;
+      runStopAction = (
+        <WorkspaceStopAction
+          key={`run_${workspace.id}`}
+          workspaceId={workspace.id}
+          disabled={stopDisabled}
+        />
+      );
+    } else {
+      runStopAction = (
+        <WorkspaceRunAction
+          key={`stop_${workspace.id}`}
+          workspaceId={workspace.id}
+          disabled={disabled}
+        />
+      );
+    }
+
+    // delete actions
+    const deleteDisabled = WorkspaceStatus[workspace.status] === WorkspaceStatus.STARTING || WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPING;
+    const deleteAction = (
+      <WorkspaceDeleteAction
+        key={`delete_${workspace.id}${workspace.status}`}
+        workspaceId={workspace.id}
+        disabled={deleteDisabled}
+      />
+    );
+
+    return (
+      <React.Fragment>
+        { runStopAction}
+        { deleteAction}
+      </React.Fragment>);
+  }
+
+  private onRowClick(workspace: che.Workspace): void {
+    this.props.history.push(`/workspace/${workspace.namespace}/${workspace.devfile.metadata.name}`);
   }
 
   public render(): React.ReactElement {
-    const onRowClick = (workspace: che.Workspace): void => {
-      this.props.history.push(`/workspace/${workspace.namespace}/${workspace.devfile.metadata.name}`);
-    };
 
     const allWorkspaces = this.props.allWorkspaces || [];
 
     const columns = ['NAME', 'RAM', 'PROJECTS', 'STACK', 'ACTIONS'];
     const rows = allWorkspaces.map((workspace: che.Workspace) => ({
-      cells: [
-        <span key={`${workspace.id}_1`} onClick={(): void => onRowClick(workspace)}>
-          <WorkspaceIndicator key={`${workspace.id}_1_1`} status={workspace.status} />
-          {workspace.namespace}/{workspace.devfile.metadata.name}
-        </span>,
-        <span key={`${workspace.id}_2`} onClick={(): void => onRowClick(workspace)}>
-          -
-                    </span>,
-        <span key={`${workspace.id}_3`} onClick={(): void => onRowClick(workspace)}>
-          {workspace.devfile.projects ? workspace.devfile.projects.length : '-'}
-        </span>,
-        <span key={`${workspace.id}_4`} onClick={(): void => onRowClick(workspace)}>
-          {workspace.attributes && workspace.attributes.stackName ? workspace.attributes.stackName : ''}
-        </span>,
-        <span key={`${workspace.id}_5`}>
-          <WorkspaceStatus key={`status_${workspace.id}${workspace.status}`}
-            workspaceId={workspace.id as string}
-            status={workspace.status as string}
-            startWorkspace={this.props.startWorkspace}
-            stopWorkspace={this.props.stopWorkspace} />
-          <WorkspaceDeleteAction key={`delete_${workspace.id}${workspace.status}`}
-            workspaceId={workspace.id as string}
-            status={workspace.status as string}
-            deleteWorkspace={this.props.deleteWorkspace} />
-        </span>
-      ]
+      cells: this.buildWorkspaceRow(workspace)
     })) || [];
 
     const { workspace } = this.props.branding.data.docs;
@@ -102,13 +148,13 @@ export class WorkspacesList extends React.PureComponent<Props> {
         <Text className='page-description' component='p'>
           A workspace is where your projects live and run.
           Create workspaces from stacks that define projects, runtimes, and commands.
-                    <a href={workspace}>Learn more.</a>
+          <a href={workspace}>Learn more.</a>
         </Text>
         <CheProgress isLoading={this.props.isLoading} />
         <PageSection variant={SECTION_THEME} className='header-buttons'>
           <Button onClick={(): void => this.props.history.push('/')} variant='primary'>
             Add Workspace
-                    </Button>
+          </Button>
         </PageSection>
         <PageSection variant={SECTION_THEME}>
           {rows.length === 0 ? (<Text component='p' className='workspaces-list-empty-state'>
@@ -125,13 +171,6 @@ export class WorkspacesList extends React.PureComponent<Props> {
     );
   }
 
-  private ensureDataFetched(): void {
-    if (this.debounce.hasDelay()) {
-      return;
-    }
-    this.props.requestWorkspaces();
-    this.debounce.setDelay();
-  }
 }
 
 const mapStateToProps = (state: AppState) => {
@@ -139,7 +178,7 @@ const mapStateToProps = (state: AppState) => {
   return {
     branding,
     isLoading: selectIsLoading(state),
-    allWorkspaces: selectAllWorkspaces(state),
+    allWorkspaces: selectAllWorkspacesByName(state),
   };
 };
 
