@@ -17,27 +17,24 @@ import {
   Tooltip,
   TooltipPosition
 } from '@patternfly/react-core';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { AppState } from '../../../store';
-import * as BrandingStore from '../../../store/Branding';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
-type TemporaryStorageSwitchProps = {
-  persistVolumesDefault: string;
-  onChange: (temporary: boolean) => void;
-} & {
-  brandingStore: BrandingStore.State;
-};
-
-type TemporaryStorageSwitchState = {
+type Props = MappedProps
+  & {
+    persistVolumesDefault: string;
+    onChange: (temporary: boolean) => void;
+  };
+type State = {
   isChecked: boolean;
 };
 
-export class TemporaryStorageSwitch extends React.PureComponent<TemporaryStorageSwitchProps, TemporaryStorageSwitchState> {
+export class TemporaryStorageSwitch extends React.PureComponent<Props, State> {
 
   private handleChange: (checked: boolean, event: FormEvent<HTMLInputElement>) => void;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -87,8 +84,14 @@ export class TemporaryStorageSwitch extends React.PureComponent<TemporaryStorage
 
 }
 
-export default connect(
-  (state: AppState) => ({
-    brandingStore: state.branding,
-  }),
-)(TemporaryStorageSwitch);
+const mapStateToProps = (state: AppState) => ({
+  brandingStore: state.branding,
+});
+
+const connector = connect(
+  mapStateToProps,
+);
+
+type MappedProps = ConnectedProps<typeof connector>;
+
+export default connector(TemporaryStorageSwitch);

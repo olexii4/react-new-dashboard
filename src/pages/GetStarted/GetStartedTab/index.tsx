@@ -33,7 +33,7 @@ type State = {
   temporary: boolean;
 };
 
-export class SamplesListTab extends React.Component<Props, State> {
+export class SamplesListTab extends React.PureComponent<Props, State> {
 
   constructor(props: Props) {
     super(props);

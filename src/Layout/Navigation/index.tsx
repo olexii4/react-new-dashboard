@@ -30,7 +30,7 @@ export interface NavigationItemObject {
 export interface NavigationRecentItemObject {
   to: string,
   label: string,
-  status: string | undefined;
+  status: string;
 }
 
 type Props =
@@ -44,7 +44,7 @@ type State = {
   activePath: string;
 };
 
-export class Navigation extends React.Component<Props, State> {
+export class Navigation extends React.PureComponent<Props, State> {
 
   constructor(props: Props) {
     super(props);

@@ -30,7 +30,7 @@ type Props =
 
 export class WorkspaceDetails extends React.PureComponent<Props> {
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     const { namespace, workspaceName } = this.props.match.params;

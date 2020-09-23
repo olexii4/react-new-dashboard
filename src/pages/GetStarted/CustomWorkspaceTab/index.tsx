@@ -11,20 +11,20 @@
  */
 
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { Button, Form, PageSection, PageSectionVariants, } from '@patternfly/react-core';
 import { AppState } from '../../../store';
 import DevfileEditor, { DevfileEditor as Editor } from '../../../components/DevfileEditor';
-import * as WorkspaceStore from '../../../store/Workspaces';
 import StorageTypeFormGroup, { StorageType } from './StorageType';
 import { WorkspaceNameFormGroup } from './WorkspaceName';
 import DevfileSelectorFormGroup from './DevfileSelector';
 import InfrastructureNamespaceFormGroup from './InfrastructureNamespace';
+import { selectSettings } from '../../../store/Workspaces/selectors';
 
-type Props = {
-  workspaces: WorkspaceStore.State,
-  onDevfile: (devfile: che.WorkspaceDevfile, InfrastructureNamespace: string | undefined) => Promise<void>;
-};
+type Props = MappedProps
+  & {
+    onDevfile: (devfile: che.WorkspaceDevfile, InfrastructureNamespace: string | undefined) => Promise<void>;
+  };
 type State = {
   storageType: StorageType;
   devfile: che.WorkspaceDevfile;
@@ -33,7 +33,7 @@ type State = {
   workspaceName: string;
 };
 
-export class CustomWorkspaceTab extends React.Component<Props, State> {
+export class CustomWorkspaceTab extends React.PureComponent<Props, State> {
 
   private devfileEditorRef: React.RefObject<Editor>;
 
@@ -55,7 +55,7 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
         generateName: generateName ? generateName : 'wksp-'
       },
     } as che.WorkspaceDevfile;
-    if (this.props.workspaces.settings['che.workspace.persist_volumes.default'] === 'false') {
+    if (this.props.settings['che.workspace.persist_volumes.default'] === 'false') {
       devfile.attributes = {
         persistVolumes: 'false'
       };
@@ -234,8 +234,13 @@ export class CustomWorkspaceTab extends React.Component<Props, State> {
   }
 }
 
-export default connect(
-  (state: AppState) => ({
-    workspaces: state.workspaces,
-  }),
-)(CustomWorkspaceTab);
+const mapStateToProps = (state: AppState) => ({
+  settings: selectSettings(state),
+});
+
+const connector = connect(
+  mapStateToProps,
+);
+
+type MappedProps = ConnectedProps<typeof connector>;
+export default connector(CustomWorkspaceTab);
