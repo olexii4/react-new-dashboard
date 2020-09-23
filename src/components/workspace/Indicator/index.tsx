@@ -11,24 +11,19 @@
  */
 
 import React from 'react';
+import { WorkspaceStatus } from '../../../services/api/workspaceStatus';
 
 import './Indicator.styl';
 
-// TODO should move this constants to the separate file
-const ERROR = 'ERROR';
-const STARTING = 'STARTING';
-const RUNNING = 'RUNNING';
-const STOPPING = 'STOPPING';
-
 type Props = {
-  status: string | undefined;
+  status: string;
 };
 
 class WorkspaceIndicator extends React.PureComponent<Props> {
 
   public render(): React.ReactElement {
 
-    if (this.props.status === STARTING || this.props.status === STOPPING) {
+    if (WorkspaceStatus[this.props.status] === WorkspaceStatus.STARTING || WorkspaceStatus[this.props.status] === WorkspaceStatus.STOPPING) {
       return (
         <span className='workspace-status-indicator'>
           <span className='workspace-status-spinner ng-scope'>
@@ -40,11 +35,11 @@ class WorkspaceIndicator extends React.PureComponent<Props> {
       );
     }
 
-    const iconClass = (status: string | undefined): string => {
-      if (status === ERROR) {
+    const iconClass = (status: string): string => {
+      if (WorkspaceStatus[status] === WorkspaceStatus.ERROR) {
         return 'codicon codicon-circle-filled workspace-status-error';
       }
-      if (status === RUNNING) {
+      if (WorkspaceStatus[status] === WorkspaceStatus.RUNNING) {
         return 'codicon codicon-circle-filled';
       }
       return 'codicon codicon-circle-outline';

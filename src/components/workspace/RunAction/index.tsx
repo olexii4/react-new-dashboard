@@ -13,7 +13,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Tooltip } from '@patternfly/react-core';
-import { TrashIcon } from '@patternfly/react-icons';
+import { PlayIcon } from '@patternfly/react-icons';
 import { container } from '../../../inversify.config';
 import { Debounce } from '../../../services/debounce/Debounce';
 import { AppState } from '../../../store';
@@ -28,9 +28,9 @@ type Props = MappedProps
   };
 type State = {
   isDebounceDelay: boolean;
-};
+}
 
-class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
+class WorkspaceRunAction extends React.PureComponent<Props, State> {
   private debounce: Debounce;
 
   constructor(props: Props) {
@@ -54,26 +54,25 @@ class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
       return;
     }
 
-    this.props.deleteWorkspace(this.props.workspaceId);
+    this.props.startWorkspace(this.props.workspaceId);
     this.debounce.setDelay();
   }
 
   public render(): React.ReactElement {
-    const tooltipContent = 'Delete Workspace';
+    const tooltipContent = 'Run Workspace';
     const className = this.props.disabled ? styles.disabledWorkspaceStatus : styles.workspaceStatus;
 
     return (
       <span
-        key={`wrks-delete-${this.props.workspaceId}`}
+        key={`wrks-running-${this.props.workspaceId}`}
         className={className}
-        onClick={e => this.onClick(e)}
-      >
+        onClick={e => this.onClick(e)}>
         <Tooltip
           entryDelay={200}
           exitDelay={200}
           content={tooltipContent}
         >
-          <TrashIcon />
+          <PlayIcon />
         </Tooltip>
       </span>
     );
@@ -89,4 +88,4 @@ const connector = connect(
 );
 
 type MappedProps = ConnectedProps<typeof connector>;
-export default connector(WorkspaceDeleteAction);
+export default connector(WorkspaceRunAction);

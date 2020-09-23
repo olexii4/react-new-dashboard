@@ -1,0 +1,29 @@
+.workspaceStatus,
+.disabledWorkspaceStatus {
+  margin-right: 10px;
+  padding-bottom: 0;
+}
+
+.workspaceStatus > *,
+.disabledWorkspaceStatus > * {
+  position: relative;
+  top: 3px;
+  font-size: 18px;
+}
+
+.disabledWorkspaceStatus > * {
+  color: #d2d2d2;
+  cursor: not-allowed;
+}
+
+.workspaceStatus {
+  cursor: pointer;
+}
+
+.workspaceStatus > * {
+  color: #979797;
+}
+
+.workspaceStatus > *:hover {
+  color: #4a90e2;
+}
