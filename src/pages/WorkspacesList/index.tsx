@@ -85,12 +85,13 @@ export class WorkspacesList extends React.PureComponent<Props> {
   }
 
   private buildActions(workspace: che.Workspace): React.ReactNode {
-    const disabled = WorkspaceStatus[workspace.status] === WorkspaceStatus.STARTING || WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPING;
+    const status = WorkspaceStatus[workspace.status];
+    const disabled = status === WorkspaceStatus.STARTING || status === WorkspaceStatus.STOPPING;
 
     // run and stop actions
     let runStopAction: React.ReactNode;
-    if (WorkspaceStatus[workspace.status] === WorkspaceStatus.STARTING || WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
-      const stopDisabled = WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPING;
+    if (status === WorkspaceStatus.STARTING || status === WorkspaceStatus.RUNNING) {
+      const stopDisabled = status === WorkspaceStatus.STOPPING;
       runStopAction = (
         <WorkspaceStopAction
           key={`run_${workspace.id}`}
@@ -109,19 +110,18 @@ export class WorkspacesList extends React.PureComponent<Props> {
     }
 
     // delete actions
-    const deleteDisabled = WorkspaceStatus[workspace.status] === WorkspaceStatus.STARTING || WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPING;
     const deleteAction = (
       <WorkspaceDeleteAction
         key={`delete_${workspace.id}${workspace.status}`}
         workspaceId={workspace.id}
-        disabled={deleteDisabled}
+        disabled={disabled}
       />
     );
 
     return (
       <React.Fragment>
-        { runStopAction}
-        { deleteAction}
+        {runStopAction}
+        {deleteAction}
       </React.Fragment>);
   }
 

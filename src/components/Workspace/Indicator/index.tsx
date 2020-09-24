@@ -22,8 +22,9 @@ type Props = {
 class WorkspaceIndicator extends React.PureComponent<Props> {
 
   public render(): React.ReactElement {
+    const status = WorkspaceStatus[this.props.status];
 
-    if (WorkspaceStatus[this.props.status] === WorkspaceStatus.STARTING || WorkspaceStatus[this.props.status] === WorkspaceStatus.STOPPING) {
+    if (status === WorkspaceStatus.STARTING || status === WorkspaceStatus.STOPPING) {
       return (
         <span className='workspace-status-indicator'>
           <span className='workspace-status-spinner ng-scope'>
@@ -35,11 +36,11 @@ class WorkspaceIndicator extends React.PureComponent<Props> {
       );
     }
 
-    const iconClass = (status: string): string => {
-      if (WorkspaceStatus[status] === WorkspaceStatus.ERROR) {
+    const iconClass = (status: WorkspaceStatus): string => {
+      if (status === WorkspaceStatus.ERROR) {
         return 'codicon codicon-circle-filled workspace-status-error';
       }
-      if (WorkspaceStatus[status] === WorkspaceStatus.RUNNING) {
+      if (status === WorkspaceStatus.RUNNING) {
         return 'codicon codicon-circle-filled';
       }
       return 'codicon codicon-circle-outline';
@@ -47,7 +48,7 @@ class WorkspaceIndicator extends React.PureComponent<Props> {
 
     return (
       <span className='workspace-status-indicator'>
-        <i className={iconClass(this.props.status)} />
+        <i className={iconClass(status)} />
       </span>
     );
   }

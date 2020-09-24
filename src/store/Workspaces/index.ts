@@ -327,10 +327,9 @@ export const reducer: Reducer<State> = (state: State | undefined, action: KnownA
     case 'UPDATE_WORKSPACE_STATUS':
       return createState(state, {
         workspaces: state.workspaces.map(workspace => {
-          if (workspace.id !== action.workspaceId) {
-            return workspace;
+          if (workspace.id === action.workspaceId) {
+            workspace.status = action.status;
           }
-          workspace.status = action.status;
           return workspace;
         })
       });
