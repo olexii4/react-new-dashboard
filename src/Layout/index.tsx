@@ -60,6 +60,7 @@ export class Layout extends React.PureComponent<Props, State> {
     this.setState({
       isSidebarVisible: !this.state.isSidebarVisible,
     });
+    window.postMessage('toggle-navbar', '*');
   }
 
   private changeTheme(theme: ThemeVariant): void {

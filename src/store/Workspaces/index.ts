@@ -16,7 +16,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AppThunk } from '../';
 import {
   createWorkspaceFromDevfile,
-  startWorkspace,
 } from '../../services/api/workspace';
 import { container } from '../../inversify.config';
 import { CheWorkspaceClient } from '../../services/workspace-client/CheWorkspaceClient';
@@ -200,7 +199,7 @@ export const actionCreators: ActionCreators = {
 
   startWorkspace: (workspaceId: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
     try {
-      const workspace = await startWorkspace(workspaceId);
+      const workspace = await WorkspaceClient.restApiClient.start(workspaceId);
       dispatch({ type: 'UPDATE_WORKSPACE', workspace });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
@@ -235,7 +234,8 @@ export const actionCreators: ActionCreators = {
       dispatch({ type: 'UPDATE_WORKSPACE', workspace: updatedWorkspace });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
-      throw new Error(`Failed to update the workspace, ID: ${workspace.id}, ` + e);
+      const message = e.response && e.response.data && e.response.data.message ? e.response.data.message : e.message;
+      throw new Error(`Failed to update. ${message}`);
     }
   },
 

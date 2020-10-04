@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | [`@babel/runtime@7.10.2`](https://github.com/babel/babel.git) | MIT | clearlydefined |
 | `@eclipse-che/api@7.18.1` | EPL-2.0 | - |
-| [`@eclipse-che/workspace-client@0.0.1-1598950097`](https://github.com/eclipse/che-workspace-client) | EPL-2.0 | - |
+| [`@eclipse-che/workspace-client@0.0.1-1600695209`](https://github.com/eclipse/che-workspace-client) | EPL-2.0 | - |
 | [`@patternfly/patternfly@4.10.31`](https://github.com/patternfly/patternfly.git) | MIT | [CQ22346](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22346) |
 | [`@patternfly/react-core@4.18.5`](https://github.com/patternfly/patternfly-react.git) | MIT | [CQ22347](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22347) |
 | [`@patternfly/react-icons@4.3.5`](https://github.com/patternfly/patternfly-react.git) | MIT | clearlydefined |
@@ -21,6 +21,7 @@
 | [`blueimp-md5@2.16.0`](git://github.com/blueimp/JavaScript-MD5.git) | MIT | clearlydefined |
 | [`classnames@2.2.6`](https://github.com/JedWatson/classnames.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`connected-react-router@6.8.0`](https://github.com/supasate/connected-react-router.git) | MIT | clearlydefined |
+| [`copy-to-clipboard@3.3.1`](git+https://github.com/sudodoki/copy-to-clipboard) | MIT | clearlydefined |
 | [`core-js@2.6.11`](https://github.com/zloirock/core-js.git) | MIT | clearlydefined |
 | [`create-react-context@0.3.0`](https://github.com/thejameskyle/create-react-context) | MIT | clearlydefined |
 | [`debug@3.1.0`](git://github.com/visionmedia/debug.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
@@ -91,6 +92,7 @@
 | [`prop-types@15.7.2`](https://github.com/facebook/prop-types.git) | MIT | clearlydefined |
 | [`qs@6.9.4`](https://github.com/ljharb/qs.git) | BSD-3-Clause | clearlydefined |
 | [`querystringify@2.1.1`](https://github.com/unshiftio/querystringify) | MIT | clearlydefined |
+| [`react-copy-to-clipboard@5.0.2`](https://github.com/nkbt/react-copy-to-clipboard.git) | MIT | clearlydefined |
 | [`react-dom@16.13.1`](https://github.com/facebook/react.git) | MIT | clearlydefined |
 | [`react-dropzone@9.0.0`](https://github.com/react-dropzone/react-dropzone.git) | MIT | [CQ22355](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22355) |
 | [`react-is@16.13.1`](https://github.com/facebook/react.git) | MIT | clearlydefined |
@@ -128,6 +130,7 @@
 | [`tiny-invariant@1.1.0`](https://github.com/alexreardon/tiny-invariant.git) | MIT | clearlydefined |
 | [`tiny-warning@1.0.3`](https://github.com/alexreardon/tiny-warning.git) | MIT | clearlydefined |
 | [`tippy.js@5.1.2`](git+https://github.com/atomiks/tippyjs.git) | MIT | clearlydefined |
+| [`toggle-selection@1.0.6`](git+https://github.com/sudodoki/toggle-selection) | MIT | clearlydefined |
 | [`tslib@1.13.0`](https://github.com/Microsoft/tslib.git) | 0BSD | [CQ22357](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22357) |
 | [`tunnel@0.0.6`](https://github.com/koichik/node-tunnel.git) | MIT | clearlydefined |
 | [`type-fest@0.8.1`](https://github.com/sindresorhus/type-fest.git) | (MIT OR CC0-1.0) | clearlydefined |

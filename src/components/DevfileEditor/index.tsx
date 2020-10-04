@@ -19,7 +19,8 @@ import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
 import { language, conf } from 'monaco-languages/release/esm/yaml/yaml';
 import * as yamlLanguageServer from 'yaml-language-server';
 import { registerCustomThemes, DEFAULT_CHE_THEME } from '../../services/monaco-theme-register';
-import { safeLoad, safeDump } from 'js-yaml';
+import { safeLoad } from 'js-yaml';
+import stringify from './stringify';
 import $ from 'jquery';
 
 import './DevfileEditor.styl';
@@ -63,9 +64,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
     model.getVersionId(),
     model.getValue()
   );
-
   private skipNextOnChange: boolean;
-  private sortKeys: (key1: keyof che.WorkspaceDevfile, key2: keyof che.WorkspaceDevfile) => -1 | 0 | 1;
 
   constructor(props: Props) {
     super(props);
@@ -138,28 +137,6 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
     registerCustomThemes();
     // define the default
     Monaco.editor.setTheme(EDITOR_THEME);
-
-    const sortOrder: Array<keyof che.WorkspaceDevfile> = ['apiVersion', 'metadata', 'attributes', 'projects', 'components', 'commands'];
-    this.sortKeys = (key1, key2) => {
-      const index1 = sortOrder.indexOf(key1);
-      const index2 = sortOrder.indexOf(key2);
-      if (index1 === -1 && index2 === -1) {
-        return 0;
-      }
-      if (index1 === -1) {
-        return 1;
-      }
-      if (index2 === -1) {
-        return -1;
-      }
-      if (index1 < index2) {
-        return -1;
-      }
-      if (index1 > index2) {
-        return 1;
-      }
-      return 0;
-    };
   }
 
   public updateContent(devfile: che.WorkspaceDevfile): void {
@@ -168,28 +145,27 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
     }
     this.skipNextOnChange = true;
     const doc = this.editor.getModel();
-    doc.setValue(this.stringify(devfile));
+    doc.setValue(stringify(devfile));
   }
 
-  private stringify(devfile: che.WorkspaceDevfile): string {
-    return safeDump(devfile, {
-      lineWidth: 9999,
-      sortKeys: this.sortKeys,
-    });
+  private handleMessage(event: MessageEvent): void {
+    const { data } = event;
+    if ((data === 'show-navbar' || data === 'hide-navbar' || data === 'toggle-navbar') && this.handleResize) {
+      this.handleResize();
+    }
   }
 
   public componentDidUpdate(): void {
-    if (!this.handleResize) {
-      return;
+    if (this.handleResize) {
+      this.handleResize();
     }
-    this.handleResize();
   }
 
   // This method is called when the component is first added to the document
   public componentDidMount(): void {
     const element = $('.devfile-editor .monaco').get(0);
     if (element) {
-      const value = this.stringify(this.props.devfile);
+      const value = stringify(this.props.devfile);
       this.editor = monaco.editor.create(element, Object.assign(
         { value },
         MONACO_CONFIG
@@ -200,6 +176,10 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
 
       const handleResize = (): void => {
         const layout = { height: element.offsetHeight, width: element.offsetWidth };
+        // if the element is hidden
+        if (layout.height === 0 || layout.width === 0) {
+          return;
+        }
         this.editor.layout(layout);
       };
       this.handleResize = handleResize;
@@ -230,11 +210,13 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
       // init language server validation
       this.initLanguageServerValidation(this.editor);
     }
+    window.addEventListener('message', event => this.handleMessage(event), false);
   }
 
   // This method is called when the component is removed from the document
   public componentWillUnmount(): void {
     this.toDispose.dispose();
+    window.removeEventListener('message', event => this.handleMessage(event), false);
   }
 
   public render(): React.ReactElement {

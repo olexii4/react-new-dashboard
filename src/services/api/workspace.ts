@@ -15,16 +15,6 @@ import * as Qs from 'qs';
 
 const API_WORKSPACE = '/api/workspace';
 
-export async function startWorkspace(workspaceId: string): Promise<che.Workspace> {
-  try {
-    // TODO rework this solution with WorkspaceClient(depends on https://github.com/eclipse/che/issues/17700)
-    const response = await Axios.post<che.Workspace>(`${API_WORKSPACE}/${workspaceId}/runtime`);
-    return response.data;
-  } catch (e) {
-    throw new Error(`Failed to start the workspace with ID: ${workspaceId}, ` + e);
-  }
-}
-
 export async function createWorkspaceFromDevfile(
   devfile: che.WorkspaceDevfile,
   cheNamespace: string | undefined,

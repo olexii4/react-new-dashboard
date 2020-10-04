@@ -17,3 +17,9 @@ export interface AlertItem {
   title: string;
   variant: AlertVariant;
 }
+
+export enum StorageType {
+  async = 'Asynchronous',
+  ephemeral = 'Ephemeral',
+  persistent = 'Persistent',
+}
