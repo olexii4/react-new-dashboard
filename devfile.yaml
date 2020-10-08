@@ -20,24 +20,21 @@ components:
     alias: ud-dev
     image: 'okurinnyi/che-dashboard-dev:nightly'
 commands:
-  - name: '[UD] build'
+  - name: '[UD] compile'
     actions:
       - workdir: /projects/che-dashboard-next
         type: exec
-        command: yarn && yarn build
+        command: yarn && yarn compile
         component: ud-dev
   - name: '[UD] test'
     actions:
       - workdir: /projects/che-dashboard-next
         type: exec
-        command: yarn test
+        command: yarn && yarn test
         component: ud-dev
-  - name: '[UD] start'
+  - name: '[UD] start [API Backend che.openshift.io]'
     actions:
       - workdir: /projects/che-dashboard-next
         type: exec
-        command: >-
-          yarn start --disable-host-check --public=$(echo
-          ${server.ud-dev-server} | sed -e s/https:\\/\\/// -e s/http:\\/\\///
-          -e s/\\///) --host="0.0.0.0" --env.server=${CHE_API_EXTERNAL%????}
+        command: yarn && yarn start
         component: ud-dev
