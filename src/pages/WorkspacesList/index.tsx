@@ -26,7 +26,7 @@ import WorkspaceStopAction from '../../components/Workspace/StopAction';
 import WorkspaceDeleteAction from '../../components/Workspace/DeleteAction';
 import { Debounce } from '../../services/debounce/Debounce';
 import { selectIsLoading, selectAllWorkspacesByName } from '../../store/Workspaces/selectors';
-import { WorkspaceStatus } from '../../services/api/workspaceStatus';
+import { WorkspaceStatus } from '../../services/workspaceStatus';
 
 import './WorkspacesList.styl';
 

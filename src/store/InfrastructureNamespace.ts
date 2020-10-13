@@ -11,8 +11,11 @@
  */
 
 import { Action, Reducer } from 'redux';
+import { container } from '../inversify.config';
+import { CheWorkspaceClient } from '../services/workspace-client/CheWorkspaceClient';
 import { AppThunkAction, AppState } from './';
-import { fetchKubernetesNamespace } from '../services/api/kubernetes-namespace';
+
+const WorkspaceClient = container.get(CheWorkspaceClient);
 
 export interface State {
   isLoading: boolean;
@@ -48,7 +51,7 @@ export const actionCreators: ActionCreators = {
     dispatch({ type: 'REQUEST_NAMESPACES' });
 
     try {
-      const namespaces = await fetchKubernetesNamespace();
+      const namespaces = await WorkspaceClient.restApiClient.getKubernetesNamespace<Array<che.KubernetesNamespace>>();
       dispatch({ type: 'RECEIVE_NAMESPACES', namespaces });
       return namespaces;
     } catch (e) {

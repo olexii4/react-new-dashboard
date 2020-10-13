@@ -27,7 +27,7 @@ import {
   Text,
   Button,
 } from '@patternfly/react-core';
-import { WorkspaceStatus } from '../../services/api/workspaceStatus';
+import { WorkspaceStatus } from '../../services/workspaceStatus';
 import Header from './Header';
 import CheProgress from '../../components/Progress';
 import { AppState } from '../../store';

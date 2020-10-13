@@ -89,7 +89,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
   }
 
   private async createWorkspace(
-    devfile: che.WorkspaceDevfile,
+    devfile: api.che.workspace.devfile.Devfile,
     stackName: string | undefined,
     infrastructureNamespace: string | undefined,
   ): Promise<void> {

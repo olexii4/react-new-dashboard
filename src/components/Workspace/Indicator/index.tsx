@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { WorkspaceStatus } from '../../../services/api/workspaceStatus';
+import { WorkspaceStatus } from '../../../services/workspaceStatus';
 
 import './Indicator.styl';
 

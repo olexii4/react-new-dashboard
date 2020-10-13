@@ -23,3 +23,9 @@ export enum StorageType {
   ephemeral = 'Ephemeral',
   persistent = 'Persistent',
 }
+
+export interface FactoryResolver {
+  v: string;
+  source: string;
+  devfile: api.che.workspace.devfile.Devfile
+}

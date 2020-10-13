@@ -10,15 +10,11 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import Axios from 'axios';
+declare namespace api {
+  import { che } from '@eclipse-che/api';
+  export { che };
+}
 
-const API_DEVFILE = '/api/devfile';
-
-export async function fetchDevfileSchema(): Promise<any> {
-  try {
-    const response = await Axios.get(API_DEVFILE);
-    return response.data;
-  } catch (e) {
-    throw new Error('Failed to fetch devfile JSON schema, ' + e);
-  }
+declare module 'api' {
+  export = api;
 }

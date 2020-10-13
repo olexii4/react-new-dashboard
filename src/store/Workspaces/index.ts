@@ -14,12 +14,9 @@ import { Action, Reducer } from 'redux';
 import * as api from '@eclipse-che/api';
 import { ThunkDispatch } from 'redux-thunk';
 import { AppThunk } from '../';
-import {
-  createWorkspaceFromDevfile,
-} from '../../services/api/workspace';
 import { container } from '../../inversify.config';
 import { CheWorkspaceClient } from '../../services/workspace-client/CheWorkspaceClient';
-import { WorkspaceStatus } from '../../services/api/workspaceStatus';
+import { WorkspaceStatus } from '../../services/workspaceStatus';
 import { createState } from '../helpers';
 
 const WorkspaceClient = container.get(CheWorkspaceClient);
@@ -118,8 +115,8 @@ export type ActionCreators = {
   deleteWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
   updateWorkspace: (workspace: che.Workspace) => AppThunk<KnownAction, Promise<void>>;
   createWorkspaceFromDevfile: (
-    devfile: che.WorkspaceDevfile,
-    cheNamespace: string | undefined,
+    devfile: api.che.workspace.devfile.Devfile,
+    namespace: string | undefined,
     infrastructureNamespace: string | undefined,
     attributes: { [key: string]: string } | {},
   ) => AppThunk<KnownAction, Promise<che.Workspace>>;
@@ -240,19 +237,15 @@ export const actionCreators: ActionCreators = {
   },
 
   createWorkspaceFromDevfile: (
-    devfile: che.WorkspaceDevfile,
-    cheNamespace: string | undefined,
+    devfile: api.che.workspace.devfile.Devfile,
+    namespace: string | undefined,
     infrastructureNamespace: string | undefined,
     attributes: { [key: string]: string } = {},
   ): AppThunk<KnownAction, Promise<che.Workspace>> => async (dispatch): Promise<che.Workspace> => {
     dispatch({ type: 'REQUEST_WORKSPACES' });
     try {
-      const workspace = await createWorkspaceFromDevfile(
-        devfile,
-        cheNamespace,
-        infrastructureNamespace,
-        attributes
-      );
+      const param = { attributes, namespace, infrastructureNamespace };
+      const workspace = await WorkspaceClient.restApiClient.create<che.Workspace>(devfile, param);
       dispatch({ type: 'ADD_WORKSPACE', workspace });
       // Subscribe
       subscribeToStatusChange(workspace.id, dispatch);

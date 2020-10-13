@@ -13,8 +13,11 @@
 import { Action, Reducer } from 'redux';
 import { AppThunk } from '..';
 import { fetchRegistriesMetadata, fetchDevfile } from '../../services/registry/devfiles';
-import { fetchDevfileSchema } from '../../services/api/devfile';
 import { createState } from '../helpers';
+import { container } from '../../inversify.config';
+import { CheWorkspaceClient } from '../../services/workspace-client/CheWorkspaceClient';
+
+const WorkspaceClient = container.get(CheWorkspaceClient);
 
 // This state defines the type of data maintained in the Redux store.
 export interface State {
@@ -117,7 +120,7 @@ export const actionCreators: ActionCreators = {
   requestJsonSchema: (): AppThunk<KnownAction, any> => async (dispatch): Promise<any> => {
     dispatch({ type: 'REQUEST_SCHEMA' });
     try {
-      const schema = await fetchDevfileSchema();
+      const schema = await WorkspaceClient.restApiClient.getDevfileSchema();
       dispatch({ type: 'RECEIVE_SCHEMA', schema });
       return schema;
     } catch (e) {

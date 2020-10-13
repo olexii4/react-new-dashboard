@@ -11,12 +11,16 @@
  */
 
 import { Action, Reducer } from 'redux';
+import { FactoryResolver } from '../services/types';
 import { AppThunkAction, AppState } from './';
-import { fetchFactoryResolver } from '../services/api/factory-resolver';
+import { container } from '../inversify.config';
+import { CheWorkspaceClient } from '../services/workspace-client/CheWorkspaceClient';
+
+const WorkspaceClient = container.get(CheWorkspaceClient);
 
 export interface State {
   isLoading: boolean;
-  resolver: { location?: string; devfile?: che.WorkspaceDevfile; }
+  resolver: { location?: string; devfile?: api.che.workspace.devfile.Devfile; }
 }
 
 interface RequestFactoryResolverAction {
@@ -25,7 +29,7 @@ interface RequestFactoryResolverAction {
 
 interface ReceiveFactoryResolverAction {
   type: 'RECEIVE_FACTORY_RESOLVER';
-  resolver: { location?: string; devfile?: che.WorkspaceDevfile; }
+  resolver: { location?: string; devfile?: api.che.workspace.devfile.Devfile; }
 }
 
 type KnownAction = RequestFactoryResolverAction
@@ -38,7 +42,7 @@ export type ActionCreators = {
 
 export const actionCreators: ActionCreators = {
 
-  requestFactoryResolver: (location: string): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<che.WorkspaceDevfile> => {
+  requestFactoryResolver: (location: string): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<api.che.workspace.devfile.Devfile> => {
     const appState: AppState = getState();
     if (!appState || !appState.infrastructureNamespace) {
       // todo throw a nice error
@@ -48,9 +52,14 @@ export const actionCreators: ActionCreators = {
     dispatch({ type: 'REQUEST_FACTORY_RESOLVER' });
 
     try {
-      const devfile: che.WorkspaceDevfile = await fetchFactoryResolver(location);
-      dispatch({ type: 'RECEIVE_FACTORY_RESOLVER', resolver: { location: location, devfile: devfile } });
-      return devfile;
+      const data = await WorkspaceClient.restApiClient.getFactoryResolver<FactoryResolver>(location);
+      if (!data.devfile) {
+        throw new Error('The specified link does not contain a valid Devfile.');
+      } else if (data.source === 'repo') {
+        throw new Error('devfile.yaml not found in the specified GitHub repository root.');
+      }
+      dispatch({ type: 'RECEIVE_FACTORY_RESOLVER', resolver: { location: location, devfile: data.devfile } });
+      return data.devfile;
     } catch (e) {
       throw new Error('Failed to request factory resolver, \n' + e);
     }

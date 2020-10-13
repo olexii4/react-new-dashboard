@@ -19,7 +19,7 @@ import {
 } from '@patternfly/react-icons/dist/js/icons';
 import React from 'react';
 import { Label } from '@patternfly/react-core';
-import { WorkspaceStatus } from '../../../services/api/workspaceStatus';
+import { WorkspaceStatus } from '../../../services/workspaceStatus';
 
 import styles from './WorkspaceStatusLabel.module.css';
 
