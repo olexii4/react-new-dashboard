@@ -8,6 +8,9 @@
 # Contributors:
 #   Red Hat, Inc. - initial API and implementation
 
+ARG CHE_DASHBOARD_IMAGE=quay.io/eclipse/che-dashboard
+ARG CHE_DASHBOARD_VERSION=next
+
 FROM docker.io/node:10.20.1 as builder
 
 COPY package.json /dashboard-next/
@@ -17,11 +20,8 @@ RUN yarn --network-timeout 600000 && yarn install --ignore-optional
 COPY . /dashboard-next/
 RUN yarn compile
 
-FROM docker.io/httpd:2.4.43-alpine
-RUN sed -i 's|    AllowOverride None|    AllowOverride All|' /usr/local/apache2/conf/httpd.conf && \
-    sed -i 's|Listen 80|Listen 8080|' /usr/local/apache2/conf/httpd.conf && \
-    mkdir -p /var/www && ln -s /usr/local/apache2/htdocs /var/www/html && \
-    chmod -R g+rwX /usr/local/apache2 && \
-    echo "ServerName localhost" >> /usr/local/apache2/conf/httpd.conf
-COPY --from=builder /dashboard-next/build /usr/local/apache2/htdocs/dashboard
-RUN sed -i -r -e 's#<base href="/">#<base href="/dashboard/"#g'  /usr/local/apache2/htdocs/dashboard/index.html
+FROM ${CHE_DASHBOARD_IMAGE}:${CHE_DASHBOARD_VERSION}
+# TODO Rework Che Server to copy the right folder https://github.com/eclipse/che/blob/master/dockerfiles/che/Dockerfile#L31
+COPY --from=builder /dashboard-next/build /usr/local/apache2/htdocs/dashboard/next
+# TODO Make sure we should remove it
+#RUN sed -i -r -e 's#<base href="/">#<base href="/dashboard/next/"#g'  /usr/local/apache2/htdocs/dashboard/next/index.html
