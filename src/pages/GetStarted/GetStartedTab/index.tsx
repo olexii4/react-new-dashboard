@@ -66,7 +66,7 @@ export class SamplesListTab extends React.PureComponent<Props, State> {
             onTemporaryStorageChange={temporary => this.handleTemporaryStorageChange(temporary)} />
         </PageSection>
         <CheProgress isLoading={isLoading} />
-        <PageSection variant={PageSectionVariants.default}>
+        <PageSection variant={PageSectionVariants.default} style={{ background: '#f0f0f0' }}>
           <SamplesListGallery onCardClick={(devfileContent, stackName) => this.handleSampleCardClick(devfileContent, stackName)} />
         </PageSection>
       </React.Fragment>

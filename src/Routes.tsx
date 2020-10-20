@@ -17,7 +17,6 @@ import { ROUTE } from './route.enum';
 
 const GetStarted = React.lazy(() => import('./pages/GetStarted'));
 const WorkspacesList = React.lazy(() => import('./containers/WorkspacesList'));
-const Administration = React.lazy(() => import('./pages/Administration'));
 const WorkspaceDetails = React.lazy(() => import('./containers/WorkspaceDetails'));
 const IdeIframe = React.lazy(() => import('./pages/IdeIframe'));
 
@@ -30,7 +29,6 @@ const items: RouteItem[] = [
   { to: ROUTE.GET_STARTED, component: GetStarted },
   { to: ROUTE.HOME, component: GetStarted },
   { to: ROUTE.WORKSPACES, component: WorkspacesList },
-  { to: ROUTE.ADMINISTRATION, component: Administration },
   { to: ROUTE.WORKSPACE_DETAILS, component: WorkspaceDetails },
   { to: ROUTE.IDE, component: IdeIframe },
 ];

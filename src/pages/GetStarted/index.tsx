@@ -22,7 +22,6 @@ import {
   PageSection,
   PageSectionVariants,
   Tab,
-  TabContent,
   Tabs,
   Title,
 } from '@patternfly/react-core';
@@ -34,8 +33,8 @@ import { ROUTE } from '../../route.enum';
 const SamplesListTab = React.lazy(() => import('./GetStartedTab'));
 const CustomWorkspaceTab = React.lazy(() => import('./CustomWorkspaceTab'));
 
-const GET_STARTED_TAB_KEY = '#get-started';
-const CUSTOM_WORKSPACE_TAB_KEY = '#custom-workspace';
+const GET_STARTED_TAB_KEY = 'get-started';
+const CUSTOM_WORKSPACE_TAB_KEY = 'custom-workspace';
 
 type Props = {
   history: History;
@@ -49,22 +48,22 @@ type State = {
 
 export class GetStarted extends React.PureComponent<Props, State> {
 
-  private contentRef1: any;
-  private contentRef2: any;
-
   constructor(props: Props) {
     super(props);
 
     const activeTabKey = this.getActiveTabKey();
-    this.updateHistory(activeTabKey);
 
     this.state = {
       activeTabKey,
       alerts: [],
     };
+  }
 
-    this.contentRef1 = React.createRef();
-    this.contentRef2 = React.createRef();
+  public componentDidUpdate(): void {
+    const activeTabKey = this.getActiveTabKey();
+    if (this.state.activeTabKey !== activeTabKey) {
+      this.setState({ activeTabKey });
+    }
   }
 
   private getTitle(): string {
@@ -77,27 +76,16 @@ export class GetStarted extends React.PureComponent<Props, State> {
   }
 
   private getActiveTabKey(): string {
-    const { pathname, hash } = this.props.history.location;
-    if (pathname === ROUTE.GET_STARTED && hash === CUSTOM_WORKSPACE_TAB_KEY) {
-      return CUSTOM_WORKSPACE_TAB_KEY;
+    const { pathname, search } = this.props.history.location;
+
+    if (search) {
+      const searchParam = new URLSearchParams(search.substring(1));
+      if (pathname === ROUTE.GET_STARTED && searchParam.get('tab') === CUSTOM_WORKSPACE_TAB_KEY) {
+        return CUSTOM_WORKSPACE_TAB_KEY;
+      }
     }
 
     return GET_STARTED_TAB_KEY;
-  }
-
-  private updateHistory(tabKey: string): void {
-    const historyLocation = this.props.history.location;
-    if (historyLocation.pathname === '/') {
-      return;
-    }
-
-    if (tabKey === GET_STARTED_TAB_KEY
-      && historyLocation.hash !== GET_STARTED_TAB_KEY) {
-      this.props.history.replace(ROUTE.TAB_GET_STARTED);
-    } else if (tabKey === CUSTOM_WORKSPACE_TAB_KEY
-      && historyLocation.hash !== CUSTOM_WORKSPACE_TAB_KEY) {
-      this.props.history.replace(ROUTE.TAB_CUSTOM_WORKSPACE);
-    }
   }
 
   private async createWorkspace(
@@ -105,18 +93,10 @@ export class GetStarted extends React.PureComponent<Props, State> {
     stackName: string | undefined,
     infrastructureNamespace: string | undefined,
   ): Promise<void> {
-    const attr: { [key: string]: string } = !stackName
-      ? {}
-      : { stackName };
-
+    const attr = stackName ? { stackName } : {};
     let workspace: che.Workspace;
     try {
-      workspace = await this.props.createWorkspaceFromDevfile(
-        devfile,
-        undefined,
-        infrastructureNamespace,
-        attr,
-      );
+      workspace = await this.props.createWorkspaceFromDevfile(devfile, undefined, infrastructureNamespace, attr);
     } catch (e) {
       const errorMessage = 'Failed to create a workspace';
       this.showAlert({
@@ -179,7 +159,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
   }
 
   private handleTabClick(event: React.MouseEvent<HTMLElement, MouseEvent>, activeTabKey: React.ReactText): void {
-    this.props.history.push(`${ROUTE.GET_STARTED}${activeTabKey}`);
+    this.props.history.push(`${ROUTE.GET_STARTED}?tab=${activeTabKey}`);
 
     this.setState({
       activeTabKey: activeTabKey as string,
@@ -213,41 +193,26 @@ export class GetStarted extends React.PureComponent<Props, State> {
           <Tabs
             activeKey={activeTabKey}
             onSelect={(event, tabKey) => this.handleTabClick(event, tabKey)}>
-            <Tab eventKey={GET_STARTED_TAB_KEY}
-              title="Get Started"
-              tabContentId="refTab1Section"
-              tabContentRef={this.contentRef1} />
-            <Tab eventKey={CUSTOM_WORKSPACE_TAB_KEY}
-              title="Custom Workspace"
-              tabContentId="refTab2Section"
-              tabContentRef={this.contentRef2} />
+            <Tab eventKey={GET_STARTED_TAB_KEY} title="Get Started">
+              <Suspense fallback={<div>Loading...</div>}>
+                <SamplesListTab
+                  onDevfile={(devfileContent: string, stackName: string) => {
+                    return this.handleDevfileContent(devfileContent, { stackName });
+                  }}
+                />
+              </Suspense>
+            </Tab>
+            <Tab eventKey={CUSTOM_WORKSPACE_TAB_KEY} title="Custom Workspace">
+              <Suspense fallback={<div>Loading...</div>}>
+                <CustomWorkspaceTab
+                  onDevfile={(devfile: che.WorkspaceDevfile, infrastructureNamespace?: string) => {
+                    return this.handleDevfile(devfile, { infrastructureNamespace });
+                  }}
+                />
+              </Suspense>
+            </Tab>
           </Tabs>
         </PageSection>
-        <div>
-          <TabContent eventKey={GET_STARTED_TAB_KEY}
-            id="refTab1Section"
-            ref={this.contentRef1}
-            aria-label="Get Started Tab"
-            hidden={activeTabKey !== GET_STARTED_TAB_KEY}>
-            <Suspense fallback={<div>Loading...</div>}>
-              <SamplesListTab
-                onDevfile={(devfileContent: string, stackName: string) => this.handleDevfileContent(devfileContent, { stackName })}
-              />
-            </Suspense>
-          </TabContent>
-          <TabContent eventKey={CUSTOM_WORKSPACE_TAB_KEY}
-            id="refTab2Section"
-            ref={this.contentRef2}
-            aria-label="Custom Workspace Tab"
-            hidden={activeTabKey !== CUSTOM_WORKSPACE_TAB_KEY}>
-            <Suspense fallback={<div>Loading...</div>}>
-              <CustomWorkspaceTab
-                onDevfile={(devfile: che.WorkspaceDevfile, infrastructureNamespace?: string) => this.handleDevfile(devfile, { infrastructureNamespace })}
-              />
-            </Suspense>
-          </TabContent>
-        </div>
-
       </React.Fragment>
     );
   }

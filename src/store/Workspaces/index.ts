@@ -121,7 +121,7 @@ export type ActionCreators = {
     devfile: che.WorkspaceDevfile,
     cheNamespace: string | undefined,
     infrastructureNamespace: string | undefined,
-    attributes: { [key: string]: string },
+    attributes: { [key: string]: string } | {},
   ) => AppThunk<KnownAction, Promise<che.Workspace>>;
   requestSettings: () => AppThunk<KnownAction, Promise<void>>;
 

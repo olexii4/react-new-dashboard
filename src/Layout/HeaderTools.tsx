@@ -79,11 +79,6 @@ export class HeaderTools extends React.PureComponent<Props, State> {
         </DropdownItem>
       ),
       (
-        <DropdownItem key='account_details'>
-          Account Details
-        </DropdownItem>
-      ),
-      (
         <DropdownItem
           key='account_logout'
           component='button'

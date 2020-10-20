@@ -36,7 +36,7 @@ describe('Navigation Main List', () => {
     renderComponent();
 
     const navLinks = screen.getAllByRole('link');
-    expect(navLinks.length).toEqual(3);
+    expect(navLinks.length).toEqual(2);
   });
 
   it('should have correct navigation item labels', () => {
@@ -46,7 +46,6 @@ describe('Navigation Main List', () => {
 
     expect(navLinks[0]).toHaveTextContent('Get Started Page');
     expect(navLinks[1]).toHaveTextContent('Workspaces');
-    expect(navLinks[2]).toHaveTextContent('Administration');
   });
 
 });
