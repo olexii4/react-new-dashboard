@@ -114,7 +114,7 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
     this.hideAlert = (): void => this.setState({ alertVisible: false });
   }
 
-  componentDidUpdate(): void {
+  public componentDidUpdate(): void {
     if (this.props.workspace && (WorkspaceStatus[this.props.workspace?.status] === WorkspaceStatus.STOPPED)) {
       this.setState({ hasWarningMessage: false });
     }

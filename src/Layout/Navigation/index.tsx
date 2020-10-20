@@ -49,7 +49,11 @@ export class Navigation extends React.PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const activePath = this.props.history.location.pathname;
+    const activePath = this.props.history.location.pathname.split('&')[0];
+
+    if (this.props.history.location.pathname !== activePath) {
+      this.props.history.replace(activePath);
+    }
 
     this.state = {
       activePath,
