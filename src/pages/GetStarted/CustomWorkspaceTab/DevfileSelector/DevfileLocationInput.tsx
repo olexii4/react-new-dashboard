@@ -27,6 +27,7 @@ const ERROR_FAILED_LOAD = 'Failed to load the devfile';
 
 type Props = {
   onChange: (location: string) => void;
+  isLoading?: boolean;
 };
 type State = {
   validated: ValidatedOptions;
@@ -96,7 +97,7 @@ export class DevfileLocationInput extends React.PureComponent<Props, State> {
     const { location, validated, errorMessage } = this.state;
 
     const fieldId = 'devfile-url';
-    const buttonDisabled = location === '' || validated === ValidatedOptions.error;
+    const buttonDisabled = location === '' || validated === ValidatedOptions.error || this.props.isLoading;
     return (
       <React.Fragment>
         <FormGroup

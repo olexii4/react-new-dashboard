@@ -62,7 +62,7 @@ export const actionCreators: ActionCreators = {
       dispatch({ type: 'RECEIVE_FACTORY_RESOLVER', resolver: { location: location, devfile: data.devfile, source: data.source } });
       return;
     } catch (e) {
-      throw new Error('Failed to request factory resolver, \n' + e);
+      throw new Error(e.message ? e.message : 'Failed to request factory resolver');
     }
   },
 
