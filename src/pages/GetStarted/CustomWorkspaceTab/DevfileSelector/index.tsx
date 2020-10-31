@@ -47,7 +47,7 @@ type State = {
 };
 
 export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> {
-
+  private factoryResolver: FactoryResolverStore.State;
   private devfileSelectRef: React.RefObject<DevfileSelect>;
   private devfileLocationRef: React.RefObject<DevfileLocationInput>;
 
@@ -67,6 +67,10 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
     if (this.props.onClear) {
       this.props.onClear();
     }
+  }
+
+  public componentDidUpdate(): void {
+    this.factoryResolver = this.props.factoryResolver;
   }
 
   private async handleDevfileSelect(meta: che.DevfileMetaData): Promise<void> {
@@ -93,8 +97,12 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
     // clear devfile select
     this.devfileSelectRef.current?.clearSelect();
     try {
-      const devfileContent = await this.props.requestFactoryResolver(location) as che.WorkspaceDevfile;
-      this.props.onDevfile(devfileContent);
+      await this.props.requestFactoryResolver(location);
+      const { resolver } = this.factoryResolver;
+      if (resolver.source === 'repo') {
+        throw new Error('devfile.yaml not found in the specified GitHub repository root.');
+      }
+      this.props.onDevfile(resolver.devfile as che.WorkspaceDevfile);
     } catch (e) {
       this.devfileLocationRef.current?.invalidateInput();
       let errorMessage = 'Failed to resolve or load the devfile.';

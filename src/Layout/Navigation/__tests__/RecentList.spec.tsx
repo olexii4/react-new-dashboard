@@ -138,6 +138,7 @@ function createFakeStore(workspaces: che.Workspace[]): Store {
       isLoading: false,
       settings: {} as any,
       workspaces,
+      workspacesLogs: new Map<string, string[]>(),
 
       namespace: '',
       workspaceName: '',

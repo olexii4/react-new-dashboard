@@ -12,7 +12,7 @@
 
 import { Action, Reducer } from 'redux';
 import { FactoryResolver } from '../services/types';
-import { AppThunkAction, AppState } from './';
+import { AppState, AppThunk } from './';
 import { container } from '../inversify.config';
 import { CheWorkspaceClient } from '../services/workspace-client/CheWorkspaceClient';
 
@@ -20,7 +20,11 @@ const WorkspaceClient = container.get(CheWorkspaceClient);
 
 export interface State {
   isLoading: boolean;
-  resolver: { location?: string; devfile?: api.che.workspace.devfile.Devfile; }
+  resolver: {
+    location?: string;
+    source?: string;
+    devfile?: api.che.workspace.devfile.Devfile;
+  }
 }
 
 interface RequestFactoryResolverAction {
@@ -37,12 +41,11 @@ type KnownAction = RequestFactoryResolverAction
 
 // todo proper type instead of 'any'
 export type ActionCreators = {
-  requestFactoryResolver: (location: string) => any;
+  requestFactoryResolver: (location: string) => AppThunk<KnownAction, Promise<void>>;
 };
 
 export const actionCreators: ActionCreators = {
-
-  requestFactoryResolver: (location: string): AppThunkAction<KnownAction> => async (dispatch, getState): Promise<api.che.workspace.devfile.Devfile> => {
+  requestFactoryResolver: (location: string): AppThunk<KnownAction, Promise<void>> => async (dispatch, getState): Promise<void> => {
     const appState: AppState = getState();
     if (!appState || !appState.infrastructureNamespace) {
       // todo throw a nice error
@@ -55,11 +58,9 @@ export const actionCreators: ActionCreators = {
       const data = await WorkspaceClient.restApiClient.getFactoryResolver<FactoryResolver>(location);
       if (!data.devfile) {
         throw new Error('The specified link does not contain a valid Devfile.');
-      } else if (data.source === 'repo') {
-        throw new Error('devfile.yaml not found in the specified GitHub repository root.');
       }
-      dispatch({ type: 'RECEIVE_FACTORY_RESOLVER', resolver: { location: location, devfile: data.devfile } });
-      return data.devfile;
+      dispatch({ type: 'RECEIVE_FACTORY_RESOLVER', resolver: { location: location, devfile: data.devfile, source: data.source } });
+      return;
     } catch (e) {
       throw new Error('Failed to request factory resolver, \n' + e);
     }
@@ -85,7 +86,7 @@ export const reducer: Reducer<State> = (state: State | undefined, incomingAction
       });
     case 'RECEIVE_FACTORY_RESOLVER':
       return Object.assign({}, state, {
-        plugins: action.resolver,
+        resolver: action.resolver,
       });
     default:
       return state;
