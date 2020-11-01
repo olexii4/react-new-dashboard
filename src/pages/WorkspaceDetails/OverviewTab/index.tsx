@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { Form, PageSection, PageSectionVariants } from '@patternfly/react-core';
+import { Form, FormGroup, PageSection, PageSectionVariants } from '@patternfly/react-core';
 import StorageTypeFormGroup from './StorageType';
 import { StorageType } from '../../../services/types';
 import { WorkspaceNameFormGroup } from './WorkspaceName';
@@ -112,6 +112,7 @@ export class OverviewTab extends React.Component<Props, State> {
     const storageType = this.getStorageType(devfile);
     const workspaceName = devfile.metadata.name ? devfile.metadata.name : '';
     const namespace = this.state.namespace;
+    const projects = devfile.projects ? devfile.projects.map(project => project.name) : [];
 
     return (
       <React.Fragment>
@@ -132,6 +133,9 @@ export class OverviewTab extends React.Component<Props, State> {
               storageType={storageType}
               onSave={_storageType => this.handleStorageSave(_storageType)}
             />
+            <FormGroup label="Projects" fieldId="projects">
+              <div style={{ paddingTop: '5px', lineHeight: '30px' }}>{projects.join(', ')}</div>
+            </FormGroup>
           </Form>
         </PageSection>
       </React.Fragment>

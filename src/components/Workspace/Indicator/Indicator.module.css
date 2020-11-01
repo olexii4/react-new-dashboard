@@ -1,8 +1,6 @@
-.label {
-  margin-left: 20px;
-  font-size: 20px;
-  text-transform: lowercase;
-  opacity: 0.9;
+.statusIndicator {
+  margin-right: 10px;
+  opacity: 0.8;
 }
 
 .rotate {

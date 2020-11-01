@@ -82,11 +82,11 @@ export class EditorTab extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidMount(): void {
+  public componentDidMount(): void {
     this.init();
   }
 
-  componentDidUpdate(): void {
+  public componentDidUpdate(): void {
     this.init();
   }
 

@@ -1,0 +1,17 @@
+.loadFactoryHeader {
+  padding-bottom: 0;
+  user-select: none;
+}
+
+.loadFactoryHeader li:first-child {
+  margin-right: 0;
+}
+
+.loadFactoryHeader li:first-child a {
+  margin-right: 8px;
+}
+
+.loadFactoryHeader h1 {
+  padding-top: 15px;
+  line-height: 25px;
+}

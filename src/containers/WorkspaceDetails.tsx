@@ -51,7 +51,7 @@ class WorkspaceDetails extends React.PureComponent<Props> {
     }
   }
 
-  componentDidMount() {
+  public componentDidMount(): void {
     const { allWorkspaces } = this.props;
     if (!allWorkspaces || allWorkspaces.length === 0) {
       this.props.requestWorkspaces();

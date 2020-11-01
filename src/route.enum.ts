@@ -19,4 +19,5 @@ export enum ROUTE {
   ADMINISTRATION = '/administration',
   WORKSPACE_DETAILS = '/workspace/:namespace/:workspaceName/',
   IDE = '/ide/:namespace/:workspaceName',
+  LOAD_FACTORY = '/load-factory'
 }

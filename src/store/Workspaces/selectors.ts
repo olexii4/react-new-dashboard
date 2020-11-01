@@ -25,6 +25,11 @@ export const selectSettings = createSelector(
   state => state.settings,
 );
 
+export const selectLogs = createSelector(
+  selectState,
+  state => state.workspacesLogs,
+);
+
 export const selectAllWorkspaces = createSelector(
   selectState,
   state => {

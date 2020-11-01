@@ -122,6 +122,7 @@ type KnownAction =
 
 export type ActionCreators = {
   requestWorkspaces: () => AppThunk<KnownAction, Promise<void>>;
+  requestWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
   startWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
   stopWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
   deleteWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
@@ -232,6 +233,19 @@ export const actionCreators: ActionCreators = {
       throw new Error('Failed to request workspaces: \n' + e);
     }
 
+  },
+
+  requestWorkspace: (workspaceId: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
+    dispatch({ type: 'REQUEST_WORKSPACES' });
+
+    try {
+      const workspace = await WorkspaceClient.restApiClient.getById<che.Workspace>(workspaceId);
+      dispatch({ type: 'UPDATE_WORKSPACE', workspace });
+    } catch (e) {
+      dispatch({ type: 'RECEIVE_ERROR' });
+      const message = e.response && e.response.data && e.response.data.message ? e.response.data.message : e.message;
+      throw new Error(`Failed to update. ${message}`);
+    }
   },
 
   requestSettings: (): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {

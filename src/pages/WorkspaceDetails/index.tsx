@@ -27,6 +27,7 @@ import {
   Text,
   Button,
 } from '@patternfly/react-core';
+import LogsTab from '../../components/LogsTab';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 import Header from './Header';
 import CheProgress from '../../components/Progress';
@@ -42,6 +43,7 @@ export const SECTION_THEME = PageSectionVariants.light;
 export enum WorkspaceDetailsTabs {
   Overview = 0,
   Devfile = 4,
+  Logs = 5
 }
 
 type Props =
@@ -182,6 +184,9 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
                 ref={this.editorTabPageRef}
                 workspace={workspace}
                 onSave={workspace => this.onSave(workspace)} />
+            </Tab>
+            <Tab eventKey={WorkspaceDetailsTabs.Logs} title={WorkspaceDetailsTabs[WorkspaceDetailsTabs.Logs]}>
+              <LogsTab workspaceId={workspace.id} />
             </Tab>
           </Tabs>
           <Modal variant={ModalVariant.small} isOpen={this.state.hasDiscardChangesMessage}

@@ -12,10 +12,8 @@
 
 import React from 'react';
 import { PageSection, Text, TextContent } from '@patternfly/react-core';
-import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
-import { ROUTE } from '../../../route.enum';
-import { SECTION_THEME } from '../index';
-import WorkspaceStatusLabel from '../../../components/WorkspaceStatusLabel/WorkspaceStatusLabel';
+import { SECTION_THEME } from '../../pages/loadFactory';
+import WorkspaceStatusLabel from '../WorkspaceStatusLabel/WorkspaceStatusLabel';
 
 import styles from './Header.module.css';
 
@@ -30,16 +28,10 @@ class Header extends React.PureComponent<Props> {
     const { workspaceName, status } = this.props;
 
     return (
-      <PageSection variant={SECTION_THEME} className={styles.workspaceDetailsHeader}>
-        <Breadcrumb>
-          <BreadcrumbItem to={`./#${ROUTE.WORKSPACES}`}>
-            Workspaces
-          </BreadcrumbItem>
-          <BreadcrumbItem isActive>{workspaceName}</BreadcrumbItem>
-        </Breadcrumb>
+      <PageSection variant={SECTION_THEME} className={styles.loadFactoryHeader}>
         <TextContent>
           <Text component='h1'>
-            {workspaceName}
+            Starting workspace {workspaceName}
             <WorkspaceStatusLabel status={status} />
           </Text>
         </TextContent>

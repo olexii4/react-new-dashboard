@@ -25,8 +25,7 @@ import WorkspacesListPage from '../pages/WorkspacesList';
 
 type Props =
   MappedProps
-  & { history: History }
-  & RouteComponentProps<{ namespace: string; workspaceName: string }>; // incoming parameters
+  & { history: History };
 
 export class WorkspacesList extends React.PureComponent<Props> {
 
@@ -34,7 +33,7 @@ export class WorkspacesList extends React.PureComponent<Props> {
     super(props);
   }
 
-  componentDidMount() {
+  public componentDidMount(): void {
     const { allWorkspaces } = this.props;
     if (!allWorkspaces || allWorkspaces.length === 0) {
       this.props.requestWorkspaces();

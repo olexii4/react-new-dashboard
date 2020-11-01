@@ -117,7 +117,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
     // force start for the new workspace
     try {
       await this.props.startWorkspace(`${workspace.id}`);
-      this.props.history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
+      this.props.history.push(`/ide/${workspace.namespace}/${workspaceName}`);
     } catch (error) {
       const errorMessage = `Workspace ${workspaceName} failed to start`;
       this.showAlert({
@@ -187,7 +187,6 @@ export class GetStarted extends React.PureComponent<Props, State> {
         </PageSection>
         <PageSection
           variant={PageSectionVariants.light}
-          padding={{ default: 'noPadding' }}
           isFilled={false}
         >
           <Tabs

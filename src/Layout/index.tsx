@@ -82,7 +82,7 @@ export class Layout extends React.PureComponent<Props, State> {
     }
   }
 
-  componentDidMount(): void {
+  public componentDidMount(): void {
     window.addEventListener(
       'message',
       event => this.handleMessage(event),
