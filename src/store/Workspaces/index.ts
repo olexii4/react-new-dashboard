@@ -267,7 +267,7 @@ export const actionCreators: ActionCreators = {
       dispatch({ type: 'UPDATE_WORKSPACE', workspace });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
-      throw new Error(`Failed to start the workspace, ID: ${workspaceId}, ` + e);
+      throw new Error(`Failed to start the workspace, ID: ${workspaceId}, ${e.message ? e.message : ''}`);
     }
   },
 

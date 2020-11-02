@@ -99,7 +99,8 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
   private async openIDE(workspaceId: string): Promise<void> {
     await this.props.requestWorkspace(workspaceId);
-    const { workspace } = this.props;
+    const workspace = this.props.allWorkspaces.find(workspace =>
+      workspace.id === workspaceId);
     if (!workspace || !workspace.runtime) {
       return;
     }
@@ -128,7 +129,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     const { namespace, workspaceName } = this.state;
 
     if (namespace !== params.namespace || workspaceName !== params.workspaceName) {
-      this.setState({ currentStep: 1, namespace, workspaceName });
+      this.setState({ currentStep: 1, hasError: false, ideUrl: '', namespace, workspaceName });
       await timeout();
       return;
     } else if (this.state.currentStep > 2) {
@@ -152,8 +153,8 @@ class IdeLoader extends React.PureComponent<Props, State> {
       try {
         await this.props.startWorkspace(`${workspace.id}`);
       } catch (e) {
-        this.showErrorAlert(`Workspace ${this.state.workspaceName} failed to start.`);
-        return;
+        // this.showErrorAlert(`Workspace ${this.state.workspaceName} failed to start. ${e}`);
+        // return;
       }
     }
   }
