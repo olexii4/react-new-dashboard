@@ -14,7 +14,7 @@ import React from 'react';
 import { Flex, FlexItem, Button, Divider } from '@patternfly/react-core';
 import { CompressIcon, DownloadIcon, ExpandIcon } from '@patternfly/react-icons/dist/js/icons';
 
-import styles from './LogsTools.module.css';
+import styles from './index.module.css';
 
 type Props = {
   logs: string[];

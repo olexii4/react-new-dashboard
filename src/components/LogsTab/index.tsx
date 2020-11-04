@@ -18,7 +18,7 @@ import LogsTools from './LogsTools';
 import { AppState } from '../../store';
 import { selectAllWorkspaces, selectLogs } from '../../store/Workspaces/selectors';
 
-import styles from './LogsTab.module.css';
+import styles from './index.module.css';
 
 type Props =
   { workspaceId: string }
