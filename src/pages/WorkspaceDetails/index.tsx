@@ -63,7 +63,7 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
   private alert: { variant?: AlertVariant; title?: string } = {};
   public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
   private readonly hideAlert: () => void;
-  private readonly handleTabClick: (event: any, tabIndex: any) => void;
+  private readonly handleTabClick: (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => void;
 
   private readonly editorTabPageRef: React.RefObject<Editor>;
   private readonly overviewTabPageRef: React.RefObject<Overview>;
@@ -82,7 +82,7 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
     };
 
     // Toggle currently active tab
-    this.handleTabClick = (event: any, tabIndex: any): void => {
+    this.handleTabClick = (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText): void => {
       if ((this.state.activeTabKey === WorkspaceDetailsTabs.Devfile && this.editorTabPageRef.current?.state.hasChanges) ||
         (this.state.activeTabKey === WorkspaceDetailsTabs.Overview && this.overviewTabPageRef.current?.hasChanges) ||
         this.props.isLoading) {
@@ -96,11 +96,15 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
           (focusedElement as HTMLBaseElement).blur();
         }
         if (!this.props.isLoading) {
-          this.setState({ hasDiscardChangesMessage: true, clickedTabIndex: tabIndex });
+          this.setState({ hasDiscardChangesMessage: true, clickedTabIndex: tabIndex as WorkspaceDetailsTabs });
         }
         return;
       }
-      this.setState({ hasDiscardChangesMessage: false, clickedTabIndex: tabIndex, activeTabKey: tabIndex });
+      this.setState({
+        hasDiscardChangesMessage: false,
+        clickedTabIndex: tabIndex as WorkspaceDetailsTabs,
+        activeTabKey: tabIndex as WorkspaceDetailsTabs
+      });
     };
     let showAlertTimer;
     this.showAlert = (variant: AlertVariant, title: string, timeDelay?: number): void => {

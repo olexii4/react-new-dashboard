@@ -56,8 +56,8 @@ export class LogsTab extends React.PureComponent<Props, State> {
     const { workspaceId, workspacesLogs, allWorkspaces } = this.props;
     if (allWorkspaces && allWorkspaces.length > 0 && workspaceId) {
       const workspace = allWorkspaces.find(workspace => workspace.id === workspaceId);
-      const hasError = workspace && workspace.status === WorkspaceStatus[WorkspaceStatus.ERROR];
-      const isStopped = workspace && workspace.status === WorkspaceStatus[WorkspaceStatus.STOPPED];
+      const hasError = workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR;
+      const isStopped = workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPED;
       const logs = workspacesLogs && workspacesLogs.has(workspaceId) ? workspacesLogs.get(workspaceId) : [];
       if (logs && this.state.logs.length !== logs.length
         || this.state.hasError !== hasError

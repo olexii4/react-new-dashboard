@@ -57,7 +57,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
   private alert: { variant?: AlertVariant; title?: string } = {};
   public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
   private readonly hideAlert: () => void;
-  private readonly handleTabClick: (event: any, tabIndex: any) => void;
+  private readonly handleTabClick: (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => void;
 
   private readonly wizardRef: RefObject<any>;
 
@@ -73,8 +73,8 @@ class IdeLoader extends React.PureComponent<Props, State> {
     this.wizardRef = React.createRef();
 
     // Toggle currently active tab
-    this.handleTabClick = (event: any, tabIndex: any): void => {
-      this.setState({ activeTabKey: tabIndex });
+    this.handleTabClick = (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText): void => {
+      this.setState({ activeTabKey: tabIndex as IdeLoaderTabs });
       if (this.state.activeTabKey === IdeLoaderTabs.Progress) {
         this.setState({ alertVisible: false });
       }
