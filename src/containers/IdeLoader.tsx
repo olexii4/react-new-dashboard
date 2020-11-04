@@ -15,7 +15,6 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { History } from 'history';
 import { RouteComponentProps } from 'react-router';
-import { delay } from '../services/delay';
 import { Debounce } from '../services/debounce/Debounce';
 import { AppState } from '../store';
 import * as WorkspaceStore from '../store/Workspaces';
@@ -29,11 +28,17 @@ type Props =
   & { history: History }
   & RouteComponentProps<{ namespace: string; workspaceName: string }>;
 
+export enum LoadIdeSteps {
+  INITIALIZING = 1,
+  START_WORKSPACE = 2,
+  OPEN_IDE = 3
+}
+
 type State = {
   namespace?: string,
   workspaceName?: string,
   workspaceId?: string,
-  currentStep: number;
+  currentStep: LoadIdeSteps;
   ideUrl?: string;
   hasError?: boolean;
 };
@@ -58,7 +63,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     }
 
     this.state = {
-      currentStep: 1,
+      currentStep: LoadIdeSteps.INITIALIZING,
       namespace,
       workspaceName,
     };
@@ -106,7 +111,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
   }
 
   private async openIDE(workspaceId: string): Promise<void> {
-    this.setState({ currentStep: 3 });
+    this.setState({ currentStep: LoadIdeSteps.OPEN_IDE });
     try {
       await this.props.requestWorkspace(workspaceId);
     } catch (e) {
@@ -134,7 +139,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
       this.showErrorAlert('Don\'t know what to open, IDE url is not defined.');
       return;
     }
-    this.setState({ currentStep: 3, ideUrl });
+    this.setState({ currentStep: LoadIdeSteps.OPEN_IDE, ideUrl });
   }
 
   private async initWorkspace(): Promise<void> {
@@ -143,29 +148,30 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
     if (namespace !== params.namespace || workspaceName !== params.workspaceName) {
       this.setState({
-        currentStep: 1,
+        currentStep: LoadIdeSteps.INITIALIZING,
         hasError: false,
         ideUrl: '',
         namespace: params.namespace,
         workspaceName: params.workspaceName,
       });
       return;
-    } else if (this.state.currentStep > 2) {
+    } else if (this.state.currentStep === LoadIdeSteps.OPEN_IDE) {
       return;
     }
     const workspace = allWorkspaces.find(workspace =>
       workspace.namespace === params.namespace && workspace.devfile.metadata.name === params.workspaceName);
     if (workspace) {
       this.setState({ currentStep: this.state.currentStep, workspaceId: workspace.id });
-      if ((workspace.runtime || this.state.currentStep === 2) && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
+      if ((workspace.runtime || this.state.currentStep === LoadIdeSteps.START_WORKSPACE) &&
+        WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
         return this.openIDE(workspace.id);
       }
     } else {
       this.showErrorAlert('Failed to find the target workspace.');
       return;
     }
-    if (this.state.currentStep === 1) {
-      this.setState({ currentStep: 2 });
+    if (this.state.currentStep === LoadIdeSteps.INITIALIZING) {
+      this.setState({ currentStep: LoadIdeSteps.START_WORKSPACE });
       if (WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPED ||
         WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR) {
         try {

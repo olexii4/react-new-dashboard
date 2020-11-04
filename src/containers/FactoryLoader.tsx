@@ -28,11 +28,20 @@ type Props =
   MappedProps
   & { history: History };
 
+export enum LoadFactorySteps {
+  INITIALIZING = 1,
+  LOOKING_FOR_DEVFILE = 2,
+  APPLYING_DEVFILE = 3,
+  CREATE_WORKSPACE = 4,
+  START_WORKSPACE = 5,
+  OPEN_IDE = 6
+}
+
 type State = {
   search?: string;
   location?: string;
   devfileLocationInfo?: string;
-  currentStep: number;
+  currentStep: LoadFactorySteps;
   hasError: boolean;
 };
 
@@ -46,7 +55,7 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     const { search } = this.props.history.location;
 
     this.state = {
-      currentStep: 1,
+      currentStep: LoadFactorySteps.INITIALIZING,
       hasError: false,
       search,
     };
@@ -79,8 +88,8 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
       this.factoryResolver = factoryResolver;
     }
 
-    if (this.state.currentStep === 5 && workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
-      this.setState({ currentStep: 6 });
+    if (this.state.currentStep === LoadFactorySteps.START_WORKSPACE && workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
+      this.setState({ currentStep: LoadFactorySteps.OPEN_IDE });
       await delay();
       history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
     }
@@ -118,12 +127,12 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
       }
     });
     attrs.stackName = `${location}${params}`;
-    this.setState({ currentStep: 2 });
+    this.setState({ currentStep: LoadFactorySteps.LOOKING_FOR_DEVFILE });
     if (!location) {
       this.showErrorAlert('Failed to find a repository URL.');
       return;
     }
-    this.setState({ currentStep: 3, location });
+    this.setState({ currentStep: LoadFactorySteps.APPLYING_DEVFILE, location });
     await delay();
     try {
       await this.props.requestFactoryResolver(location);
@@ -140,9 +149,9 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     }
     const { source } = this.factoryResolver.resolver;
     const devfileLocationInfo = source === 'repo' ? '' : `${source} from the ${location}`;
-    this.setState({ currentStep: 3, devfileLocationInfo });
+    this.setState({ currentStep: LoadFactorySteps.APPLYING_DEVFILE, devfileLocationInfo });
     const devfile = this.factoryResolver.resolver.devfile;
-    this.setState({ currentStep: 4 });
+    this.setState({ currentStep: LoadFactorySteps.CREATE_WORKSPACE });
     await delay();
 
     let workspace: che.Workspace | null = null;
@@ -157,7 +166,7 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
       return;
     }
     this.props.setWorkspaceId(workspace.id);
-    this.setState({ currentStep: 5 });
+    this.setState({ currentStep: LoadFactorySteps.START_WORKSPACE });
     await delay();
     const workspaceName = workspace.devfile.metadata.name;
     try {
@@ -198,8 +207,8 @@ const connector = connect(
   mapStateToProps,
   {
     ...FactoryResolverStore.actionCreators,
-    ...WorkspaceStore.actionCreators
-  }
+    ...WorkspaceStore.actionCreators,
+  },
 );
 
 type MappedProps = ConnectedProps<typeof connector>;

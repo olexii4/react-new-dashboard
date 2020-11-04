@@ -25,6 +25,7 @@ import {
   Wizard, WizardStep, Text,
 } from '@patternfly/react-core';
 import Header from '../../components/Header';
+import { LoadFactorySteps } from '../../containers/FactoryLoader';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 import LogsTab from '../../components/LogsTab';
 
@@ -40,7 +41,7 @@ export enum LoadFactoryTabs {
 
 type Props = {
   hasError: boolean,
-  currentStep: number,
+  currentStep: LoadFactorySteps,
   workspaceName: string;
   workspaceId: string;
   devfileLocationInfo?: string;
@@ -119,13 +120,13 @@ class FactoryLoader extends React.PureComponent<Props, State> {
     }
   }
 
-  private getIcon(id: number, className = ''): React.ReactNode {
+  private getIcon(step: LoadFactorySteps, className = ''): React.ReactNode {
     const { currentStep, hasError } = this.props;
-    if (currentStep > id) {
+    if (currentStep > step) {
       return (<React.Fragment>
         <CheckCircleIcon className={className} color="green" />
       </React.Fragment>);
-    } else if (currentStep === id) {
+    } else if (currentStep === step) {
       if (hasError) {
         return <ExclamationCircleIcon className={className} color="red" />;
       }
@@ -137,22 +138,22 @@ class FactoryLoader extends React.PureComponent<Props, State> {
   }
 
   private getSteps(): WizardStep[] {
-    const { workspaceName, currentStep, devfileLocationInfo } = this.props;
+    const { workspaceName, devfileLocationInfo } = this.props;
     return [
       {
-        id: 1,
+        id: LoadFactorySteps.INITIALIZING,
         name: (<React.Fragment>
-          {this.getIcon(1, 'wizard-icon')}Initializing
+          {this.getIcon(LoadFactorySteps.INITIALIZING, 'wizard-icon')}Initializing
         </React.Fragment>),
       },
       {
         name: (<React.Fragment>
-          {this.getIcon(2, 'wizard-icon')}Looking for devfile
+          {this.getIcon(LoadFactorySteps.LOOKING_FOR_DEVFILE, 'wizard-icon')}Looking for devfile
         </React.Fragment>),
         steps: [
           {
-            id: 3,
-            name: (<React.Fragment>{this.getIcon(3)}
+            id: LoadFactorySteps.APPLYING_DEVFILE,
+            name: (<React.Fragment>{this.getIcon(LoadFactorySteps.APPLYING_DEVFILE)}
               {devfileLocationInfo ?
                 (<React.Fragment>
                   Found {devfileLocationInfo}, applying it
@@ -163,22 +164,22 @@ class FactoryLoader extends React.PureComponent<Props, State> {
               }</React.Fragment>),
           },
           {
-            id: 4,
+            id: LoadFactorySteps.CREATE_WORKSPACE,
             name: (<React.Fragment>
-              {this.getIcon(4)}Creating a new workspace{` ${workspaceName}`}
+              {this.getIcon(LoadFactorySteps.CREATE_WORKSPACE)}Creating a new workspace{` ${workspaceName}`}
             </React.Fragment>),
           },
         ],
       },
       {
-        id: 5, name: (<React.Fragment>
-          {this.getIcon(5, 'wizard-icon')}Waiting for workspace to start
+        id: LoadFactorySteps.START_WORKSPACE, name: (<React.Fragment>
+          {this.getIcon(LoadFactorySteps.START_WORKSPACE, 'wizard-icon')}Waiting for workspace to start
         </React.Fragment>),
       },
       {
-        id: 6,
+        id: LoadFactorySteps.OPEN_IDE,
         name: (<React.Fragment>
-          {this.getIcon(6, 'wizard-icon')}Open IDE
+          {this.getIcon(LoadFactorySteps.OPEN_IDE, 'wizard-icon')}Open IDE
         </React.Fragment>),
       },
     ];

@@ -23,6 +23,7 @@ import { ExclamationCircleIcon, InProgressIcon } from '@patternfly/react-icons/d
 import React, { RefObject } from 'react';
 import Header from '../../components/Header';
 import LogsTab from '../../components/LogsTab';
+import { LoadIdeSteps } from '../../containers/IdeLoader';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 
 import styles from '../../components/WorkspaceStatusLabel/index.module.css';
@@ -37,7 +38,7 @@ export enum IdeLoaderTabs {
 
 type Props = {
   hasError: boolean,
-  currentStep: number,
+  currentStep: LoadIdeSteps,
   workspaceName: string;
   workspaceId: string;
   ideUrl?: string;
@@ -116,13 +117,13 @@ class IdeLoader extends React.PureComponent<Props, State> {
     }
   }
 
-  private getIcon(id: number): React.ReactNode {
+  private getIcon(step: LoadIdeSteps): React.ReactNode {
     const { currentStep, hasError } = this.props;
-    if (currentStep > id) {
+    if (currentStep > step) {
       return (<React.Fragment>
         <CheckCircleIcon className="wizard-icon" color="green" />
       </React.Fragment>);
-    } else if (currentStep === id) {
+    } else if (currentStep === step) {
       if (hasError) {
         return <ExclamationCircleIcon className="wizard-icon" color="red" />;
       }
@@ -136,21 +137,21 @@ class IdeLoader extends React.PureComponent<Props, State> {
   private getSteps(): WizardStep[] {
     return [
       {
-        id: 1,
+        id: LoadIdeSteps.INITIALIZING,
         name: (<React.Fragment>
-          {this.getIcon(1)}Initializing
+          {this.getIcon(LoadIdeSteps.INITIALIZING)}Initializing
         </React.Fragment>),
       },
       {
-        id: 2,
+        id: LoadIdeSteps.START_WORKSPACE,
         name: (<React.Fragment>
-          {this.getIcon(2)}Waiting for workspace to start
+          {this.getIcon(LoadIdeSteps.START_WORKSPACE)}Waiting for workspace to start
         </React.Fragment>),
       },
       {
-        id: 3,
+        id: LoadIdeSteps.OPEN_IDE,
         name: (<React.Fragment>
-          {this.getIcon(3)}Open IDE
+          {this.getIcon(LoadIdeSteps.OPEN_IDE)}Open IDE
         </React.Fragment>),
       },
     ];
