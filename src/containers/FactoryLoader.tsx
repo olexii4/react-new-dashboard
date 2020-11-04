@@ -79,13 +79,13 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
       this.factoryResolver = factoryResolver;
     }
 
-    if (this.state.currentStep === 5 && workspace && workspace.status === WorkspaceStatus[WorkspaceStatus.RUNNING]) {
+    if (this.state.currentStep === 5 && workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
       this.setState({ currentStep: 6 });
       await delay();
       history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
     }
 
-    if (workspace && workspace.status === WorkspaceStatus[WorkspaceStatus.ERROR]) {
+    if (workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR) {
       this.setState({ hasError: true });
     }
   }
