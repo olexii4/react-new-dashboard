@@ -14,11 +14,11 @@ import { AlertVariant } from '@patternfly/react-core';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { History } from 'history';
-import { timeout } from '../services/timeout';
+import { delay } from '../services/delay';
 import { AppState } from '../store';
 import * as FactoryResolverStore from '../store/FactoryResolver';
 import * as WorkspaceStore from '../store/Workspaces';
-import LoadFactoryPage from '../pages/loadFactory';
+import FactoryLoaderPage from '../pages/FactoryLoader';
 import { selectAllWorkspaces, selectWorkspaceById } from '../store/Workspaces/selectors';
 import { WorkspaceStatus } from '../services/workspaceStatus';
 
@@ -36,8 +36,8 @@ type State = {
   hasError: boolean;
 };
 
-export class LoadFactory extends React.PureComponent<Props, State> {
-  private loadFactoryPageCallbacks: { showAlert?: (variant: AlertVariant.success | AlertVariant.danger, title: string) => void } = {};
+export class FactoryLoader extends React.PureComponent<Props, State> {
+  private loadFactoryPageCallbacks: { showAlert?: (variant: AlertVariant, title: string) => void } = {};
   private factoryResolver: FactoryResolverStore.State;
 
   constructor(props: Props) {
@@ -81,7 +81,7 @@ export class LoadFactory extends React.PureComponent<Props, State> {
 
     if (this.state.currentStep === 5 && workspace && workspace.status === WorkspaceStatus[WorkspaceStatus.RUNNING]) {
       this.setState({ currentStep: 6 });
-      await timeout();
+      await delay();
       history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
     }
 
@@ -124,7 +124,7 @@ export class LoadFactory extends React.PureComponent<Props, State> {
       return;
     }
     this.setState({ currentStep: 3, location });
-    await timeout();
+    await delay();
     try {
       await this.props.requestFactoryResolver(location);
     } catch (e) {
@@ -143,7 +143,7 @@ export class LoadFactory extends React.PureComponent<Props, State> {
     this.setState({ currentStep: 3, devfileLocationInfo });
     const devfile = this.factoryResolver.resolver.devfile;
     this.setState({ currentStep: 4 });
-    await timeout();
+    await delay();
 
     let workspace: che.Workspace | null = null;
     try {
@@ -158,7 +158,7 @@ export class LoadFactory extends React.PureComponent<Props, State> {
     }
     this.props.setWorkspaceId(workspace.id);
     this.setState({ currentStep: 5 });
-    await timeout();
+    await delay();
     const workspaceName = workspace.devfile.metadata.name;
     try {
       await this.props.startWorkspace(`${workspace.id}`);
@@ -175,7 +175,7 @@ export class LoadFactory extends React.PureComponent<Props, State> {
     const workspaceId = workspace ? workspace.id : '';
 
     return (
-      <LoadFactoryPage
+      <FactoryLoaderPage
         currentStep={currentStep}
         hasError={hasError}
         devfileLocationInfo={devfileLocationInfo}
@@ -203,4 +203,4 @@ const connector = connect(
 );
 
 type MappedProps = ConnectedProps<typeof connector>;
-export default connector(LoadFactory);
+export default connector(FactoryLoader);

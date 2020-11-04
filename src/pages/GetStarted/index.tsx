@@ -187,6 +187,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
         </PageSection>
         <PageSection
           variant={PageSectionVariants.light}
+          padding={{ default: 'noPadding' }}
           isFilled={false}
         >
           <Tabs

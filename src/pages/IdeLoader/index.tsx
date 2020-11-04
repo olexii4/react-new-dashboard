@@ -25,8 +25,8 @@ import Header from '../../components/Header';
 import LogsTab from '../../components/LogsTab';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 
-import styles from '../../components/WorkspaceStatusLabel/WorkspaceStatusLabel.module.css';
-import './index.styl';
+import styles from '../../components/WorkspaceStatusLabel/index.module.css';
+import './IdeLoader.styl';
 
 export const SECTION_THEME = PageSectionVariants.light;
 
@@ -42,20 +42,19 @@ type Props = {
   workspaceId: string;
   ideUrl?: string;
   callbacks?: {
-    showAlert?: (variant: AlertVariant.success | AlertVariant.danger, title: string) => void
+    showAlert?: (variant: AlertVariant, title: string) => void
   }
 };
 
 type State = {
   alertVisible?: boolean;
   activeTabKey?: IdeLoaderTabs;
-  stepIdReached?: number;
   currentRequestError?: string;
 };
 
 class IdeLoader extends React.PureComponent<Props, State> {
-  private alert: { variant?: AlertVariant.success | AlertVariant.danger; title?: string } = {};
-  public showAlert: (variant: AlertVariant.success | AlertVariant.danger, title: string, timeDelay?: number) => void;
+  private alert: { variant?: AlertVariant; title?: string } = {};
+  public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
   private readonly hideAlert: () => void;
   private readonly handleTabClick: (event: any, tabIndex: any) => void;
 
@@ -67,7 +66,6 @@ class IdeLoader extends React.PureComponent<Props, State> {
     this.state = {
       alertVisible: false,
       activeTabKey: IdeLoaderTabs.Progress,
-      stepIdReached: 1,
       currentRequestError: '',
     };
 
@@ -82,7 +80,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     };
     // Init showAlert
     let showAlertTimer;
-    this.showAlert = (variant: AlertVariant.success | AlertVariant.danger, title: string): void => {
+    this.showAlert = (variant: AlertVariant, title: string): void => {
       this.setState({ currentRequestError: title });
       if (this.state.activeTabKey === IdeLoaderTabs.Progress) {
         return;
@@ -99,7 +97,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     this.hideAlert = (): void => this.setState({ alertVisible: false });
     // Prepare showAlert as a callback
     if (this.props.callbacks && !this.props.callbacks.showAlert) {
-      this.props.callbacks.showAlert = (variant: AlertVariant.success | AlertVariant.danger, title: string) => {
+      this.props.callbacks.showAlert = (variant: AlertVariant, title: string) => {
         this.showAlert(variant, title);
       };
     }
@@ -136,12 +134,12 @@ class IdeLoader extends React.PureComponent<Props, State> {
   }
 
   private getSteps(): WizardStep[] {
-    const { workspaceName, currentStep } = this.props;
+    const { currentStep } = this.props;
     return [
       {
         id: 1,
         name: (<React.Fragment>
-          {this.getIcon(1)}Initializing workspace
+          {this.getIcon(1)}Initializing
         </React.Fragment>),
       },
       {
@@ -152,17 +150,11 @@ class IdeLoader extends React.PureComponent<Props, State> {
         canJumpTo: currentStep >= 2,
       },
       {
-        id: 3, name: (<React.Fragment>
-          {this.getIcon(3)}Looking for runtime machine which contains IDE
-        </React.Fragment>),
-        canJumpTo: currentStep >= 3,
-      },
-      {
-        id: 4,
+        id: 3,
         name: (<React.Fragment>
           {this.getIcon(4)}Open IDE
         </React.Fragment>),
-        canJumpTo: currentStep === 4,
+        canJumpTo: currentStep === 3,
       },
     ];
   }
@@ -172,11 +164,11 @@ class IdeLoader extends React.PureComponent<Props, State> {
     const { alertVisible } = this.state;
 
     if (ideUrl) {
-      const randVal = Math.floor((Math.random() * 1000000) + 1);
       return (
         <div style={{ height: '100%' }}>
-          <iframe className='ide-page-frame' src={`${ideUrl}?uid=${randVal}`} />
-        </div>);
+          <iframe className='ide-page-frame' src={ideUrl} />
+        </div>
+      );
     }
 
     return (
@@ -190,7 +182,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
             />
           </AlertGroup>
         )}
-        <Header workspaceName={workspaceName}
+        <Header title={`Starting workspace ${workspaceName}`}
           status={hasError ? WorkspaceStatus[WorkspaceStatus.ERROR] : WorkspaceStatus[WorkspaceStatus.STARTING]} />
         <PageSection variant={SECTION_THEME} className="ide-loader-tabs">
           <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>

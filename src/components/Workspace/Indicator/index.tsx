@@ -18,7 +18,7 @@ import {
 } from '@patternfly/react-icons/dist/js/icons';
 import React from 'react';
 import { WorkspaceStatus } from '../../../services/workspaceStatus';
-import { ColorType, StoppedIcon } from '../../WorkspaceStatusLabel/WorkspaceStatusLabel';
+import { ColorType, StoppedIcon } from '../../WorkspaceStatusLabel';
 
 import styles from './Indicator.module.css';
 
@@ -46,10 +46,10 @@ class WorkspaceIndicator extends React.PureComponent<Props> {
         color = 'orange';
         return (<span className={styles.statusIndicator}><PauseCircleIcon color={color} /></span>);
       default:
-        color = 'blue';
+        color = '#0e6fe0';
         return (
           <span className={styles.statusIndicator}>
-            <InProgressIcon className={styles.rotate} color="#0e6fe0" />
+            <InProgressIcon className={styles.rotate} color={color} />
           </span>
         );
     }

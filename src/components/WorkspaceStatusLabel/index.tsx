@@ -20,9 +20,9 @@ import React from 'react';
 import { Label } from '@patternfly/react-core';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 
-import styles from './WorkspaceStatusLabel.module.css';
+import styles from './index.module.css';
 
-export type ColorType = 'blue' | 'cyan' | 'green' | 'orange' | 'purple' | 'red' | 'grey';
+export type ColorType = 'blue' | '#0e6fe0' | 'green' | 'orange' | 'red' | 'grey';
 
 export const StoppedIcon = (props: { color?: ColorType }): React.ReactElement => {
   return (<svg fill={props.color ? props.color : '#151515'} height="1em" width="1em" viewBox="0 0 16 16"

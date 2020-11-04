@@ -15,12 +15,14 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { History } from 'history';
 import { RouteComponentProps } from 'react-router';
-import { timeout } from '../services/timeout';
+import { delay } from '../services/delay';
+import { Debounce } from '../services/debounce/Debounce';
 import { AppState } from '../store';
 import * as WorkspaceStore from '../store/Workspaces';
 import IdeLoaderPage from '../pages/IdeLoader';
 import { selectAllWorkspaces, selectWorkspaceById } from '../store/Workspaces/selectors';
 import { WorkspaceStatus } from '../services/workspaceStatus';
+import { container } from '../inversify.config';
 
 type Props =
   MappedProps
@@ -37,8 +39,9 @@ type State = {
 };
 
 class IdeLoader extends React.PureComponent<Props, State> {
+  private debounce: Debounce;
   private readonly loadFactoryPageCallbacks: {
-    showAlert?: (variant: AlertVariant.success | AlertVariant.danger, title: string) => void
+    showAlert?: (variant: AlertVariant, title: string) => void
   };
 
   constructor(props: Props) {
@@ -57,8 +60,13 @@ class IdeLoader extends React.PureComponent<Props, State> {
     this.state = {
       currentStep: 1,
       namespace,
-      workspaceName
+      workspaceName,
     };
+
+    this.debounce = container.get(Debounce);
+    this.debounce.subscribe(async () => {
+      await this.initWorkspace();
+    });
   }
 
   public showErrorAlert(message: string): void {
@@ -73,32 +81,34 @@ class IdeLoader extends React.PureComponent<Props, State> {
     }
   }
 
+  public componentWillUnmount(): void {
+    this.debounce.unsubscribeAll();
+  }
+
   public async componentDidMount(): Promise<void> {
     const { allWorkspaces, requestWorkspaces } = this.props;
     if (!allWorkspaces || allWorkspaces.length === 0) {
       await requestWorkspaces();
     }
-
-    await this.initWorkspace();
+    this.debounce.setDelay(1000);
   }
 
   public async componentDidUpdate(): Promise<void> {
     const { allWorkspaces, match: { params } } = this.props;
-    const { currentStep } = this.state;
+    const { hasError } = this.state;
     const workspace = allWorkspaces.find(workspace =>
       workspace.namespace === params.namespace && workspace.devfile.metadata.name === params.workspaceName);
-    if (workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR) {
-      this.setState({
-        currentStep,
-        hasError: true,
-      });
+    if (workspace && !hasError && WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR) {
+      this.showErrorAlert('An unknown workspace error.');
       return;
     }
-    await this.initWorkspace();
+    this.debounce.setDelay(1000);
   }
 
   private async openIDE(workspaceId: string): Promise<void> {
+    this.setState({ currentStep: 3 });
     await this.props.requestWorkspace(workspaceId);
+    await delay();
     const workspace = this.props.allWorkspaces.find(workspace =>
       workspace.id === workspaceId);
     if (!workspace || !workspace.runtime) {
@@ -120,8 +130,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
       this.showErrorAlert('Don\'t know what to open, IDE url is not defined.');
       return;
     }
-    await timeout();
-    this.setState({ currentStep: 4, ideUrl });
+    this.setState({ currentStep: 3, ideUrl });
   }
 
   private async initWorkspace(): Promise<void> {
@@ -129,8 +138,13 @@ class IdeLoader extends React.PureComponent<Props, State> {
     const { namespace, workspaceName } = this.state;
 
     if (namespace !== params.namespace || workspaceName !== params.workspaceName) {
-      this.setState({ currentStep: 1, hasError: false, ideUrl: '', namespace, workspaceName });
-      await timeout();
+      this.setState({
+        currentStep: 1,
+        hasError: false,
+        ideUrl: '',
+        namespace: params.namespace,
+        workspaceName: params.workspaceName,
+      });
       return;
     } else if (this.state.currentStep > 2) {
       return;
@@ -140,21 +154,22 @@ class IdeLoader extends React.PureComponent<Props, State> {
     if (workspace) {
       this.setState({ currentStep: this.state.currentStep, workspaceId: workspace.id });
       if (this.state.currentStep === 2 && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
-        this.setState({ currentStep: 3 });
         return this.openIDE(workspace.id);
       }
     } else {
       this.showErrorAlert('Failed to find the target workspace.');
       return;
     }
-    await timeout();
-    this.setState({ currentStep: 2 });
-    if (WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPED) {
-      try {
-        await this.props.startWorkspace(`${workspace.id}`);
-      } catch (e) {
-        // this.showErrorAlert(`Workspace ${this.state.workspaceName} failed to start. ${e}`);
-        // return;
+    if (this.state.currentStep === 1) {
+      this.setState({ currentStep: 2 });
+      if (WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPED ||
+        WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR) {
+        try {
+          await this.props.startWorkspace(`${workspace.id}`);
+        } catch (e) {
+          this.showErrorAlert(`Workspace ${this.state.workspaceName} failed to start. ${e}`);
+          return;
+        }
       }
     }
   }

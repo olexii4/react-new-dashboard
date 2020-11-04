@@ -22,16 +22,16 @@ import {
   AlertActionCloseButton,
   AlertGroup,
   AlertVariant,
-  Wizard, WizardStep,
+  Wizard, WizardStep, Text,
 } from '@patternfly/react-core';
 import Header from '../../components/Header';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 import LogsTab from '../../components/LogsTab';
 
-import styles from '../../components/WorkspaceStatusLabel/WorkspaceStatusLabel.module.css';
-import './index.styl';
+import styles from '../../components/WorkspaceStatusLabel/index.module.css';
+import './FactoryLoader.styl';
 
-export const SECTION_THEME = PageSectionVariants.light;
+const SECTION_THEME = PageSectionVariants.light;
 
 export enum LoadFactoryTabs {
   Progress = 0,
@@ -45,20 +45,19 @@ type Props = {
   workspaceId: string;
   devfileLocationInfo?: string;
   callbacks?: {
-    showAlert?: (variant: AlertVariant.success | AlertVariant.danger, title: string) => void
+    showAlert?: (variant: AlertVariant, title: string) => void
   }
 };
 
 type State = {
   alertVisible?: boolean;
   activeTabKey?: LoadFactoryTabs;
-  stepIdReached?: number;
   currentRequestError?: string;
 };
 
-class loadFactory extends React.PureComponent<Props, State> {
-  private alert: { variant?: AlertVariant.success | AlertVariant.danger; title?: string } = {};
-  public showAlert: (variant: AlertVariant.success | AlertVariant.danger, title: string, timeDelay?: number) => void;
+class FactoryLoader extends React.PureComponent<Props, State> {
+  private alert: { variant?: AlertVariant; title?: string } = {};
+  public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
   private readonly hideAlert: () => void;
   private readonly handleTabClick: (event: any, tabIndex: any) => void;
 
@@ -70,7 +69,6 @@ class loadFactory extends React.PureComponent<Props, State> {
     this.state = {
       alertVisible: false,
       activeTabKey: LoadFactoryTabs.Progress,
-      stepIdReached: 1,
       currentRequestError: '',
     };
 
@@ -85,7 +83,7 @@ class loadFactory extends React.PureComponent<Props, State> {
     };
     // Init showAlert
     let showAlertTimer;
-    this.showAlert = (variant: AlertVariant.success | AlertVariant.danger, title: string): void => {
+    this.showAlert = (variant: AlertVariant, title: string): void => {
       this.setState({ currentRequestError: title });
       if (this.state.activeTabKey === LoadFactoryTabs.Progress) {
         return;
@@ -102,7 +100,7 @@ class loadFactory extends React.PureComponent<Props, State> {
     this.hideAlert = (): void => this.setState({ alertVisible: false });
     // Prepare showAlert as a callback
     if (this.props.callbacks && !this.props.callbacks.showAlert) {
-      this.props.callbacks.showAlert = (variant: AlertVariant.success | AlertVariant.danger, title: string) => {
+      this.props.callbacks.showAlert = (variant: AlertVariant, title: string) => {
         this.showAlert(variant, title);
       };
     }
@@ -144,7 +142,7 @@ class loadFactory extends React.PureComponent<Props, State> {
       {
         id: 1,
         name: (<React.Fragment>
-          {this.getIcon(1, 'wizard-icon')}Initializing workspace
+          {this.getIcon(1, 'wizard-icon')}Initializing
         </React.Fragment>),
       },
       {
@@ -160,7 +158,7 @@ class loadFactory extends React.PureComponent<Props, State> {
                   Found {devfileLocationInfo}, applying it
                 </React.Fragment>) :
                 (<React.Fragment>
-                  File devfile.yaml is not founded in repository root. Default environment will be applied
+                  File devfile.yaml is not found in repository root. Default environment will be applied
                 </React.Fragment>)
               }</React.Fragment>),
             canJumpTo: currentStep >= 3,
@@ -205,7 +203,7 @@ class loadFactory extends React.PureComponent<Props, State> {
             />
           </AlertGroup>
         )}
-        <Header workspaceName={workspaceName}
+        <Header title={`Starting workspace ${workspaceName}`}
           status={hasError ? WorkspaceStatus[WorkspaceStatus.ERROR] : WorkspaceStatus[WorkspaceStatus.STARTING]} />
         <PageSection variant={SECTION_THEME} className="load-factory-tabs">
           <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
@@ -237,4 +235,4 @@ class loadFactory extends React.PureComponent<Props, State> {
   }
 }
 
-export default loadFactory;
+export default FactoryLoader;

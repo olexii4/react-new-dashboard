@@ -31,7 +31,7 @@ type Props =
 
 class WorkspaceDetails extends React.PureComponent<Props> {
   workspaceDetailsPageRef: React.RefObject<Details>;
-  private showAlert: (variant: AlertVariant.success | AlertVariant.danger, title: string, timeDelay?: number) => void;
+  private showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
 
   constructor(props: Props) {
     super(props);
@@ -57,7 +57,7 @@ class WorkspaceDetails extends React.PureComponent<Props> {
       this.props.requestWorkspaces();
     }
     const showAlert = this.workspaceDetailsPageRef.current?.showAlert;
-    this.showAlert = (variant: AlertVariant.success | AlertVariant.danger, title: string, timeDelay?: number) => {
+    this.showAlert = (variant: AlertVariant, title: string, timeDelay?: number) => {
       if (showAlert) {
         showAlert(variant, title, timeDelay);
       } else {

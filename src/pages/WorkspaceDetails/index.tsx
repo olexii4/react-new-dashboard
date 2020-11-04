@@ -60,8 +60,8 @@ type State = {
 };
 
 export class WorkspaceDetails extends React.PureComponent<Props, State> {
-  private alert: { variant?: AlertVariant.success | AlertVariant.danger; title?: string } = {};
-  public showAlert: (variant: AlertVariant.success | AlertVariant.danger, title: string, timeDelay?: number) => void;
+  private alert: { variant?: AlertVariant; title?: string } = {};
+  public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
   private readonly hideAlert: () => void;
   private readonly handleTabClick: (event: any, tabIndex: any) => void;
 
@@ -103,7 +103,7 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
       this.setState({ hasDiscardChangesMessage: false, clickedTabIndex: tabIndex, activeTabKey: tabIndex });
     };
     let showAlertTimer;
-    this.showAlert = (variant: AlertVariant.success | AlertVariant.danger, title: string, timeDelay?: number): void => {
+    this.showAlert = (variant: AlertVariant, title: string, timeDelay?: number): void => {
       this.alert = { variant, title };
       this.setState({ alertVisible: true });
       if (showAlertTimer) {
@@ -185,9 +185,9 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
                 workspace={workspace}
                 onSave={workspace => this.onSave(workspace)} />
             </Tab>
-            <Tab eventKey={WorkspaceDetailsTabs.Logs} title={WorkspaceDetailsTabs[WorkspaceDetailsTabs.Logs]}>
-              <LogsTab workspaceId={workspace.id} />
-            </Tab>
+            {/* <Tab eventKey={WorkspaceDetailsTabs.Logs} title={WorkspaceDetailsTabs[WorkspaceDetailsTabs.Logs]}>*/}
+            {/*  <LogsTab workspaceId={workspace.id} />*/}
+            {/* </Tab>*/}
           </Tabs>
           <Modal variant={ModalVariant.small} isOpen={this.state.hasDiscardChangesMessage}
             title="Unsaved Changes"

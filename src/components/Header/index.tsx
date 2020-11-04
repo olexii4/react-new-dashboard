@@ -11,28 +11,30 @@
  */
 
 import React from 'react';
-import { PageSection, Text, TextContent } from '@patternfly/react-core';
-import { SECTION_THEME } from '../../pages/loadFactory';
-import WorkspaceStatusLabel from '../WorkspaceStatusLabel/WorkspaceStatusLabel';
+import { PageSection, PageSectionVariants, Text, TextContent, TextVariants } from '@patternfly/react-core';
+import WorkspaceStatusLabel from '../WorkspaceStatusLabel';
 
-import styles from './Header.module.css';
+import styles from './index.module.css';
+
+const SECTION_THEME = PageSectionVariants.light;
 
 type Props = {
-  status: string | undefined;
-  workspaceName: string;
+  status?: string;
+  title: string;
 };
 
 class Header extends React.PureComponent<Props> {
 
   public render(): React.ReactElement {
-    const { workspaceName, status } = this.props;
+    const { title, status } = this.props;
 
     return (
-      <PageSection variant={SECTION_THEME} className={styles.loadFactoryHeader}>
+      <PageSection variant={SECTION_THEME} className={styles.header}>
         <TextContent>
-          <Text component='h1'>
-            Starting workspace {workspaceName}
-            <WorkspaceStatusLabel status={status} />
+          <Text component={TextVariants.h1}>
+            {title}{status && (
+              <WorkspaceStatusLabel status={status} />
+            )}
           </Text>
         </TextContent>
       </PageSection>
