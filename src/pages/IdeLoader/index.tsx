@@ -134,7 +134,6 @@ class IdeLoader extends React.PureComponent<Props, State> {
   }
 
   private getSteps(): WizardStep[] {
-    const { currentStep } = this.props;
     return [
       {
         id: 1,
@@ -147,14 +146,12 @@ class IdeLoader extends React.PureComponent<Props, State> {
         name: (<React.Fragment>
           {this.getIcon(2)}Waiting for workspace to start
         </React.Fragment>),
-        canJumpTo: currentStep >= 2,
       },
       {
         id: 3,
         name: (<React.Fragment>
-          {this.getIcon(4)}Open IDE
+          {this.getIcon(3)}Open IDE
         </React.Fragment>),
-        canJumpTo: currentStep === 3,
       },
     ];
   }

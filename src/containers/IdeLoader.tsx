@@ -107,8 +107,12 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
   private async openIDE(workspaceId: string): Promise<void> {
     this.setState({ currentStep: 3 });
-    await this.props.requestWorkspace(workspaceId);
-    await delay();
+    try {
+      await this.props.requestWorkspace(workspaceId);
+    } catch (e) {
+      this.showErrorAlert(`Getting workspace detail data failed. ${e}`);
+      return;
+    }
     const workspace = this.props.allWorkspaces.find(workspace =>
       workspace.id === workspaceId);
     if (!workspace || !workspace.runtime) {
@@ -153,7 +157,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
       workspace.namespace === params.namespace && workspace.devfile.metadata.name === params.workspaceName);
     if (workspace) {
       this.setState({ currentStep: this.state.currentStep, workspaceId: workspace.id });
-      if (this.state.currentStep === 2 && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
+      if ((workspace.runtime || this.state.currentStep === 2) && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
         return this.openIDE(workspace.id);
       }
     } else {

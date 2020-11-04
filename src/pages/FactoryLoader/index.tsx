@@ -161,14 +161,12 @@ class FactoryLoader extends React.PureComponent<Props, State> {
                   File devfile.yaml is not found in repository root. Default environment will be applied
                 </React.Fragment>)
               }</React.Fragment>),
-            canJumpTo: currentStep >= 3,
           },
           {
             id: 4,
             name: (<React.Fragment>
               {this.getIcon(4)}Creating a new workspace{` ${workspaceName}`}
             </React.Fragment>),
-            canJumpTo: currentStep >= 4,
           },
         ],
       },
@@ -176,14 +174,12 @@ class FactoryLoader extends React.PureComponent<Props, State> {
         id: 5, name: (<React.Fragment>
           {this.getIcon(5, 'wizard-icon')}Waiting for workspace to start
         </React.Fragment>),
-        canJumpTo: currentStep >= 5,
       },
       {
         id: 6,
         name: (<React.Fragment>
           {this.getIcon(6, 'wizard-icon')}Open IDE
         </React.Fragment>),
-        canJumpTo: currentStep === 6,
       },
     ];
   }
