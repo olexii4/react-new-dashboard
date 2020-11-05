@@ -21,7 +21,5 @@ COPY . /dashboard-next/
 RUN yarn compile
 
 FROM ${CHE_DASHBOARD_IMAGE}:${CHE_DASHBOARD_VERSION}
-# TODO Rework Che Server to copy the right folder https://github.com/eclipse/che/blob/master/dockerfiles/che/Dockerfile#L31
+RUN mkdir -p /usr/local/apache2/htdocs/dashboard/next
 COPY --from=builder /dashboard-next/build /usr/local/apache2/htdocs/dashboard/next
-# TODO Make sure we should remove it
-#RUN sed -i -r -e 's#<base href="/">#<base href="/dashboard/next/"#g'  /usr/local/apache2/htdocs/dashboard/next/index.html

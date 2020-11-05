@@ -18,8 +18,7 @@ jobs:
 
     runs-on: ubuntu-18.04
     env:
-      # Try to find better name to avoid confusion with two next words
-      IMAGE_FULL: quay.io/eclipse/che-dashboard:next-next
+      IMAGE_FULL: quay.io/eclipse/che-dashboard:next-react
 
     steps:
     - name: Checkout che-dashboard-next source code
