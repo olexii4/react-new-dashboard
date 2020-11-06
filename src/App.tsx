@@ -10,6 +10,7 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
+import { Spinner, spinnerSize } from '@patternfly/react-core';
 import React, { Suspense } from 'react';
 import { Redirect, Switch } from 'react-router';
 import { ConnectedRouter } from 'connected-react-router';
@@ -20,8 +21,11 @@ import Layout from './Layout';
 
 import './app.styl';
 
-// todo improve fallback
-const fallback = <div>loading....</div>;
+const fallback = (
+  <div style={{ height: '100%', textAlign: 'center', opacity: '0.5' }}>
+    <Spinner size={spinnerSize.xl} style={{ top: 'calc(50% - 18px)' }} />
+  </div>
+);
 
 function AppComponent(props: { history: History }): React.ReactElement {
   return (

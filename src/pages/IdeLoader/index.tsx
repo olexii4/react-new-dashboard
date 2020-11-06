@@ -15,7 +15,11 @@ import {
   AlertActionCloseButton,
   AlertGroup,
   AlertVariant,
-  PageSection, PageSectionVariants, Tab, Tabs, Wizard,
+  PageSection,
+  PageSectionVariants,
+  Tab,
+  Tabs,
+  Wizard,
   WizardStep,
 } from '@patternfly/react-core';
 import { CheckCircleIcon } from '@patternfly/react-icons';
@@ -48,6 +52,7 @@ type Props = {
 };
 
 type State = {
+  ideUrl?: string;
   alertVisible?: boolean;
   activeTabKey?: IdeLoaderTabs;
   currentRequestError?: string;
@@ -105,7 +110,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
   }
 
   public componentDidUpdate(): void {
-    const { currentStep, hasError } = this.props;
+    const { currentStep, hasError, ideUrl } = this.props;
 
     const current = this.wizardRef.current;
     if (current && current.state && current.state.currentStep !== currentStep) {
@@ -114,6 +119,37 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
     if (!hasError && this.state.currentRequestError) {
       this.setState({ currentRequestError: '' });
+    }
+
+    if (ideUrl && this.state.ideUrl !== ideUrl) {
+      this.setState({ ideUrl });
+      this.updateIdeIframe(ideUrl);
+    }
+  }
+
+  private updateIdeIframe(url: string): void {
+    const element = document.getElementById('ide-iframe');
+    if (element && element['contentWindow']) {
+      const keycloak = window['_keycloak'] ? JSON.stringify(window['_keycloak']) : '';
+      if (!keycloak) {
+        element['src'] = url;
+        return;
+      }
+      const doc = element['contentWindow'].document;
+      doc.open();
+      doc.write(`<!DOCTYPE html>
+                 <html lang="en">
+                 <head>
+                   <meta charset="UTF-8">
+                 </head>
+                 <body>
+                   <script>
+                     window._keycloak = JSON.parse('${keycloak}');
+                     setTimeout(() => window.location.href = '${url}', 100);
+                   </script>
+                 </body>
+                 </html>`);
+      doc.close();
     }
   }
 
@@ -164,7 +200,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     if (ideUrl) {
       return (
         <div style={{ height: '100%' }}>
-          <iframe className='ide-page-frame' src={ideUrl} />
+          <iframe id="ide-iframe" className="ide-page-frame" />
         </div>
       );
     }
@@ -181,7 +217,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
           </AlertGroup>
         )}
         <Header title={`Starting workspace ${workspaceName}`}
-          status={hasError ? WorkspaceStatus[WorkspaceStatus.ERROR] : WorkspaceStatus[WorkspaceStatus.STARTING]} />
+          status={WorkspaceStatus[hasError ? WorkspaceStatus.ERROR : WorkspaceStatus.STARTING]} />
         <PageSection variant={SECTION_THEME} className="ide-loader-tabs">
           <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
             <Tab eventKey={IdeLoaderTabs.Progress} title={IdeLoaderTabs[IdeLoaderTabs.Progress]}>
