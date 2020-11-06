@@ -114,7 +114,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     const { currentStep, hasError, ideUrl } = this.props;
 
     const current = this.wizardRef.current;
-    if (current && current.state && current.state.currentStep !== currentStep) {
+    if (current && current.state && current.state.currentStep !== currentStep && !hasError) {
       current.state.currentStep = currentStep;
     }
 
@@ -153,53 +153,78 @@ class IdeLoader extends React.PureComponent<Props, State> {
                  </html>`);
       doc.close();
     } else if (repeat) {
-      await delay(1000);
+      await delay(500);
       return this.updateIdeIframe(url, --repeat);
+    } else {
+      const message = 'Cannot find IDE iframe element.';
+      this.showAlert(AlertVariant.warning, message);
+      console.error(message);
     }
   }
 
-  private getIcon(step: LoadIdeSteps): React.ReactNode {
+  private getIcon(step: LoadIdeSteps, className = ''): React.ReactNode {
     const { currentStep, hasError } = this.props;
     if (currentStep > step) {
       return (<React.Fragment>
-        <CheckCircleIcon className="wizard-icon" color="green" />
+        <CheckCircleIcon className={className} color="green" />
       </React.Fragment>);
     } else if (currentStep === step) {
       if (hasError) {
-        return <ExclamationCircleIcon className="wizard-icon" color="red" />;
+        return <ExclamationCircleIcon className={className} color="red" />;
       }
       return (<React.Fragment>
-        <InProgressIcon className={`${styles.rotate} wizard-icon`} color="blue" />
+        <InProgressIcon className={`${styles.rotate} ${className}`} color="blue" />
       </React.Fragment>);
     }
     return '';
   }
 
   private getSteps(): WizardStep[] {
+    const { currentStep, hasError } = this.props;
+
+    const getTitle = (step: LoadIdeSteps, title: string, iconClass?: string) => {
+      let className = '';
+      if (currentStep === step) {
+        className = hasError ? 'error' : 'progress';
+      }
+      return (
+        <React.Fragment>
+          {this.getIcon(step, iconClass)}
+          <span className={className}>{title}</span>
+        </React.Fragment>
+      );
+    };
+
     return [
       {
         id: LoadIdeSteps.INITIALIZING,
-        name: (<React.Fragment>
-          {this.getIcon(LoadIdeSteps.INITIALIZING)}Initializing
-        </React.Fragment>),
+        name: getTitle(
+          LoadIdeSteps.INITIALIZING,
+          'Initializing',
+          'wizard-icon'),
+        canJumpTo: currentStep >= LoadIdeSteps.INITIALIZING,
       },
       {
         id: LoadIdeSteps.START_WORKSPACE,
-        name: (<React.Fragment>
-          {this.getIcon(LoadIdeSteps.START_WORKSPACE)}Waiting for workspace to start
-        </React.Fragment>),
+        name: getTitle(
+          LoadIdeSteps.START_WORKSPACE,
+          'Waiting for workspace to start',
+          'wizard-icon'),
+        canJumpTo: currentStep >= LoadIdeSteps.START_WORKSPACE,
       },
       {
         id: LoadIdeSteps.OPEN_IDE,
-        name: (<React.Fragment>
-          {this.getIcon(LoadIdeSteps.OPEN_IDE)}Open IDE
-        </React.Fragment>),
+        name: getTitle(
+          LoadIdeSteps.OPEN_IDE,
+          'Open IDE',
+          'wizard-icon'),
+        canJumpTo: currentStep >= LoadIdeSteps.OPEN_IDE,
       },
     ];
   }
 
   public render(): React.ReactElement {
-    const { workspaceName, workspaceId, ideUrl, hasError } = this.props;
+    const { workspaceName, workspaceId, ideUrl, hasError, currentStep } = this.props;
     const { alertVisible } = this.state;
 
     if (ideUrl) {
@@ -240,7 +265,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
                 ref={this.wizardRef}
                 footer={('')}
                 height={500}
-                startAtStep={0}
+                startAtStep={currentStep}
               />
             </Tab>
             <Tab eventKey={IdeLoaderTabs.Logs} title={IdeLoaderTabs[IdeLoaderTabs.Logs]}>

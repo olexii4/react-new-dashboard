@@ -29,12 +29,12 @@ type Props =
   & { history: History };
 
 export enum LoadFactorySteps {
-  INITIALIZING = 1,
-  LOOKING_FOR_DEVFILE = 2,
-  APPLYING_DEVFILE = 3,
-  CREATE_WORKSPACE = 4,
-  START_WORKSPACE = 5,
-  OPEN_IDE = 6
+  INITIALIZING = 0,
+  LOOKING_FOR_DEVFILE,
+  APPLYING_DEVFILE,
+  CREATE_WORKSPACE,
+  START_WORKSPACE,
+  OPEN_IDE
 }
 
 type State = {

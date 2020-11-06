@@ -30,8 +30,8 @@ type Props =
 
 export enum LoadIdeSteps {
   INITIALIZING = 1,
-  START_WORKSPACE = 2,
-  OPEN_IDE = 3
+  START_WORKSPACE,
+  OPEN_IDE
 }
 
 type State = {

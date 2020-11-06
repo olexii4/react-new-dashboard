@@ -26,6 +26,7 @@ import {
 } from '@patternfly/react-core';
 import Header from '../../components/Header';
 import { LoadFactorySteps } from '../../containers/FactoryLoader';
+import { LoadIdeSteps } from '../../containers/IdeLoader';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 import LogsTab from '../../components/LogsTab';
 
@@ -111,7 +112,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
     const { currentStep, hasError } = this.props;
 
     const current = this.wizardRef.current;
-    if (current && current.state && current.state.currentStep !== currentStep) {
+    if (current && current.state && current.state.currentStep !== currentStep && !hasError) {
       current.state.currentStep = currentStep;
     }
 
@@ -138,55 +139,76 @@ class FactoryLoader extends React.PureComponent<Props, State> {
   }
 
   private getSteps(): WizardStep[] {
-    const { workspaceName, devfileLocationInfo } = this.props;
+    const { currentStep, workspaceName, devfileLocationInfo, hasError } = this.props;
+
+    const getTitle = (step: LoadFactorySteps, title: string, iconClass?: string) => {
+      let className = '';
+      if (currentStep === step) {
+        className = hasError ? 'error' : 'progress';
+      }
+      return (
+        <React.Fragment>
+          {this.getIcon(step, iconClass)}
+          <span className={className}>{title}</span>
+        </React.Fragment>
+      );
+    };
+
     return [
       {
         id: LoadFactorySteps.INITIALIZING,
-        name: (<React.Fragment>
-          {this.getIcon(LoadFactorySteps.INITIALIZING, 'wizard-icon')}Initializing
-        </React.Fragment>),
+        name: getTitle(
+          LoadFactorySteps.INITIALIZING,
+          'Initializing',
+          'wizard-icon'),
+        canJumpTo: currentStep >= LoadFactorySteps.INITIALIZING,
       },
       {
-        name: (<React.Fragment>
-          {this.getIcon(LoadFactorySteps.LOOKING_FOR_DEVFILE, 'wizard-icon')}Looking for devfile
-        </React.Fragment>),
+        name: getTitle(
+          LoadFactorySteps.LOOKING_FOR_DEVFILE,
+          'Looking for devfile',
+          'wizard-icon'),
         steps: [
           {
             id: LoadFactorySteps.APPLYING_DEVFILE,
-            name: (<React.Fragment>{this.getIcon(LoadFactorySteps.APPLYING_DEVFILE)}
-              {devfileLocationInfo ?
-                (<React.Fragment>
-                  Found {devfileLocationInfo}, applying it
-                </React.Fragment>) :
-                (<React.Fragment>
-                  File devfile.yaml is not found in repository root. Default environment will be applied
-                </React.Fragment>)
-              }</React.Fragment>),
+            name: getTitle(
+              LoadFactorySteps.APPLYING_DEVFILE,
+              devfileLocationInfo ?
+                `Found ${devfileLocationInfo}, applying it` :
+                'File devfile.yaml is not found in repository root. Default environment will be applied'
+            ),
+            canJumpTo: currentStep >= LoadFactorySteps.APPLYING_DEVFILE,
           },
           {
             id: LoadFactorySteps.CREATE_WORKSPACE,
-            name: (<React.Fragment>
-              {this.getIcon(LoadFactorySteps.CREATE_WORKSPACE)}Creating a new workspace{` ${workspaceName}`}
-            </React.Fragment>),
+            name: getTitle(
+              LoadFactorySteps.CREATE_WORKSPACE,
+              `Creating a new workspace ${workspaceName}`),
+            canJumpTo: currentStep >= LoadFactorySteps.CREATE_WORKSPACE,
           },
         ],
       },
       {
-        id: LoadFactorySteps.START_WORKSPACE, name: (<React.Fragment>
-          {this.getIcon(LoadFactorySteps.START_WORKSPACE, 'wizard-icon')}Waiting for workspace to start
-        </React.Fragment>),
+        id: LoadFactorySteps.START_WORKSPACE,
+        name: getTitle(
+          LoadFactorySteps.START_WORKSPACE,
+          'Waiting for workspace to start',
+          'wizard-icon'),
+        canJumpTo: currentStep >= LoadFactorySteps.START_WORKSPACE,
       },
       {
         id: LoadFactorySteps.OPEN_IDE,
-        name: (<React.Fragment>
-          {this.getIcon(LoadFactorySteps.OPEN_IDE, 'wizard-icon')}Open IDE
-        </React.Fragment>),
+        name: getTitle(
+          LoadFactorySteps.OPEN_IDE,
+          'Open IDE',
+          'wizard-icon'),
+        canJumpTo: currentStep >= LoadFactorySteps.OPEN_IDE,
       },
     ];
   }
 
   public render(): React.ReactElement {
-    const { workspaceName, workspaceId, hasError } = this.props;
+    const { workspaceName, workspaceId, hasError, currentStep } = this.props;
     const { alertVisible } = this.state;
 
     return (
@@ -219,7 +241,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
                 ref={this.wizardRef}
                 footer={('')}
                 height={500}
-                startAtStep={0}
+                startAtStep={currentStep}
               />
             </Tab>
             <Tab eventKey={LoadFactoryTabs.Logs} title={LoadFactoryTabs[LoadFactoryTabs.Logs]}>
