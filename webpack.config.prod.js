@@ -44,6 +44,7 @@ module.exports = merge(common, {
     new CopyPlugin({
       patterns: [
         { from: path.join(__dirname, 'assets'), to: 'assets' },
+        { from: path.join(__dirname, 'static'), to: 'static' },
       ]
     }),
     new StylelintPlugin({

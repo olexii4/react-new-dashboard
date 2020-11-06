@@ -28,6 +28,7 @@ import React, { RefObject } from 'react';
 import Header from '../../components/Header';
 import LogsTab from '../../components/LogsTab';
 import { LoadIdeSteps } from '../../containers/IdeLoader';
+import { delay } from '../../services/delay';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 
 import styles from '../../components/WorkspaceStatusLabel/index.module.css';
@@ -109,7 +110,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     }
   }
 
-  public componentDidUpdate(): void {
+  public async componentDidUpdate(): Promise<void> {
     const { currentStep, hasError, ideUrl } = this.props;
 
     const current = this.wizardRef.current;
@@ -121,13 +122,16 @@ class IdeLoader extends React.PureComponent<Props, State> {
       this.setState({ currentRequestError: '' });
     }
 
-    if (ideUrl && this.state.ideUrl !== ideUrl) {
+    if (this.state.ideUrl !== ideUrl) {
       this.setState({ ideUrl });
-      this.updateIdeIframe(ideUrl);
+      await this.updateIdeIframe(ideUrl, 10);
     }
   }
 
-  private updateIdeIframe(url: string): void {
+  private async updateIdeIframe(url?: string, repeat?: number): Promise<void> {
+    if (!url) {
+      return;
+    }
     const element = document.getElementById('ide-iframe');
     if (element && element['contentWindow']) {
       const keycloak = window['_keycloak'] ? JSON.stringify(window['_keycloak']) : '';
@@ -139,17 +143,18 @@ class IdeLoader extends React.PureComponent<Props, State> {
       doc.open();
       doc.write(`<!DOCTYPE html>
                  <html lang="en">
-                 <head>
-                   <meta charset="UTF-8">
-                 </head>
-                 <body>
+                 <head><meta charset="UTF-8"></head>
+                 <body style="background-color: #151515;">
                    <script>
                      window._keycloak = JSON.parse('${keycloak}');
-                     setTimeout(() => window.location.href = '${url}', 100);
+                     window.location.href = '${url}';
                    </script>
                  </body>
                  </html>`);
       doc.close();
+    } else if (repeat) {
+      await delay(1000);
+      return this.updateIdeIframe(url, --repeat);
     }
   }
 
@@ -200,7 +205,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     if (ideUrl) {
       return (
         <div style={{ height: '100%' }}>
-          <iframe id="ide-iframe" className="ide-page-frame" />
+          <iframe id="ide-iframe" className="ide-page-frame" src="/static/loader.html" />
         </div>
       );
     }

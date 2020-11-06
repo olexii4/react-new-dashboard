@@ -10,6 +10,7 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
+const CopyPlugin = require('copy-webpack-plugin');
 const merge = require('webpack-merge');
 const path = require('path');
 const webpack = require('webpack');
@@ -57,6 +58,11 @@ module.exports = env => {
         files: '**/*.css',
         lintDirtyModulesOnly: true,
         emitWarning: true,
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: path.join(__dirname, 'static'), to: 'static' },
+        ]
       }),
     ],
     optimization: {
