@@ -110,6 +110,14 @@ class IdeLoader extends React.PureComponent<Props, State> {
     }
   }
 
+  public componentDidMount(): void {
+    const { ideUrl } = this.props;
+    if (ideUrl) {
+      this.setState({ ideUrl });
+      this.updateIdeIframe(ideUrl, 10);
+    }
+  }
+
   public async componentDidUpdate(): Promise<void> {
     const { currentStep, hasError, ideUrl } = this.props;
 
@@ -124,14 +132,13 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
     if (this.state.ideUrl !== ideUrl) {
       this.setState({ ideUrl });
-      await this.updateIdeIframe(ideUrl, 10);
+      if (ideUrl) {
+        await this.updateIdeIframe(ideUrl, 10);
+      }
     }
   }
 
   private async updateIdeIframe(url?: string, repeat?: number): Promise<void> {
-    if (!url) {
-      return;
-    }
     const element = document.getElementById('ide-iframe');
     if (element && element['contentWindow']) {
       const keycloak = window['_keycloak'] ? JSON.stringify(window['_keycloak']) : '';
@@ -144,7 +151,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
       doc.write(`<!DOCTYPE html>
                  <html lang="en">
                  <head><meta charset="UTF-8"></head>
-                 <body style="background-color: #151515;">
+                 <body>
                    <script>
                      window._keycloak = JSON.parse('${keycloak}');
                      window.location.href = '${url}';
@@ -229,8 +236,8 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
     if (ideUrl) {
       return (
-        <div style={{ height: '100%' }}>
-          <iframe id="ide-iframe" className="ide-page-frame" src="/static/loader.html" />
+        <div className="ide-iframe-page">
+          <iframe id="ide-iframe" src="/static/loader.html" />
         </div>
       );
     }
