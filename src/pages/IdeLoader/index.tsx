@@ -54,12 +54,14 @@ type Props = {
 
 type State = {
   ideUrl?: string;
+  loaderVisible?: boolean;
   alertVisible?: boolean;
   activeTabKey?: IdeLoaderTabs;
   currentRequestError?: string;
 };
 
 class IdeLoader extends React.PureComponent<Props, State> {
+  private loaderTimer;
   private alert: { variant?: AlertVariant; title?: string } = {};
   public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
   private readonly hideAlert: () => void;
@@ -110,12 +112,26 @@ class IdeLoader extends React.PureComponent<Props, State> {
     }
   }
 
-  public componentDidMount(): void {
-    const { ideUrl } = this.props;
-    if (ideUrl) {
-      this.setState({ ideUrl });
-      this.updateIdeIframe(ideUrl, 10);
+  private async handleMessage(event: MessageEvent): Promise<void> {
+    const { data } = event;
+    if (data === 'hide-navbar' && this.state.loaderVisible) {
+      if (this.loaderTimer) {
+        clearTimeout(this.loaderTimer);
+      }
+      await delay(150);
+      this.setState({ loaderVisible: false });
     }
+  }
+
+  public componentDidMount(): void {
+    window.addEventListener('message', event => this.handleMessage(event), false);
+    if (this.props.ideUrl) {
+      this.setState({ ideUrl: this.props.ideUrl });
+    }
+  }
+
+  public componentWillUnmount(): void {
+    window.removeEventListener('message', event => this.handleMessage(event), false);
   }
 
   public async componentDidUpdate(): Promise<void> {
@@ -133,12 +149,25 @@ class IdeLoader extends React.PureComponent<Props, State> {
     if (this.state.ideUrl !== ideUrl) {
       this.setState({ ideUrl });
       if (ideUrl) {
+        this.setState({ loaderVisible: true });
+        if (this.loaderTimer) {
+          clearTimeout(this.loaderTimer);
+        }
+        this.loaderTimer = setTimeout(() => {
+          // todo improve this temporary solution for the debugging session
+          if (window.location.origin.includes('://localhost')) {
+            window.location.href = ideUrl;
+          }
+          if (this.state.loaderVisible) {
+            this.setState({ loaderVisible: false });
+          }
+        }, 10000);
         await this.updateIdeIframe(ideUrl, 10);
       }
     }
   }
 
-  private async updateIdeIframe(url?: string, repeat?: number): Promise<void> {
+  private async updateIdeIframe(url: string, repeat?: number): Promise<void> {
     const element = document.getElementById('ide-iframe');
     if (element && element['contentWindow']) {
       const keycloak = window['_keycloak'] ? JSON.stringify(window['_keycloak']) : '';
@@ -232,11 +261,18 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
   public render(): React.ReactElement {
     const { workspaceName, workspaceId, ideUrl, hasError, currentStep } = this.props;
-    const { alertVisible } = this.state;
+    const { alertVisible, loaderVisible } = this.state;
 
     if (ideUrl) {
       return (
         <div className="ide-iframe-page">
+          {loaderVisible && (
+            <div className="main-page-loader">
+              <div className="ide-page-loader-content">
+                <img src="/assets/branding/loader.svg" />
+              </div>
+            </div>
+          )}
           <iframe id="ide-iframe" src="/static/loader.html" />
         </div>
       );
