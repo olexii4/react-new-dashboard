@@ -294,7 +294,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
         )}
         <Header title={`Starting workspace ${workspaceName}`}
           status={WorkspaceStatus[hasError ? WorkspaceStatus.ERROR : WorkspaceStatus.STARTING]} />
-        <PageSection variant={SECTION_THEME} className="ide-loader-tabs">
+        <PageSection variant={SECTION_THEME}>
           <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
             <Tab eventKey={IdeLoaderTabs.Progress} title={IdeLoaderTabs[IdeLoaderTabs.Progress]}>
               {(this.state.currentRequestError) && (

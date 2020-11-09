@@ -11,6 +11,12 @@
  */
 
 import { FileIcon } from '@patternfly/react-icons';
+import {
+  Title,
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateBody
+} from '@patternfly/react-core';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
@@ -72,11 +78,15 @@ export class LogsTab extends React.PureComponent<Props, State> {
 
     if (isStopped) {
       return (
-        <div className={styles.emptyState}>
-          <FileIcon />
-          <h1>No Logs to display</h1>
-          <small>Logs will be displayed in a running workspace.</small>
-        </div>
+        <EmptyState style={{ backgroundColor: '#f1f1f1' }}>
+          <EmptyStateIcon icon={FileIcon} />
+          <Title headingLevel="h4" size="lg">
+            No Logs to display
+          </Title>
+          <EmptyStateBody>
+            Logs will be displayed in a running workspace.
+          </EmptyStateBody>
+        </EmptyState>
       );
     }
 

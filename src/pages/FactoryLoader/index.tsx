@@ -223,7 +223,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
         )}
         <Header title={`Starting workspace ${workspaceName}`}
           status={hasError ? WorkspaceStatus[WorkspaceStatus.ERROR] : WorkspaceStatus[WorkspaceStatus.STARTING]} />
-        <PageSection variant={SECTION_THEME} className="load-factory-tabs">
+        <PageSection variant={SECTION_THEME}>
           <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
             <Tab eventKey={LoadFactoryTabs.Progress} title={LoadFactoryTabs[LoadFactoryTabs.Progress]}>
               {(this.state.currentRequestError) && (
