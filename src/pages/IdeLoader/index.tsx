@@ -61,7 +61,7 @@ type State = {
 };
 
 class IdeLoader extends React.PureComponent<Props, State> {
-  private loaderTimer: number;
+  private loaderTimer;
   private alert: { variant?: AlertVariant; title?: string } = {};
   private readonly hideAlert: () => void;
   private readonly handleTabClick: (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => void;

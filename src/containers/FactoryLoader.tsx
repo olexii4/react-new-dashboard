@@ -105,7 +105,10 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
       this.props.clearWorkspaceId();
     }
     if (!search) {
-      this.showErrorAlert('Failed to find search params.');
+      this.showErrorAlert(
+        `Repository/Devfile URL is missing. Please specify it via url query param:
+         ${window.location.origin}${window.location.pathname}#/load-factory?url= .`,
+      );
       return;
     } else {
       this.setState({ search, hasError: false });
@@ -129,7 +132,10 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     attrs.stackName = `${location}${params}`;
     this.setState({ currentStep: LoadFactorySteps.LOOKING_FOR_DEVFILE });
     if (!location) {
-      this.showErrorAlert('Failed to find a repository URL.');
+      this.showErrorAlert(
+        `Repository/Devfile URL is missing. Please specify it via url query param:
+         ${window.location.origin}${window.location.pathname}#/load-factory?url= .`,
+      );
       return;
     }
     this.setState({ currentStep: LoadFactorySteps.APPLYING_DEVFILE, location });
