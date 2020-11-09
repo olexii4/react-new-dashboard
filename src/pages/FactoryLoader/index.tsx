@@ -22,11 +22,10 @@ import {
   AlertActionCloseButton,
   AlertGroup,
   AlertVariant,
-  Wizard, WizardStep, Text,
+  Wizard, WizardStep,
 } from '@patternfly/react-core';
 import Header from '../../components/Header';
 import { LoadFactorySteps } from '../../containers/FactoryLoader';
-import { LoadIdeSteps } from '../../containers/IdeLoader';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 import LogsTab from '../../components/LogsTab';
 
