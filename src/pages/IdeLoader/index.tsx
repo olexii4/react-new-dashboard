@@ -212,7 +212,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
         return <ExclamationCircleIcon className={className} color="red" />;
       }
       return (<React.Fragment>
-        <InProgressIcon className={`${styles.rotate} ${className}`} color="blue" />
+        <InProgressIcon className={`${styles.rotate} ${className}`} color="#0e6fe0" />
       </React.Fragment>);
     }
     return '';
@@ -272,11 +272,11 @@ class IdeLoader extends React.PureComponent<Props, State> {
           {loaderVisible && (
             <div className="main-page-loader">
               <div className="ide-page-loader-content">
-                <img src="../../../assets/branding/loader.svg" />
+                <img src="./assets/branding/loader.svg" />
               </div>
             </div>
           )}
-          <iframe id="ide-iframe" src="../../../static/loader.html" />
+          <iframe id="ide-iframe" src="./static/loader.html" />
         </div>
       );
     }
@@ -294,7 +294,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
         )}
         <Header title={`Starting workspace ${workspaceName}`}
           status={WorkspaceStatus[hasError ? WorkspaceStatus.ERROR : WorkspaceStatus.STARTING]} />
-        <PageSection variant={SECTION_THEME}>
+        <PageSection variant={SECTION_THEME} className="ide-loader-page">
           <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
             <Tab eventKey={IdeLoaderTabs.Progress} title={IdeLoaderTabs[IdeLoaderTabs.Progress]}>
               {(this.state.currentRequestError) && (

@@ -131,7 +131,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
         return <ExclamationCircleIcon className={className} color="red" />;
       }
       return (<React.Fragment>
-        <InProgressIcon className={`${styles.rotate} ${className}`} color="blue" />
+        <InProgressIcon className={`${styles.rotate} ${className}`} color="#0e6fe0" />
       </React.Fragment>);
     }
     return '';
@@ -174,7 +174,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
               LoadFactorySteps.APPLYING_DEVFILE,
               devfileLocationInfo ?
                 `Found ${devfileLocationInfo}, applying it` :
-                'File devfile.yaml is not found in repository root. Default environment will be applied'
+                'File devfile.yaml is not found in repository root. Default environment will be applied',
             ),
             canJumpTo: currentStep >= LoadFactorySteps.APPLYING_DEVFILE,
           },
@@ -223,7 +223,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
         )}
         <Header title={`Starting workspace ${workspaceName}`}
           status={hasError ? WorkspaceStatus[WorkspaceStatus.ERROR] : WorkspaceStatus[WorkspaceStatus.STARTING]} />
-        <PageSection variant={SECTION_THEME}>
+        <PageSection variant={SECTION_THEME} className="load-factory-page">
           <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
             <Tab eventKey={LoadFactoryTabs.Progress} title={LoadFactoryTabs[LoadFactoryTabs.Progress]}>
               {(this.state.currentRequestError) && (
@@ -239,7 +239,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
                 steps={this.getSteps()}
                 ref={this.wizardRef}
                 footer={(<span />)}
-                height={500}
+                height={300}
                 startAtStep={currentStep}
               />
             </Tab>
