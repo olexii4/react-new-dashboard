@@ -161,7 +161,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
           if (this.state.loaderVisible) {
             this.setState({ loaderVisible: false });
           }
-        }, 10000);
+        }, 25000);
         await this.updateIdeIframe(ideUrl, 10);
       }
     }
@@ -269,11 +269,11 @@ class IdeLoader extends React.PureComponent<Props, State> {
           {loaderVisible && (
             <div className="main-page-loader">
               <div className="ide-page-loader-content">
-                <img src="/assets/branding/loader.svg" />
+                <img src="../../../assets/branding/loader.svg" />
               </div>
             </div>
           )}
-          <iframe id="ide-iframe" src="/static/loader.html" />
+          <iframe id="ide-iframe" src="../../../static/loader.html" />
         </div>
       );
     }
