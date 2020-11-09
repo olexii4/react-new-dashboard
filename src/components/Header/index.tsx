@@ -14,8 +14,6 @@ import React from 'react';
 import { PageSection, PageSectionVariants, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import WorkspaceStatusLabel from '../WorkspaceStatusLabel';
 
-import styles from './index.module.css';
-
 const SECTION_THEME = PageSectionVariants.light;
 
 type Props = {
@@ -29,7 +27,7 @@ class Header extends React.PureComponent<Props> {
     const { title, status } = this.props;
 
     return (
-      <PageSection variant={SECTION_THEME} className={styles.header}>
+      <PageSection variant={SECTION_THEME}>
         <TextContent>
           <Text component={TextVariants.h1}>
             {title}{status && (

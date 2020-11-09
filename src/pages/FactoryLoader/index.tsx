@@ -238,7 +238,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
                 className="load-factory-wizard"
                 steps={this.getSteps()}
                 ref={this.wizardRef}
-                footer={('')}
+                footer={(<span />)}
                 height={500}
                 startAtStep={currentStep}
               />

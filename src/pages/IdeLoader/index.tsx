@@ -61,11 +61,11 @@ type State = {
 };
 
 class IdeLoader extends React.PureComponent<Props, State> {
-  private loaderTimer;
+  private loaderTimer: number;
   private alert: { variant?: AlertVariant; title?: string } = {};
-  public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
   private readonly hideAlert: () => void;
   private readonly handleTabClick: (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => void;
+  public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
 
   private readonly wizardRef: RefObject<any>;
 
@@ -131,6 +131,9 @@ class IdeLoader extends React.PureComponent<Props, State> {
   }
 
   public componentWillUnmount(): void {
+    if (this.loaderTimer) {
+      clearTimeout(this.loaderTimer);
+    }
     window.removeEventListener('message', event => this.handleMessage(event), false);
   }
 
@@ -306,7 +309,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
                 className="ide-loader-wizard"
                 steps={this.getSteps()}
                 ref={this.wizardRef}
-                footer={('')}
+                footer={(<span />)}
                 height={500}
                 startAtStep={currentStep}
               />
