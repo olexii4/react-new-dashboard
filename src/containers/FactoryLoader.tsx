@@ -154,7 +154,9 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
       return;
     }
     const { source } = this.factoryResolver.resolver;
-    const devfileLocationInfo = source === 'repo' ? '' : `${source} from the ${location}`;
+    const devfileLocationInfo = !source || source === 'repo' ?
+      `${searchParam.get('url')}` :
+      `${source} from the ${location}`;
     this.setState({ currentStep: LoadFactorySteps.APPLYING_DEVFILE, devfileLocationInfo });
     const devfile = this.factoryResolver.resolver.devfile;
     this.setState({ currentStep: LoadFactorySteps.CREATE_WORKSPACE });
@@ -178,7 +180,7 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     try {
       await this.props.startWorkspace(`${workspace.id}`);
     } catch (e) {
-      this.showErrorAlert(`Workspace ${workspaceName} failed to start.`);
+      this.showErrorAlert(`Workspace ${workspaceName} failed to start. ${e.message ? e.message + '.' : ''}`);
       return;
     }
   }

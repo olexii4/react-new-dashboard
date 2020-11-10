@@ -174,7 +174,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
               LoadFactorySteps.APPLYING_DEVFILE,
               devfileLocationInfo ?
                 `Found ${devfileLocationInfo}, applying it` :
-                'File devfile.yaml is not found in repository root. Default environment will be applied',
+                `File devfile.yaml is not found ${!hasError ? 'in repository root. Default environment will be applied' : ''}`,
             ),
             canJumpTo: currentStep >= LoadFactorySteps.APPLYING_DEVFILE,
           },
