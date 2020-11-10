@@ -267,7 +267,8 @@ export const actionCreators: ActionCreators = {
       dispatch({ type: 'UPDATE_WORKSPACE', workspace });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
-      throw new Error(`Failed to start the workspace, ID: ${workspaceId}, ${e.message ? e.message : ''}`);
+      const message = e.response && e.response.data && e.response.data.message ? e.response.data.message : e.message;
+      throw new Error(message ? message : 'Unknown error happened. Response code: 500/403. Try again');
     }
   },
 
