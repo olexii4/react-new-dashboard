@@ -11,17 +11,17 @@
  */
 
 import { AlertVariant } from '@patternfly/react-core';
+import { History } from 'history';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { History } from 'history';
 import { RouteComponentProps } from 'react-router';
+import { container } from '../inversify.config';
+import IdeLoaderPage from '../pages/IdeLoader';
 import { Debounce } from '../services/debounce/Debounce';
+import { WorkspaceStatus } from '../services/workspaceStatus';
 import { AppState } from '../store';
 import * as WorkspaceStore from '../store/Workspaces';
-import IdeLoaderPage from '../pages/IdeLoader';
 import { selectAllWorkspaces, selectWorkspaceById } from '../store/Workspaces/selectors';
-import { WorkspaceStatus } from '../services/workspaceStatus';
-import { container } from '../inversify.config';
 
 type Props =
   MappedProps
@@ -80,7 +80,10 @@ class IdeLoader extends React.PureComponent<Props, State> {
       hasError: true,
     });
     if (this.loadFactoryPageCallbacks.showAlert) {
-      this.loadFactoryPageCallbacks.showAlert(AlertVariant.danger, message);
+      const alertVariant = message.includes('You are not allowed to start more workspaces') ?
+        AlertVariant.warning :
+        AlertVariant.danger;
+      this.loadFactoryPageCallbacks.showAlert(alertVariant, message);
     } else {
       console.error(message);
     }

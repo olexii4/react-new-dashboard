@@ -11,6 +11,7 @@
  */
 
 import { injectable } from 'inversify';
+import { KeycloakInstance } from 'keycloak-js';
 import { getDefer, IDeferred } from '../deferred';
 import { KeycloakSetup } from '../bootstrap/KeycloakSetup';
 
@@ -45,20 +46,20 @@ export class Keycloak {
     return defer.promise;
   }
 
-  updateToken(validityTime: number): Promise<boolean> {
-    const deferred: IDeferred<boolean> = getDefer();
-
-    if (!KeycloakSetup.keycloakAuth.keycloak) {
-      deferred.reject();
-      return deferred.promise;
+  async updateToken(minValidity: number): Promise<void> {
+    const keycloak = KeycloakSetup.keycloakAuth.keycloak as any;
+    if (!keycloak || !keycloak.updateToken) {
+      return;
     }
-    (KeycloakSetup.keycloakAuth.keycloak as any).updateToken(validityTime).success((refreshed: boolean) => {
-      deferred.resolve(refreshed);
-    }).error((error: any) => {
-      deferred.reject(error);
-    });
-
-    return deferred.promise;
+    try {
+      await keycloak.updateToken(minValidity);
+    } catch (e) {
+      window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
+      if (keycloak && keycloak.login) {
+        keycloak.login();
+      }
+      throw new Error('Failed to update token. \n' + e);
+    }
   }
 
   isPresent(): boolean {
@@ -73,7 +74,7 @@ export class Keycloak {
   logout(): void {
     window.sessionStorage.removeItem('githubToken');
     window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
-    const keycloak: any = KeycloakSetup.keycloakAuth.keycloak;
+    const keycloak = KeycloakSetup.keycloakAuth.keycloak as any;
     if (keycloak && keycloak.logout) {
       keycloak.logout({});
     }

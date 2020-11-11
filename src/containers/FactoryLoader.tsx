@@ -64,7 +64,10 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
   public showErrorAlert(message: string): void {
     this.setState({ hasError: true });
     if (this.loadFactoryPageCallbacks.showAlert) {
-      this.loadFactoryPageCallbacks.showAlert(AlertVariant.danger, message);
+      const alertVariant = message.includes('You are not allowed to start more workspaces') ?
+        AlertVariant.warning :
+        AlertVariant.danger;
+      this.loadFactoryPageCallbacks.showAlert(alertVariant, message);
     } else {
       console.error(message);
     }
@@ -180,7 +183,7 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     try {
       await this.props.startWorkspace(`${workspace.id}`);
     } catch (e) {
-      this.showErrorAlert(`Workspace ${workspaceName} failed to start. ${e.message ? e.message + '.' : ''}`);
+      this.showErrorAlert(`Workspace ${workspaceName} failed to start. ${e.message ? e.message : ''}`);
       return;
     }
   }

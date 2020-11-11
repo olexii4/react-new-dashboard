@@ -12,7 +12,9 @@
 
 import { injectable } from 'inversify';
 import WorkspaceClient, { IWorkspaceMasterApi, IRemoteAPI } from '@eclipse-che/workspace-client';
+import { container } from '../../inversify.config';
 import { KeycloakSetup } from '../bootstrap/KeycloakSetup';
+import { Keycloak } from '../keycloak/Keycloak';
 
 /**
  * This class manages the api connection.
@@ -33,6 +35,29 @@ export class CheWorkspaceClient {
     this.websocketContext = '/api/websocket';
 
     this.originLocation = new URL(window.location.href).origin;
+
+    const { updateToken } = container.get(Keycloak);
+    // todo change this temporary solution after adding the proper method to workspace-client
+    const axios = (WorkspaceClient as any).createAxiosInstance({ loggingEnabled: false });
+    if (axios) {
+      let isUpdated: boolean;
+      const updateTimer = () => {
+        if (!isUpdated) {
+          isUpdated = true;
+          setTimeout(() => {
+            isUpdated = false;
+          }, 30000);
+        }
+      };
+      updateTimer();
+      axios.interceptors.request.use(async request => {
+        if (!isUpdated) {
+          updateTimer();
+          await updateToken(5);
+        }
+        return request;
+      });
+    }
   }
 
   private get token(): string | null {

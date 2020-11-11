@@ -54,10 +54,10 @@ type State = {
   alertVisible?: boolean;
   activeTabKey?: LoadFactoryTabs;
   currentRequestError?: string;
+  currentAlertVariant?: AlertVariant;
 };
 
 class FactoryLoader extends React.PureComponent<Props, State> {
-  private alert: { variant?: AlertVariant; title?: string } = {};
   public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
   private readonly hideAlert: () => void;
   private readonly handleTabClick: (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => void;
@@ -85,11 +85,10 @@ class FactoryLoader extends React.PureComponent<Props, State> {
     // Init showAlert
     let showAlertTimer;
     this.showAlert = (variant: AlertVariant, title: string): void => {
-      this.setState({ currentRequestError: title });
+      this.setState({ currentRequestError: title, currentAlertVariant: variant });
       if (this.state.activeTabKey === LoadFactoryTabs.Progress) {
         return;
       }
-      this.alert = { variant, title };
       this.setState({ alertVisible: true });
       if (showAlertTimer) {
         clearTimeout(showAlertTimer);
@@ -208,15 +207,15 @@ class FactoryLoader extends React.PureComponent<Props, State> {
 
   public render(): React.ReactElement {
     const { workspaceName, workspaceId, hasError, currentStep } = this.props;
-    const { alertVisible } = this.state;
+    const { alertVisible, currentRequestError, currentAlertVariant } = this.state;
 
     return (
       <React.Fragment>
         {alertVisible && (
           <AlertGroup isToast>
             <Alert
-              variant={this.alert.variant}
-              title={this.alert.title}
+              variant={currentAlertVariant}
+              title={currentRequestError}
               actionClose={<AlertActionCloseButton onClose={this.hideAlert} />}
             />
           </AlertGroup>
@@ -228,8 +227,10 @@ class FactoryLoader extends React.PureComponent<Props, State> {
             <Tab eventKey={LoadFactoryTabs.Progress} title={LoadFactoryTabs[LoadFactoryTabs.Progress]}>
               {(this.state.currentRequestError) && (
                 <Alert
+                  isInline
                   style={{ marginTop: '15px' }}
-                  variant={AlertVariant.danger} isInline title={this.state.currentRequestError}
+                  variant={currentAlertVariant}
+                  title={currentRequestError}
                   actionClose={<AlertActionCloseButton
                     onClose={() => this.setState({ currentRequestError: '' })} />}
                 />

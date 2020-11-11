@@ -58,11 +58,11 @@ type State = {
   alertVisible?: boolean;
   activeTabKey?: IdeLoaderTabs;
   currentRequestError?: string;
+  currentAlertVariant?: AlertVariant;
 };
 
 class IdeLoader extends React.PureComponent<Props, State> {
   private loaderTimer;
-  private alert: { variant?: AlertVariant; title?: string } = {};
   private readonly hideAlert: () => void;
   private readonly handleTabClick: (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => void;
   public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
@@ -90,11 +90,10 @@ class IdeLoader extends React.PureComponent<Props, State> {
     // Init showAlert
     let showAlertTimer;
     this.showAlert = (variant: AlertVariant, title: string): void => {
-      this.setState({ currentRequestError: title });
+      this.setState({ currentRequestError: title, currentAlertVariant: variant });
       if (this.state.activeTabKey === IdeLoaderTabs.Progress) {
         return;
       }
-      this.alert = { variant, title };
       this.setState({ alertVisible: true });
       if (showAlertTimer) {
         clearTimeout(showAlertTimer);
@@ -264,7 +263,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
   public render(): React.ReactElement {
     const { workspaceName, workspaceId, ideUrl, hasError, currentStep } = this.props;
-    const { alertVisible, loaderVisible } = this.state;
+    const { alertVisible, loaderVisible, currentAlertVariant, currentRequestError } = this.state;
 
     if (ideUrl) {
       return (
@@ -286,8 +285,8 @@ class IdeLoader extends React.PureComponent<Props, State> {
         {alertVisible && (
           <AlertGroup isToast>
             <Alert
-              variant={this.alert.variant}
-              title={this.alert.title}
+              variant={currentAlertVariant}
+              title={currentRequestError}
               actionClose={<AlertActionCloseButton onClose={this.hideAlert} />}
             />
           </AlertGroup>
@@ -299,8 +298,10 @@ class IdeLoader extends React.PureComponent<Props, State> {
             <Tab eventKey={IdeLoaderTabs.Progress} title={IdeLoaderTabs[IdeLoaderTabs.Progress]}>
               {(this.state.currentRequestError) && (
                 <Alert
+                  isInline
                   style={{ marginTop: '15px' }}
-                  variant={AlertVariant.danger} isInline title={this.state.currentRequestError}
+                  variant={currentAlertVariant}
+                  title={currentRequestError}
                   actionClose={<AlertActionCloseButton
                     onClose={() => this.setState({ currentRequestError: '' })} />}
                 />
