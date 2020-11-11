@@ -44,12 +44,8 @@ describe('Navigation Item', () => {
 
   it('should have workspace status icon', () => {
     renderComponent();
-    const link = screen.getByRole('link');
-    expect(link.outerHTML).toMatch('<a class="pf-c-nav__link" href="/namespace/workspace">' +
-      '<span class="workspace-name"><span><svg style="vertical-align: -0.125em;" fill="#0e6fe0" height="1em"' +
-      ' width="1em" viewBox="0 64 1024 1024" aria-hidden="true" role="img">' +
-      '<path d="' + InProgressIconConfig.svgPath + '" transform="' + InProgressIconConfig.transform + '"></path>' +
-      '</svg></span>workspace</span></a>');
+    const workspaceStatusIndicator = screen.getByTestId('workspace-status-indicator');
+    expect(workspaceStatusIndicator).toBeDefined();
   });
 
   describe('activation', () => {

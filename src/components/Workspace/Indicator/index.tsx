@@ -32,27 +32,37 @@ class WorkspaceIndicator extends React.PureComponent<Props> {
     const { status } = this.props;
 
     let color: ColorType;
+    let icon: React.ReactElement;
     switch (status) {
       case WorkspaceStatus[WorkspaceStatus.STOPPED]:
         color = 'grey';
-        return (<span className={styles.statusIndicator}><StoppedIcon color={color} /></span>);
+        icon = <StoppedIcon color={color} />;
+        break;
       case WorkspaceStatus[WorkspaceStatus.RUNNING]:
         color = 'green';
-        return (<span className={styles.statusIndicator}><ResourcesFullIcon color={color} /></span>);
+        icon = <ResourcesFullIcon color={color} />;
+        break;
       case WorkspaceStatus[WorkspaceStatus.ERROR]:
         color = 'red';
-        return (<span className={styles.statusIndicator}><ExclamationCircleIcon color={color} /></span>);
+        icon = <ExclamationCircleIcon color={color} />;
+        break;
       case WorkspaceStatus[WorkspaceStatus.PAUSED]:
         color = 'orange';
-        return (<span className={styles.statusIndicator}><PauseCircleIcon color={color} /></span>);
+        icon = <PauseCircleIcon color={color} />;
+        break;
       default:
         color = '#0e6fe0';
-        return (
-          <span className={styles.statusIndicator}>
-            <InProgressIcon className={styles.rotate} color={color} />
-          </span>
-        );
+        icon = <InProgressIcon className={styles.rotate} color={color} />;
     }
+
+    return (
+      <span
+        className={styles.statusIndicator}
+        data-testid="workspace-status-indicator"
+      >
+        {icon}
+      </span>
+    );
   }
 }
 
