@@ -30,8 +30,7 @@ jobs:
     - name: Docker prepare
       run: docker image prune -a -f
     - name: Docker Quay.io Login
-      # TODO upload new credentials. Currently che-incubator is used, when eclipse is needed
-      run: docker login -u "${{ secrets.QUAY_USERNAME }}" -p "${{ secrets.QUAY_PASSWORD }}" quay.io
+      run: docker login -u "${{ secrets.QUAY_ECLIPSE_USERNAME }}" -p "${{ secrets.QUAY_ECLIPSE_PASSWORD }}" quay.io
     - name: Build and push the Docker image(s)
       run: docker buildx build --platform linux/amd64,linux/s390x  -t ${IMAGE_FULL}  -f apache.Dockerfile --push .
     - name: Docker Logout
