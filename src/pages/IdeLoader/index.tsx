@@ -31,7 +31,7 @@ import { LoadIdeSteps } from '../../containers/IdeLoader';
 import { delay } from '../../services/delay';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 
-import styles from '../../components/WorkspaceStatusLabel/index.module.css';
+import workspaceStatusLabelStyles from '../../components/WorkspaceStatusLabel/index.module.css';
 import './IdeLoader.styl';
 
 export const SECTION_THEME = PageSectionVariants.light;
@@ -211,7 +211,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
         return <ExclamationCircleIcon className={className} color="red" />;
       }
       return (<React.Fragment>
-        <InProgressIcon className={`${styles.rotate} ${className}`} color="#0e6fe0" />
+        <InProgressIcon className={`${workspaceStatusLabelStyles.rotate} ${className}`} color="#0e6fe0" />
       </React.Fragment>);
     }
     return '';
@@ -293,27 +293,28 @@ class IdeLoader extends React.PureComponent<Props, State> {
         )}
         <Header title={`Starting workspace ${workspaceName}`}
           status={WorkspaceStatus[hasError ? WorkspaceStatus.ERROR : WorkspaceStatus.STARTING]} />
-        <PageSection variant={SECTION_THEME} className="ide-loader-page">
-          <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
+        <PageSection variant={SECTION_THEME} className="ide-loader-page" isFilled={true}>
+          <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick} inset={{ default: 'insetLg' }}>
             <Tab eventKey={IdeLoaderTabs.Progress} title={IdeLoaderTabs[IdeLoaderTabs.Progress]}>
-              {(this.state.currentRequestError) && (
-                <Alert
-                  isInline
-                  style={{ marginTop: '15px' }}
-                  variant={currentAlertVariant}
-                  title={currentRequestError}
-                  actionClose={<AlertActionCloseButton
-                    onClose={() => this.setState({ currentRequestError: '' })} />}
+              <PageSection>
+                {(this.state.currentRequestError) && (
+                  <Alert
+                    isInline
+                    variant={currentAlertVariant}
+                    title={currentRequestError}
+                    actionClose={<AlertActionCloseButton
+                      onClose={() => this.setState({ currentRequestError: '' })} />}
+                  />
+                )}
+                <Wizard
+                  className="ide-loader-wizard"
+                  steps={this.getSteps()}
+                  ref={this.wizardRef}
+                  footer={(<span />)}
+                  height={500}
+                  startAtStep={currentStep}
                 />
-              )}
-              <Wizard
-                className="ide-loader-wizard"
-                steps={this.getSteps()}
-                ref={this.wizardRef}
-                footer={(<span />)}
-                height={500}
-                startAtStep={currentStep}
-              />
+              </PageSection>
             </Tab>
             <Tab eventKey={IdeLoaderTabs.Logs} title={IdeLoaderTabs[IdeLoaderTabs.Logs]}>
               <LogsTab workspaceId={workspaceId} />

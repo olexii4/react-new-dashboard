@@ -29,7 +29,7 @@ import { LoadFactorySteps } from '../../containers/FactoryLoader';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 import LogsTab from '../../components/LogsTab';
 
-import styles from '../../components/WorkspaceStatusLabel/index.module.css';
+import workspaceStatusLabelStyles from '../../components/WorkspaceStatusLabel/index.module.css';
 import './FactoryLoader.styl';
 
 const SECTION_THEME = PageSectionVariants.light;
@@ -130,7 +130,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
         return <ExclamationCircleIcon className={className} color="red" />;
       }
       return (<React.Fragment>
-        <InProgressIcon className={`${styles.rotate} ${className}`} color="#0e6fe0" />
+        <InProgressIcon className={`${workspaceStatusLabelStyles.rotate} ${className}`} color="#0e6fe0" />
       </React.Fragment>);
     }
     return '';
@@ -222,27 +222,28 @@ class FactoryLoader extends React.PureComponent<Props, State> {
         )}
         <Header title={`Starting workspace ${workspaceName}`}
           status={hasError ? WorkspaceStatus[WorkspaceStatus.ERROR] : WorkspaceStatus[WorkspaceStatus.STARTING]} />
-        <PageSection variant={SECTION_THEME} className="load-factory-page">
-          <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick}>
+        <PageSection variant={SECTION_THEME} className="load-factory-page" isFilled={true}>
+          <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick} inset={{ default: 'insetLg' }}>
             <Tab eventKey={LoadFactoryTabs.Progress} title={LoadFactoryTabs[LoadFactoryTabs.Progress]}>
-              {(this.state.currentRequestError) && (
-                <Alert
-                  isInline
-                  style={{ marginTop: '15px' }}
-                  variant={currentAlertVariant}
-                  title={currentRequestError}
-                  actionClose={<AlertActionCloseButton
-                    onClose={() => this.setState({ currentRequestError: '' })} />}
+              <PageSection>
+                {(this.state.currentRequestError) && (
+                  <Alert
+                    isInline
+                    variant={currentAlertVariant}
+                    title={currentRequestError}
+                    actionClose={<AlertActionCloseButton
+                      onClose={() => this.setState({ currentRequestError: '' })} />}
+                  />
+                )}
+                <Wizard
+                  className="load-factory-wizard"
+                  steps={this.getSteps()}
+                  ref={this.wizardRef}
+                  footer={(<span />)}
+                  height={300}
+                  startAtStep={currentStep}
                 />
-              )}
-              <Wizard
-                className="load-factory-wizard"
-                steps={this.getSteps()}
-                ref={this.wizardRef}
-                footer={(<span />)}
-                height={300}
-                startAtStep={currentStep}
-              />
+              </PageSection>
             </Tab>
             <Tab eventKey={LoadFactoryTabs.Logs} title={LoadFactoryTabs[LoadFactoryTabs.Logs]}>
               <LogsTab workspaceId={workspaceId} />

@@ -15,7 +15,9 @@ import {
   Title,
   EmptyState,
   EmptyStateIcon,
-  EmptyStateBody
+  EmptyStateBody,
+  PageSection,
+  PageSectionVariants
 } from '@patternfly/react-core';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
@@ -91,8 +93,8 @@ export class LogsTab extends React.PureComponent<Props, State> {
     }
 
     return (
-      <React.Fragment>
-        <div className={isExpanded ? styles.tabExpanded : ''} style={{ marginTop: '15px' }}>
+      <PageSection variant={PageSectionVariants.light}>
+        <div className={isExpanded ? styles.tabExpanded : ''}>
           <LogsTools logs={logs} handleExpand={isExpanded => {
             this.setState({ isExpanded, logs });
           }} />
@@ -101,7 +103,7 @@ export class LogsTab extends React.PureComponent<Props, State> {
             <pre className={hasError ? styles.errorColor : ''}>{logs.join('\n')}</pre>
           </div>
         </div>
-      </React.Fragment>
+      </PageSection>
     );
   }
 
