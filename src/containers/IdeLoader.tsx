@@ -74,13 +74,15 @@ class IdeLoader extends React.PureComponent<Props, State> {
     });
   }
 
-  public showErrorAlert(message: string): void {
-    this.setState({
-      currentStep: this.state.currentStep,
-      hasError: true,
-    });
+  public showAlert(message: string, alertVariant: AlertVariant = AlertVariant.danger): void {
+    if (alertVariant === AlertVariant.danger) {
+      this.setState({
+        currentStep: this.state.currentStep,
+        hasError: true,
+      });
+    }
     if (this.loadFactoryPageCallbacks.showAlert) {
-      this.loadFactoryPageCallbacks.showAlert(AlertVariant.danger, message);
+      this.loadFactoryPageCallbacks.showAlert(alertVariant, message);
     } else {
       console.error(message);
     }
@@ -95,6 +97,12 @@ class IdeLoader extends React.PureComponent<Props, State> {
     if (!allWorkspaces || allWorkspaces.length === 0) {
       await requestWorkspaces();
     }
+    const workspace = allWorkspaces.find(workspace =>
+      workspace.namespace === this.state.namespace && workspace.devfile.metadata.name === this.state.workspaceName);
+    if (workspace && workspace.runtime && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
+      this.updateIdeUrl(workspace.runtime);
+      return;
+    }
     this.debounce.setDelay(1000);
   }
 
@@ -104,27 +112,15 @@ class IdeLoader extends React.PureComponent<Props, State> {
     const workspace = allWorkspaces.find(workspace =>
       workspace.namespace === params.namespace && workspace.devfile.metadata.name === params.workspaceName);
     if (workspace && !hasError && WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR) {
-      this.showErrorAlert('An unknown workspace error.');
+      this.showAlert('An unknown workspace error.');
       return;
     }
     this.debounce.setDelay(1000);
   }
 
-  private async openIDE(workspaceId: string): Promise<void> {
-    this.setState({ currentStep: LoadIdeSteps.OPEN_IDE });
-    try {
-      await this.props.requestWorkspace(workspaceId);
-    } catch (e) {
-      this.showErrorAlert(`Getting workspace detail data failed. ${e}`);
-      return;
-    }
-    const workspace = this.props.allWorkspaces.find(workspace =>
-      workspace.id === workspaceId);
-    if (!workspace || !workspace.runtime) {
-      return;
-    }
+  private updateIdeUrl(runtime: api.che.workspace.Runtime): void {
     let ideUrl = '';
-    const machines = workspace.runtime.machines || {};
+    const machines = runtime.machines || {};
     for (const machineName of Object.keys(machines)) {
       const servers = machines[machineName].servers || {};
       for (const serverId of Object.keys(servers)) {
@@ -136,10 +132,25 @@ class IdeLoader extends React.PureComponent<Props, State> {
       }
     }
     if (!ideUrl) {
-      this.showErrorAlert('Don\'t know what to open, IDE url is not defined.');
+      this.showAlert('Don\'t know what to open, IDE url is not defined.');
       return;
     }
     this.setState({ currentStep: LoadIdeSteps.OPEN_IDE, ideUrl });
+  }
+
+  private async openIDE(workspaceId: string): Promise<void> {
+    this.setState({ currentStep: LoadIdeSteps.OPEN_IDE });
+    try {
+      await this.props.requestWorkspace(workspaceId);
+    } catch (e) {
+      this.showAlert(`Getting workspace detail data failed. ${e}`);
+      return;
+    }
+    const workspace = this.props.allWorkspaces.find(workspace =>
+      workspace.id === workspaceId);
+    if (workspace && workspace.runtime) {
+      this.updateIdeUrl(workspace.runtime);
+    }
   }
 
   private async initWorkspace(): Promise<void> {
@@ -167,7 +178,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
         return this.openIDE(workspace.id);
       }
     } else {
-      this.showErrorAlert('Failed to find the target workspace.');
+      this.showAlert('Failed to find the target workspace.');
       return;
     }
     if (this.state.currentStep === LoadIdeSteps.INITIALIZING) {
@@ -177,7 +188,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
         try {
           await this.props.startWorkspace(`${workspace.id}`);
         } catch (e) {
-          this.showErrorAlert(`Workspace ${this.state.workspaceName} failed to start. ${e}`);
+          this.showAlert(`Workspace ${this.state.workspaceName} failed to start. ${e}`);
           return;
         }
       }

@@ -176,7 +176,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
           if (this.state.loaderVisible) {
             this.setState({ loaderVisible: false });
           }
-        }, 25000);
+        }, 60000);
         await this.updateIdeIframe(ideUrl, 10);
       }
     }

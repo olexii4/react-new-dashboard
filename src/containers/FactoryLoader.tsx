@@ -61,10 +61,12 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     };
   }
 
-  public showErrorAlert(message: string): void {
-    this.setState({ hasError: true });
+  public showAlert(message: string, alertVariant: AlertVariant = AlertVariant.danger): void {
+    if (alertVariant === AlertVariant.danger) {
+      this.setState({ hasError: true });
+    }
     if (this.loadFactoryPageCallbacks.showAlert) {
-      this.loadFactoryPageCallbacks.showAlert(AlertVariant.danger, message);
+      this.loadFactoryPageCallbacks.showAlert(alertVariant, message);
     } else {
       console.error(message);
     }
@@ -88,14 +90,22 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
       this.factoryResolver = factoryResolver;
     }
 
-    if (this.state.currentStep === LoadFactorySteps.START_WORKSPACE && workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
+    if (this.state.currentStep === LoadFactorySteps.START_WORKSPACE &&
+      workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
       this.setState({ currentStep: LoadFactorySteps.OPEN_IDE });
+      try {
+        await this.props.requestWorkspace(workspace.id);
+      } catch (e) {
+        this.showAlert(`Getting workspace detail data failed. ${e}`);
+      }
       await delay();
       history.push(`/ide/${workspace.namespace}/${workspace.devfile.metadata.name}`);
     }
 
-    if (workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR) {
-      this.setState({ hasError: true });
+    if (workspace &&
+      WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR &&
+      this.state.currentStep === LoadFactorySteps.START_WORKSPACE) {
+      this.showAlert('Unknown workspace error.');
     }
   }
 
@@ -105,7 +115,7 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
       this.props.clearWorkspaceId();
     }
     if (!search) {
-      this.showErrorAlert(
+      this.showAlert(
         `Repository/Devfile URL is missing. Please specify it via url query param:
          ${window.location.origin}${window.location.pathname}#/load-factory?url= .`,
       );
@@ -132,7 +142,7 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     attrs.stackName = `${location}${params}`;
     this.setState({ currentStep: LoadFactorySteps.LOOKING_FOR_DEVFILE });
     if (!location) {
-      this.showErrorAlert(
+      this.showAlert(
         `Repository/Devfile URL is missing. Please specify it via url query param:
          ${window.location.origin}${window.location.pathname}#/load-factory?url= .`,
       );
@@ -143,14 +153,14 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     try {
       await this.props.requestFactoryResolver(location);
     } catch (e) {
-      this.showErrorAlert('Failed to resolve a devfile.');
+      this.showAlert('Failed to resolve a devfile.');
       return;
     }
     if (!this.factoryResolver
       || !this.factoryResolver.resolver
       || !this.factoryResolver.resolver.devfile
       || this.factoryResolver.resolver.location !== location) {
-      this.showErrorAlert('Failed to resolve a devfile.');
+      this.showAlert('Failed to resolve a devfile.');
       return;
     }
     const { source } = this.factoryResolver.resolver;
@@ -166,22 +176,33 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     try {
       workspace = await this.props.createWorkspaceFromDevfile(devfile, undefined, undefined, attrs) as any;
     } catch (e) {
-      this.showErrorAlert('Failed to create a workspace.');
+      this.showAlert('Failed to create a workspace.');
       return;
     }
     if (!workspace) {
-      this.showErrorAlert('Failed to create a workspace.');
+      this.showAlert('Failed to create a workspace.');
       return;
     }
     this.props.setWorkspaceId(workspace.id);
-    this.setState({ currentStep: LoadFactorySteps.START_WORKSPACE });
+    // check if it ephemeral
+    if (workspace.devfile.attributes &&
+      workspace.devfile.attributes.persistVolumes &&
+      workspace.devfile.attributes.persistVolumes === 'false' &&
+      workspace.devfile.attributes.asyncPersist !== 'true'
+    ) {
+      this.showAlert('You\'re starting an ephemeral workspace. All changes to the source code will be lost ' +
+        'when the workspace is stopped unless they are pushed to a remote code repository.', AlertVariant.warning);
+    }
     await delay();
-    const workspaceName = workspace.devfile.metadata.name;
-    try {
-      await this.props.startWorkspace(`${workspace.id}`);
-    } catch (e) {
-      this.showErrorAlert(`Workspace ${workspaceName} failed to start. ${e.message ? e.message : ''}`);
-      return;
+    if (this.state.currentStep !== LoadFactorySteps.START_WORKSPACE) {
+      this.setState({ currentStep: LoadFactorySteps.START_WORKSPACE });
+      const workspaceName = workspace.devfile.metadata.name;
+      try {
+        await this.props.startWorkspace(`${workspace.id}`);
+      } catch (e) {
+        this.showAlert(`Workspace ${workspaceName} failed to start. ${e.message ? e.message : ''}`);
+        return;
+      }
     }
   }
 
