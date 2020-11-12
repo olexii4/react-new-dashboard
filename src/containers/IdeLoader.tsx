@@ -80,10 +80,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
       hasError: true,
     });
     if (this.loadFactoryPageCallbacks.showAlert) {
-      const alertVariant = message.includes('You are not allowed to start more workspaces') ?
-        AlertVariant.warning :
-        AlertVariant.danger;
-      this.loadFactoryPageCallbacks.showAlert(alertVariant, message);
+      this.loadFactoryPageCallbacks.showAlert(AlertVariant.danger, message);
     } else {
       console.error(message);
     }

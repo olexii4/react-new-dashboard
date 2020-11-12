@@ -54,6 +54,7 @@ type Props = {
 
 type State = {
   ideUrl?: string;
+  workspaceId?: string;
   loaderVisible?: boolean;
   alertVisible?: boolean;
   activeTabKey?: IdeLoaderTabs;
@@ -127,6 +128,9 @@ class IdeLoader extends React.PureComponent<Props, State> {
     if (this.props.ideUrl) {
       this.setState({ ideUrl: this.props.ideUrl });
     }
+    if (this.props.workspaceId) {
+      this.setState({ workspaceId: this.props.workspaceId });
+    }
   }
 
   public componentWillUnmount(): void {
@@ -137,7 +141,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
   }
 
   public async componentDidUpdate(): Promise<void> {
-    const { currentStep, hasError, ideUrl } = this.props;
+    const { currentStep, hasError, ideUrl, workspaceId } = this.props;
 
     const current = this.wizardRef.current;
     if (current && current.state && current.state.currentStep !== currentStep && !hasError) {
@@ -146,6 +150,15 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
     if (!hasError && this.state.currentRequestError) {
       this.setState({ currentRequestError: '' });
+    }
+
+    if (this.state.workspaceId !== workspaceId) {
+      this.setState({ workspaceId });
+      this.setState({ alertVisible: false });
+      this.setState({ loaderVisible: false });
+      if (this.loaderTimer) {
+        clearTimeout(this.loaderTimer);
+      }
     }
 
     if (this.state.ideUrl !== ideUrl) {
@@ -275,7 +288,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
               </div>
             </div>
           )}
-          <iframe id="ide-iframe" src="./static/loader.html" />
+          <iframe id="ide-iframe" src="./static/loader.html" allow="fullscreen *" />
         </div>
       );
     }

@@ -267,8 +267,9 @@ export const actionCreators: ActionCreators = {
       dispatch({ type: 'UPDATE_WORKSPACE', workspace });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
+      const statusInfo = e.response && e.response.status ? ` Response code: ${e.response.status}.` : '';
       const message = e.response && e.response.data && e.response.data.message ? e.response.data.message : e.message;
-      throw new Error(message ? message : 'Unknown error happened. Response code: 500/403. Try again');
+      throw new Error(message ? message : `Unknown error happened.${statusInfo} Try again`);
     }
   },
 
