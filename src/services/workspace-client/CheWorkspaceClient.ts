@@ -51,18 +51,25 @@ export class CheWorkspaceClient {
         const keycloak = KeycloakSetup.keycloakAuth.keycloak as any;
         if (keycloak && keycloak.updateToken && !isUpdated) {
           updateTimer();
-          await keycloak.updateToken(5).success((refreshed: boolean) => {
-            if (refreshed && keycloak.token && axios.defaults && axios.defaults.headers && axios.defaults.headers.common) {
-              const header = 'Authorization';
-              axios.defaults.headers.common[header] = `Bearer ${keycloak.token}`;
-            }
-          }).error(e => {
+          try {
+            await new Promise((resolve, reject) => {
+              keycloak.updateToken(5).success((refreshed: boolean) => {
+                if (refreshed && keycloak.token && axios.defaults && axios.defaults.headers && axios.defaults.headers.common) {
+                  const header = 'Authorization';
+                  axios.defaults.headers.common[header] = `Bearer ${keycloak.token}`;
+                }
+                resolve(keycloak);
+              }).error((error: any) => {
+                reject(new Error(error));
+              });
+            });
+          } catch (e) {
             console.error('Failed to update token.', e);
             window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
             if (keycloak.login) {
               keycloak.login();
             }
-          });
+          }
         }
         return request;
       });

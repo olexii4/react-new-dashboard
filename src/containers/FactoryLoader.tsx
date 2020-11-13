@@ -23,6 +23,8 @@ import { selectAllWorkspaces, selectWorkspaceById } from '../store/Workspaces/se
 import { WorkspaceStatus } from '../services/workspaceStatus';
 
 const WS_ATTRIBUTES_TO_SAVE: string[] = ['workspaceDeploymentLabels', 'workspaceDeploymentAnnotations'];
+// todo remove it after investigation why does it happens sometimes
+const SUPPRESSION_ATTRIBUTES: string[] = ['state', 'session_state', 'code'];
 
 type Props =
   MappedProps
@@ -136,7 +138,9 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
         if (WS_ATTRIBUTES_TO_SAVE.indexOf(key) !== -1) {
           attrs[key] = val;
         }
-        params += `${!params ? '?' : '&'}${key}=${val}`;
+        if (SUPPRESSION_ATTRIBUTES.indexOf(key) === -1) {
+          params += `${!params ? '?' : '&'}${key}=${val}`;
+        }
       }
     });
     attrs.stackName = `${location}${params}`;
