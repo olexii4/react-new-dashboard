@@ -89,10 +89,11 @@ class IdeLoader extends React.PureComponent<Props, State> {
     this.debounce.unsubscribeAll();
   }
 
-  public async componentDidMount(): Promise<void> {
+  public componentDidMount(): void {
     const { allWorkspaces, requestWorkspaces } = this.props;
     if (!allWorkspaces || allWorkspaces.length === 0) {
-      await requestWorkspaces();
+      requestWorkspaces();
+      return;
     }
     const workspace = allWorkspaces.find(workspace =>
       workspace.namespace === this.state.namespace && workspace.devfile.metadata.name === this.state.workspaceName);

@@ -190,7 +190,6 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     this.props.setWorkspaceId(workspace.id);
     // check if it ephemeral
     if (workspace.devfile.attributes &&
-      workspace.devfile.attributes.persistVolumes &&
       workspace.devfile.attributes.persistVolumes === 'false' &&
       workspace.devfile.attributes.asyncPersist !== 'true'
     ) {

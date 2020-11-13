@@ -113,10 +113,6 @@ class FactoryLoader extends React.PureComponent<Props, State> {
     if (current && current.state && current.state.currentStep !== currentStep && !hasError) {
       current.state.currentStep = currentStep;
     }
-
-    if (!hasError && this.state.currentRequestError) {
-      this.setState({ currentRequestError: '' });
-    }
   }
 
   private getIcon(step: LoadFactorySteps, className = ''): React.ReactNode {
