@@ -12,7 +12,7 @@ FROM docker.io/openjdk:15-jdk
 
 RUN curl -sL https://rpm.nodesource.com/setup_10.x | bash -
 
-RUN yum install -y git nodejs
+RUN microdnf install -y git nodejs
 
 ARG MAVEN_VERSION=3.6.3
 ARG BASE_URL=https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries

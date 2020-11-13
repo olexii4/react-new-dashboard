@@ -2,7 +2,7 @@
 | --- | --- |
 | `che-dashboard-e2e@1.0.0` | - |
 | `@eclipse-che/api@7.18.1` | - |
-| `@eclipse-che/workspace-client@0.0.1-1600695209` | - |
+| `@eclipse-che/workspace-client@0.0.1-1604083811` | - |
 | `@babel/parser@7.10.2` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `@types/axios@0.14.0` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `@types/react-redux@7.1.9` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
