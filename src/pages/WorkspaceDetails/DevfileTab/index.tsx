@@ -30,12 +30,12 @@ type Props = {
 };
 
 type State = {
-  devfile?: che.WorkspaceDevfile;
-  hasChanges?: boolean;
-  hasRequestErrors?: boolean;
-  currentRequestError?: string;
-  isDevfileValid?: boolean;
-  isExpanded?: boolean;
+  devfile: che.WorkspaceDevfile;
+  hasChanges: boolean;
+  hasRequestErrors: boolean;
+  currentRequestError: string;
+  isDevfileValid: boolean;
+  isExpanded: boolean;
   copied?: boolean;
 };
 

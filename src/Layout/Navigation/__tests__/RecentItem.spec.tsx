@@ -10,7 +10,6 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { InProgressIconConfig } from '@patternfly/react-icons/dist/js/icons/in-progress-icon';
 import React from 'react';
 import { render, screen, RenderResult } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';

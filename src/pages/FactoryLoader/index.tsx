@@ -51,9 +51,9 @@ type Props = {
 };
 
 type State = {
-  alertVisible?: boolean;
-  activeTabKey?: LoadFactoryTabs;
-  currentRequestError?: string;
+  alertVisible: boolean;
+  activeTabKey: LoadFactoryTabs;
+  currentRequestError: string;
   currentAlertVariant?: AlertVariant;
 };
 

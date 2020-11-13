@@ -25,7 +25,7 @@ type Props = {
 
 type State = {
   copied?: boolean;
-  isExpanded?: boolean;
+  isExpanded: boolean;
 };
 
 class EditorTools extends React.PureComponent<Props, State> {

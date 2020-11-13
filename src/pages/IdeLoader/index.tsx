@@ -54,11 +54,11 @@ type Props = {
 
 type State = {
   ideUrl?: string;
-  workspaceId?: string;
-  loaderVisible?: boolean;
-  alertVisible?: boolean;
-  activeTabKey?: IdeLoaderTabs;
-  currentRequestError?: string;
+  workspaceId: string;
+  loaderVisible: boolean;
+  alertVisible: boolean;
+  activeTabKey: IdeLoaderTabs;
+  currentRequestError: string;
   currentAlertVariant?: AlertVariant;
 };
 
@@ -75,8 +75,10 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
     this.state = {
       alertVisible: false,
+      loaderVisible: false,
       activeTabKey: IdeLoaderTabs.Progress,
       currentRequestError: '',
+      workspaceId: this.props.workspaceId
     };
 
     this.wizardRef = React.createRef();

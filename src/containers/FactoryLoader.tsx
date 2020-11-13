@@ -40,7 +40,7 @@ export enum LoadFactorySteps {
 }
 
 type State = {
-  search?: string;
+  search: string;
   location?: string;
   devfileLocationInfo?: string;
   currentStep: LoadFactorySteps;

@@ -22,7 +22,7 @@ type Props = {
 };
 
 type State = {
-  isExpanded?: boolean;
+  isExpanded: boolean;
 };
 
 class LogsTools extends React.PureComponent<Props, State> {

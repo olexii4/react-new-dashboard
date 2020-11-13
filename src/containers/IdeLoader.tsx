@@ -35,8 +35,8 @@ export enum LoadIdeSteps {
 }
 
 type State = {
-  namespace?: string,
-  workspaceName?: string,
+  namespace: string,
+  workspaceName: string,
   workspaceId?: string,
   currentStep: LoadIdeSteps;
   ideUrl?: string;
@@ -76,10 +76,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
   public showAlert(message: string, alertVariant: AlertVariant = AlertVariant.danger): void {
     if (alertVariant === AlertVariant.danger) {
-      this.setState({
-        currentStep: this.state.currentStep,
-        hasError: true,
-      });
+      this.setState({ hasError: true });
     }
     if (this.loadFactoryPageCallbacks.showAlert) {
       this.loadFactoryPageCallbacks.showAlert(alertVariant, message);
@@ -172,7 +169,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     const workspace = allWorkspaces.find(workspace =>
       workspace.namespace === params.namespace && workspace.devfile.metadata.name === params.workspaceName);
     if (workspace) {
-      this.setState({ currentStep: this.state.currentStep, workspaceId: workspace.id });
+      this.setState({ workspaceId: workspace.id });
       if ((workspace.runtime || this.state.currentStep === LoadIdeSteps.START_WORKSPACE) &&
         WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
         return this.openIDE(workspace.id);

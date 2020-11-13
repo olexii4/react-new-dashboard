@@ -33,9 +33,9 @@ type Props =
   & MappedProps;
 
 type State = {
-  isExpanded?: boolean;
-  isStopped?: boolean;
-  hasError?: boolean;
+  isExpanded: boolean;
+  isStopped: boolean;
+  hasError: boolean;
   logs: string[];
 };
 
@@ -62,15 +62,28 @@ export class LogsTab extends React.PureComponent<Props, State> {
 
   private updateLogsData() {
     const { workspaceId, workspacesLogs, allWorkspaces } = this.props;
-    if (allWorkspaces && allWorkspaces.length > 0 && workspaceId) {
+    if (allWorkspaces && allWorkspaces.length > 0) {
+
       const workspace = allWorkspaces.find(workspace => workspace.id === workspaceId);
-      const hasError = workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR;
-      const isStopped = workspace && WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPED;
-      const logs = workspacesLogs && workspacesLogs.has(workspaceId) ? workspacesLogs.get(workspaceId) : [];
-      if (logs && this.state.logs.length !== logs.length
-        || this.state.hasError !== hasError
-        || this.state.isStopped !== isStopped) {
-        this.setState({ logs: logs ? logs : [], hasError, isStopped });
+      if (!workspace) {
+        return;
+      }
+
+      const hasError = WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR;
+      if (this.state.hasError !== hasError) {
+        this.setState({ hasError });
+      }
+
+      const isStopped = WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPED;
+      if (this.state.isStopped !== isStopped) {
+        this.setState({ isStopped });
+      }
+
+      if (workspacesLogs) {
+        const logs = workspacesLogs.get(workspaceId);
+        if (logs && (logs.length !== this.state.logs.length)) {
+          this.setState({ logs });
+        }
       }
     }
   }
