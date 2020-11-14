@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`The header component for IDE and Factory loader-pages Start workspace renders correctly 1`] = `
+exports[`The header component for IDE-loader and Factory-loader pages Start workspace renders correctly 1`] = `
 <section
   className="pf-c-page__main-section pf-m-light"
 >
@@ -49,7 +49,7 @@ exports[`The header component for IDE and Factory loader-pages Start workspace r
 </section>
 `;
 
-exports[`The header component for IDE and Factory loader-pages Workspace error renders correctly 1`] = `
+exports[`The header component for IDE-loader and Factory-loader pages Workspace error renders correctly 1`] = `
 <section
   className="pf-c-page__main-section pf-m-light"
 >

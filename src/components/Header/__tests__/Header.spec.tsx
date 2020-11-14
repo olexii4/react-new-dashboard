@@ -15,7 +15,7 @@ import renderer from 'react-test-renderer';
 import Header from '../';
 import { WorkspaceStatus } from '../../../services/workspaceStatus';
 
-describe('The header component for IDE and Factory loader-pages', () => {
+describe('The header component for IDE-loader and Factory-loader pages', () => {
 
   it('Start workspace renders correctly', () => {
     const element = (<Header
