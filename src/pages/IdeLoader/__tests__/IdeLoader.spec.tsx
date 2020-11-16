@@ -10,10 +10,7 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { Nav } from '@patternfly/react-core';
-import { render, RenderResult } from '@testing-library/react';
 import React from 'react';
-import { MemoryRouter } from 'react-router';
 import renderer, { ReactTestRenderer } from 'react-test-renderer';
 import { Store } from 'redux';
 import createMockStore from 'redux-mock-store';
