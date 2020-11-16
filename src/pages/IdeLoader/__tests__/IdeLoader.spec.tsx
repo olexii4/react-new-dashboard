@@ -10,8 +10,11 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
+import { Nav } from '@patternfly/react-core';
+import { render, RenderResult } from '@testing-library/react';
 import React from 'react';
-import renderer from 'react-test-renderer';
+import { MemoryRouter } from 'react-router';
+import renderer, { ReactTestRenderer } from 'react-test-renderer';
 import { Store } from 'redux';
 import createMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
@@ -28,98 +31,84 @@ const store = createFakeStore(workspaceId, workspaceName);
 describe('The Ide Loader page  component', () => {
 
   it('INITIALIZING step renders correctly', () => {
-    const element = (<Provider store={store}>
-      <IdeLoaderTabs
-        currentStep={LoadIdeSteps.INITIALIZING}
-        workspaceName={workspaceName}
-        workspaceId={workspaceId}
-        hasError={false}
-      />
-    </Provider>);
+    const currentStep = LoadIdeSteps.INITIALIZING;
+    const hasError = false;
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
-    expect(renderer.create(element).toJSON()).toMatchSnapshot();
+    expect(component.toJSON()).toMatchSnapshot();
   });
 
   it('INITIALIZING step with an error renders correctly', () => {
-    const element = (<Provider store={store}>
-      <IdeLoaderTabs
-        currentStep={LoadIdeSteps.INITIALIZING}
-        workspaceName={workspaceName}
-        workspaceId={workspaceId}
-        hasError={true}
-      />
-    </Provider>);
+    const currentStep = LoadIdeSteps.INITIALIZING;
+    const hasError = true;
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
-    expect(renderer.create(element).toJSON()).toMatchSnapshot();
+    expect(component.toJSON()).toMatchSnapshot();
   });
 
   it('START_WORKSPACE step renders correctly', () => {
-    const element = (<Provider store={store}>
-      <IdeLoaderTabs
-        currentStep={LoadIdeSteps.START_WORKSPACE}
-        workspaceName={workspaceName}
-        workspaceId={workspaceId}
-        hasError={false}
-      />
-    </Provider>);
+    const currentStep = LoadIdeSteps.START_WORKSPACE;
+    const hasError = false;
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
-    expect(renderer.create(element).toJSON()).toMatchSnapshot();
+    expect(component.toJSON()).toMatchSnapshot();
   });
 
   it('START_WORKSPACE step with an error renders correctly', () => {
-    const element = (<Provider store={store}>
-      <IdeLoaderTabs
-        currentStep={LoadIdeSteps.START_WORKSPACE}
-        workspaceName={workspaceName}
-        workspaceId={workspaceId}
-        hasError={true}
-      />
-    </Provider>);
+    const currentStep = LoadIdeSteps.START_WORKSPACE;
+    const hasError = true;
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
-    expect(renderer.create(element).toJSON()).toMatchSnapshot();
+    expect(component.toJSON()).toMatchSnapshot();
   });
 
   it('OPEN_IDE step renders correctly', () => {
-    const element = (<Provider store={store}>
-      <IdeLoaderTabs
-        currentStep={LoadIdeSteps.OPEN_IDE}
-        workspaceName={workspaceName}
-        workspaceId={workspaceId}
-        hasError={false}
-      />
-    </Provider>);
+    const currentStep = LoadIdeSteps.OPEN_IDE;
+    const hasError = false;
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
-    expect(renderer.create(element).toJSON()).toMatchSnapshot();
+    expect(component.toJSON()).toMatchSnapshot();
   });
 
   it('OPEN_IDE step with an error renders correctly', () => {
-    const element = (<Provider store={store}>
-      <IdeLoaderTabs
-        currentStep={LoadIdeSteps.OPEN_IDE}
-        workspaceName={workspaceName}
-        workspaceId={workspaceId}
-        hasError={true}
-      />
-    </Provider>);
+    const currentStep = LoadIdeSteps.OPEN_IDE;
+    const hasError = true;
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
-    expect(renderer.create(element).toJSON()).toMatchSnapshot();
+    expect(component.toJSON()).toMatchSnapshot();
   });
 
   it('Open IDE in the iframe renders correctly', () => {
-    const element = (<Provider store={store}>
-      <IdeLoaderTabs
-        ideUrl="https://server-test-4400.192.168.99.100.nip.io"
-        currentStep={LoadIdeSteps.OPEN_IDE}
-        workspaceName={workspaceName}
-        workspaceId={workspaceId}
-        hasError={false}
-      />
-    </Provider>);
+    const currentStep = LoadIdeSteps.OPEN_IDE;
+    const hasError = false;
+    const ideUrl = 'https://server-test-4400.192.168.99.100.nip.io';
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError, ideUrl);
 
-    expect(renderer.create(element).toJSON()).toMatchSnapshot();
+    expect(component.toJSON()).toMatchSnapshot();
   });
 
 });
+
+function renderComponent(
+  store: Store,
+  currentStep: LoadIdeSteps,
+  workspaceName: string,
+  workspaceId: string,
+  hasError: boolean,
+  ideUrl?: string,
+): ReactTestRenderer {
+  return renderer.create(
+    <Provider store={store}>
+      <IdeLoaderTabs
+        currentStep={currentStep}
+        workspaceName={workspaceName}
+        workspaceId={workspaceId}
+        hasError={hasError}
+        ideUrl={ideUrl}
+      />
+    </Provider>,
+  );
+}
 
 function createFakeStore(workspaceId: string, workspaceName: string): Store {
   const initialState: AppState = {
