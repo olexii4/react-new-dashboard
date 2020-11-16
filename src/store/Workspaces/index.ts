@@ -375,8 +375,13 @@ const mapMerge = (originMap: Map<string, string[]>, additionalMap: Map<string, s
   }
   const res = new Map<string, string[]>();
   originMap.forEach((val: string[], key: string) => {
-    const newVal = additionalMap.get(key);
-    res.set(key, newVal ? val.concat(newVal) : val);
+    const merge = (val: string[], newVal: string[] | undefined): string[] => {
+      if (!newVal || (val.length > 0 && newVal.length === 1 && val[val.length - 1] === newVal[0])) {
+        return val;
+      }
+      return val.concat(newVal);
+    };
+    res.set(key, merge(val, additionalMap.get(key)));
   });
   additionalMap.forEach((val: string[], key: string) => {
     if (!res.has(key)) {

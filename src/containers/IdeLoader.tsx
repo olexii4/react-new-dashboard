@@ -110,8 +110,12 @@ class IdeLoader extends React.PureComponent<Props, State> {
     const workspace = allWorkspaces.find(workspace =>
       workspace.namespace === params.namespace && workspace.devfile.metadata.name === params.workspaceName);
     if (workspace && !hasError && WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR) {
-      this.showAlert('An unknown workspace error.');
-      return;
+      try {
+        await this.props.requestWorkspace(workspace.id);
+      } catch (e) {
+        this.showAlert(`Getting workspace detail data failed. ${e}`);
+        return;
+      }
     }
     this.debounce.setDelay(1000);
   }

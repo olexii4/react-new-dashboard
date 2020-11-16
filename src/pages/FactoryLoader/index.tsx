@@ -133,7 +133,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
   }
 
   private getSteps(): WizardStep[] {
-    const { currentStep, workspaceName, devfileLocationInfo, hasError } = this.props;
+    const { currentStep, devfileLocationInfo, hasError } = this.props;
 
     const getTitle = (step: LoadFactorySteps, title: string, iconClass?: string) => {
       let className = '';
@@ -159,26 +159,28 @@ class FactoryLoader extends React.PureComponent<Props, State> {
       },
       {
         name: getTitle(
-          LoadFactorySteps.LOOKING_FOR_DEVFILE,
-          'Looking for devfile',
+          LoadFactorySteps.CREATE_WORKSPACE,
+          'Creating a workspace',
           'wizard-icon'),
         steps: [
+          {
+            id: LoadFactorySteps.LOOKING_FOR_DEVFILE,
+            name: getTitle(
+              LoadFactorySteps.LOOKING_FOR_DEVFILE,
+              currentStep <= LoadFactorySteps.LOOKING_FOR_DEVFILE ?
+                'Looking for devfile' :
+                devfileLocationInfo ?
+                  `Devfile is found as ${devfileLocationInfo}` :
+                  `Devfile is not found ${!hasError ? 'in repository root. Default environment will be applied' : ''}`,
+            ),
+            canJumpTo: currentStep >= LoadFactorySteps.LOOKING_FOR_DEVFILE,
+          },
           {
             id: LoadFactorySteps.APPLYING_DEVFILE,
             name: getTitle(
               LoadFactorySteps.APPLYING_DEVFILE,
-              devfileLocationInfo ?
-                `Found ${devfileLocationInfo}, applying it` :
-                `File devfile.yaml is not found ${!hasError ? 'in repository root. Default environment will be applied' : ''}`,
-            ),
+              'Applying devfile'),
             canJumpTo: currentStep >= LoadFactorySteps.APPLYING_DEVFILE,
-          },
-          {
-            id: LoadFactorySteps.CREATE_WORKSPACE,
-            name: getTitle(
-              LoadFactorySteps.CREATE_WORKSPACE,
-              `Creating a new workspace ${workspaceName}`),
-            canJumpTo: currentStep >= LoadFactorySteps.CREATE_WORKSPACE,
           },
         ],
       },

@@ -32,9 +32,9 @@ type Props =
 
 export enum LoadFactorySteps {
   INITIALIZING = 0,
+  CREATE_WORKSPACE = 1,
   LOOKING_FOR_DEVFILE,
   APPLYING_DEVFILE,
-  CREATE_WORKSPACE,
   START_WORKSPACE,
   OPEN_IDE
 }
@@ -144,7 +144,7 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
       }
     });
     attrs.stackName = `${location}${params}`;
-    this.setState({ currentStep: LoadFactorySteps.LOOKING_FOR_DEVFILE });
+    this.setState({ currentStep: LoadFactorySteps.CREATE_WORKSPACE });
     if (!location) {
       this.showAlert(
         `Repository/Devfile URL is missing. Please specify it via url query param:
@@ -152,7 +152,7 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
       );
       return;
     }
-    this.setState({ currentStep: LoadFactorySteps.APPLYING_DEVFILE, location });
+    this.setState({ currentStep: LoadFactorySteps.LOOKING_FOR_DEVFILE, location });
     await delay();
     try {
       await this.props.requestFactoryResolver(location);
@@ -170,10 +170,10 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     const { source } = this.factoryResolver.resolver;
     const devfileLocationInfo = !source || source === 'repo' ?
       `${searchParam.get('url')}` :
-      `${source} from the ${location}`;
-    this.setState({ currentStep: LoadFactorySteps.APPLYING_DEVFILE, devfileLocationInfo });
+      `\`${source}\` in github repo ${location}`;
+    this.setState({ currentStep: LoadFactorySteps.LOOKING_FOR_DEVFILE, devfileLocationInfo });
     const devfile = this.factoryResolver.resolver.devfile;
-    this.setState({ currentStep: LoadFactorySteps.CREATE_WORKSPACE });
+    this.setState({ currentStep: LoadFactorySteps.APPLYING_DEVFILE });
     await delay();
 
     let workspace: che.Workspace | null = null;
