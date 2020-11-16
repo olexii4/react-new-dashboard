@@ -26,7 +26,7 @@ import { CheckCircleIcon } from '@patternfly/react-icons';
 import { ExclamationCircleIcon, InProgressIcon } from '@patternfly/react-icons/dist/js/icons';
 import React, { RefObject } from 'react';
 import Header from '../../components/Header';
-import LogsTab from '../../components/LogsTab';
+import WorkspaceLogs from '../../components/LogsTab';
 import { LoadIdeSteps } from '../../containers/IdeLoader';
 import { delay } from '../../services/delay';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
@@ -309,8 +309,10 @@ class IdeLoader extends React.PureComponent<Props, State> {
         <Header title={`Starting workspace ${workspaceName}`}
           status={WorkspaceStatus[hasError ? WorkspaceStatus.ERROR : WorkspaceStatus.STARTING]} />
         <PageSection variant={SECTION_THEME} className="ide-loader-page" isFilled={true}>
-          <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick} inset={{ default: 'insetLg' }}>
-            <Tab eventKey={IdeLoaderTabs.Progress} title={IdeLoaderTabs[IdeLoaderTabs.Progress]}>
+          <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick} inset={{ default: 'insetLg' }}
+            id="ide-loader-page-tabs">
+            <Tab eventKey={IdeLoaderTabs.Progress} title={IdeLoaderTabs[IdeLoaderTabs.Progress]}
+              id="ide-loader-page-wizard-tab">
               <PageSection>
                 {(this.state.currentRequestError) && (
                   <Alert
@@ -331,8 +333,9 @@ class IdeLoader extends React.PureComponent<Props, State> {
                 />
               </PageSection>
             </Tab>
-            <Tab eventKey={IdeLoaderTabs.Logs} title={IdeLoaderTabs[IdeLoaderTabs.Logs]}>
-              <LogsTab workspaceId={workspaceId} />
+            <Tab eventKey={IdeLoaderTabs.Logs} title={IdeLoaderTabs[IdeLoaderTabs.Logs]}
+              id="ide-loader-page-logs-tab">
+              <WorkspaceLogs workspaceId={workspaceId} />
             </Tab>
           </Tabs>
         </PageSection>
