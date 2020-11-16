@@ -27,7 +27,7 @@ import {
 import Header from '../../components/Header';
 import { LoadFactorySteps } from '../../containers/FactoryLoader';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
-import LogsTab from '../../components/LogsTab';
+import WorkspaceLogs from '../../components/LogsTab';
 
 import workspaceStatusLabelStyles from '../../components/WorkspaceStatusLabel/index.module.css';
 import './FactoryLoader.styl';
@@ -221,8 +221,10 @@ class FactoryLoader extends React.PureComponent<Props, State> {
         <Header title={`Starting workspace ${workspaceName}`}
           status={hasError ? WorkspaceStatus[WorkspaceStatus.ERROR] : WorkspaceStatus[WorkspaceStatus.STARTING]} />
         <PageSection variant={SECTION_THEME} className="load-factory-page" isFilled={true}>
-          <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick} inset={{ default: 'insetLg' }}>
-            <Tab eventKey={LoadFactoryTabs.Progress} title={LoadFactoryTabs[LoadFactoryTabs.Progress]}>
+          <Tabs activeKey={this.state.activeTabKey} onSelect={this.handleTabClick} inset={{ default: 'insetLg' }}
+            id="factory-loader-page-tabs">
+            <Tab eventKey={LoadFactoryTabs.Progress} title={LoadFactoryTabs[LoadFactoryTabs.Progress]}
+              id="factory-loader-page-wizard-tab">
               <PageSection>
                 {(this.state.currentRequestError) && (
                   <Alert
@@ -243,8 +245,9 @@ class FactoryLoader extends React.PureComponent<Props, State> {
                 />
               </PageSection>
             </Tab>
-            <Tab eventKey={LoadFactoryTabs.Logs} title={LoadFactoryTabs[LoadFactoryTabs.Logs]}>
-              <LogsTab workspaceId={workspaceId} />
+            <Tab eventKey={LoadFactoryTabs.Logs} title={LoadFactoryTabs[LoadFactoryTabs.Logs]}
+              id="factory-loader-page-logs-tab">
+              <WorkspaceLogs workspaceId={workspaceId} />
             </Tab>
           </Tabs>
         </PageSection>

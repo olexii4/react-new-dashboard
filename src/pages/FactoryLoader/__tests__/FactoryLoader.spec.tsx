@@ -14,18 +14,18 @@ import React from 'react';
 import renderer, { ReactTestRenderer } from 'react-test-renderer';
 import { Store } from 'redux';
 import { Provider } from 'react-redux';
-import IdeLoaderTabs from '../';
-import { LoadIdeSteps } from '../../../containers/IdeLoader';
+import FactoryLoaderTabs from '../';
+import { LoadFactorySteps } from '../../../containers/FactoryLoader';
 import { createFakeStore } from '../../../services/__mocks__/store';
 
 const workspaceName = 'wksp-test';
 const workspaceId = 'testWorkspaceId';
 const store = createFakeStore(workspaceId, workspaceName);
 
-describe('The Ide Loader page  component', () => {
+describe('The Factory Loader page  component', () => {
 
   it('INITIALIZING step renders correctly', () => {
-    const currentStep = LoadIdeSteps.INITIALIZING;
+    const currentStep = LoadFactorySteps.INITIALIZING;
     const hasError = false;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
@@ -33,7 +33,48 @@ describe('The Ide Loader page  component', () => {
   });
 
   it('INITIALIZING step with an error renders correctly', () => {
-    const currentStep = LoadIdeSteps.INITIALIZING;
+    const currentStep = LoadFactorySteps.INITIALIZING;
+    const hasError = true;
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
+
+    expect(component.toJSON()).toMatchSnapshot();
+  });
+
+  it('LOOKING_FOR_DEVFILE step with devfile location renders correctly', () => {
+    const currentStep = LoadFactorySteps.LOOKING_FOR_DEVFILE;
+    const hasError = false;
+    const devfileLocationInfo = '`devfile.yaml`  in github repo https://github.com/test/test.git';
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError, devfileLocationInfo);
+
+    expect(component.toJSON()).toMatchSnapshot();
+  });
+
+  it('LOOKING_FOR_DEVFILE step without devfile location renders correctly', () => {
+    const currentStep = LoadFactorySteps.LOOKING_FOR_DEVFILE;
+    const hasError = false;
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
+
+    expect(component.toJSON()).toMatchSnapshot();
+  });
+
+  it('LOOKING_FOR_DEVFILE step with an error renders correctly', () => {
+    const currentStep = LoadFactorySteps.LOOKING_FOR_DEVFILE;
+    const hasError = true;
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
+
+    expect(component.toJSON()).toMatchSnapshot();
+  });
+
+  it('APPLYING_DEVFILE step renders correctly', () => {
+    const currentStep = LoadFactorySteps.APPLYING_DEVFILE;
+    const hasError = false;
+    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
+
+    expect(component.toJSON()).toMatchSnapshot();
+  });
+
+  it('APPLYING_DEVFILE step with an error renders correctly', () => {
+    const currentStep = LoadFactorySteps.APPLYING_DEVFILE;
     const hasError = true;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
@@ -41,7 +82,7 @@ describe('The Ide Loader page  component', () => {
   });
 
   it('START_WORKSPACE step renders correctly', () => {
-    const currentStep = LoadIdeSteps.START_WORKSPACE;
+    const currentStep = LoadFactorySteps.START_WORKSPACE;
     const hasError = false;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
@@ -49,7 +90,7 @@ describe('The Ide Loader page  component', () => {
   });
 
   it('START_WORKSPACE step with an error renders correctly', () => {
-    const currentStep = LoadIdeSteps.START_WORKSPACE;
+    const currentStep = LoadFactorySteps.START_WORKSPACE;
     const hasError = true;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
@@ -57,48 +98,30 @@ describe('The Ide Loader page  component', () => {
   });
 
   it('OPEN_IDE step renders correctly', () => {
-    const currentStep = LoadIdeSteps.OPEN_IDE;
+    const currentStep = LoadFactorySteps.OPEN_IDE;
     const hasError = false;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
 
     expect(component.toJSON()).toMatchSnapshot();
   });
-
-  it('OPEN_IDE step with an error renders correctly', () => {
-    const currentStep = LoadIdeSteps.OPEN_IDE;
-    const hasError = true;
-    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
-
-    expect(component.toJSON()).toMatchSnapshot();
-  });
-
-  it('Open IDE in the iframe renders correctly', () => {
-    const currentStep = LoadIdeSteps.OPEN_IDE;
-    const hasError = false;
-    const ideUrl = 'https://server-test-4400.192.168.99.100.nip.io';
-    const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError, ideUrl);
-
-    expect(component.toJSON()).toMatchSnapshot();
-  });
-
 });
 
 function renderComponent(
   store: Store,
-  currentStep: LoadIdeSteps,
+  currentStep: LoadFactorySteps,
   workspaceName: string,
   workspaceId: string,
   hasError: boolean,
-  ideUrl?: string,
+  devfileLocationInfo?: string,
 ): ReactTestRenderer {
   return renderer.create(
     <Provider store={store}>
-      <IdeLoaderTabs
+      <FactoryLoaderTabs
         currentStep={currentStep}
         workspaceName={workspaceName}
         workspaceId={workspaceId}
         hasError={hasError}
-        ideUrl={ideUrl}
+        devfileLocationInfo={devfileLocationInfo}
       />
     </Provider>,
   );
