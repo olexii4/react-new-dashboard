@@ -85,11 +85,11 @@ class IdeLoader extends React.PureComponent<Props, State> {
     }
   }
 
-  public componentWillUnmount(): void {
+  public async componentWillUnmount(): Promise<void> {
     this.debounce.unsubscribeAll();
   }
 
-  public componentDidMount(): void {
+  public async componentDidMount(): Promise<void> {
     const { allWorkspaces, requestWorkspaces } = this.props;
     if (!allWorkspaces || allWorkspaces.length === 0) {
       requestWorkspaces();
@@ -97,7 +97,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     }
     const workspace = allWorkspaces.find(workspace =>
       workspace.namespace === this.state.namespace && workspace.devfile.metadata.name === this.state.workspaceName);
-    if (workspace && workspace.runtime && WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
+    if (workspace && workspace.runtime && workspace.status === WorkspaceStatus[WorkspaceStatus.RUNNING]) {
       this.updateIdeUrl(workspace.runtime);
       return;
     }
@@ -109,7 +109,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     const { hasError } = this.state;
     const workspace = allWorkspaces.find(workspace =>
       workspace.namespace === params.namespace && workspace.devfile.metadata.name === params.workspaceName);
-    if (workspace && !hasError && WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR) {
+    if (workspace && !hasError && workspace.status === WorkspaceStatus[WorkspaceStatus.ERROR]) {
       try {
         await this.props.requestWorkspace(workspace.id);
       } catch (e) {
@@ -176,7 +176,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     if (workspace) {
       this.setState({ workspaceId: workspace.id });
       if ((workspace.runtime || this.state.currentStep === LoadIdeSteps.START_WORKSPACE) &&
-        WorkspaceStatus[workspace.status] === WorkspaceStatus.RUNNING) {
+        workspace.status === WorkspaceStatus[WorkspaceStatus.RUNNING]) {
         return this.openIDE(workspace.id);
       }
     } else {
@@ -185,8 +185,8 @@ class IdeLoader extends React.PureComponent<Props, State> {
     }
     if (this.state.currentStep === LoadIdeSteps.INITIALIZING) {
       this.setState({ currentStep: LoadIdeSteps.START_WORKSPACE });
-      if (WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPED ||
-        WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR) {
+      if (workspace.status === WorkspaceStatus[WorkspaceStatus.STOPPED] ||
+        workspace.status === WorkspaceStatus[WorkspaceStatus.ERROR]) {
         try {
           await this.props.startWorkspace(`${workspace.id}`);
         } catch (e) {
@@ -223,6 +223,6 @@ const connector = connect(
   mapStateToProps,
   WorkspaceStore.actionCreators,
 );
-
-type MappedProps = ConnectedProps<typeof connector>;
+// need a different type for testing
+type MappedProps = ConnectedProps<typeof connector> | any
 export default connector(IdeLoader);

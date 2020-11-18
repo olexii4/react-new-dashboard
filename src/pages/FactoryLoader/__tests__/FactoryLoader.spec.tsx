@@ -17,10 +17,12 @@ import { Provider } from 'react-redux';
 import FactoryLoaderTabs from '../';
 import { LoadFactorySteps } from '../../../containers/FactoryLoader';
 import { createFakeStore } from '../../../services/__mocks__/store';
+import { createFakeWorkspace } from '../../../services/__mocks__/workspace';
 
 const workspaceName = 'wksp-test';
 const workspaceId = 'testWorkspaceId';
-const store = createFakeStore(workspaceId, workspaceName);
+const workspace = createFakeWorkspace(workspaceId, workspaceName);
+const store = createFakeStore([workspace]);
 
 describe('The Factory Loader page  component', () => {
 

@@ -14,39 +14,30 @@ import { Store } from 'redux';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { AppState } from '../../store';
-import { WorkspaceStatus } from '../workspaceStatus';
 
-export const createFakeStore = (workspaceId: string, workspaceName: string, runtime?: che.WorkspaceRuntime): Store => {
+export const createFakeStore = (workspaces: che.Workspace[]): Store => {
   const middleware = [thunk];
   const mockStore = createMockStore(middleware);
   return mockStore({
+    factoryResolver: {
+      isLoading: false,
+      resolver: {},
+    },
+    plugins: {
+      isLoading: false,
+      plugins: [],
+    },
     workspaces: {
       isLoading: false,
       settings: {} as any,
-      workspaces: [
-        {
-          id: workspaceId,
-          attributes: {
-            infrastructureNamespace: 'che',
-          },
-          status: WorkspaceStatus[WorkspaceStatus.STOPPED],
-          devfile: {
-            apiVersion: '1.0.0',
-            metadata: {
-              name: workspaceName,
-            },
-          },
-          runtime: runtime,
-        },
-      ],
-      workspacesLogs: new Map(),
+      workspaces,
+      workspacesLogs: new Map<string, string[]>(),
+
       namespace: '',
       workspaceName: '',
       workspaceId: '',
-      recentNumber: '',
-    } as any,
-    factoryResolver: {} as any,
-    plugins: {} as any,
+      recentNumber: 5,
+    },
     branding: {} as any,
     devfileRegistries: {} as any,
     user: {} as any,
