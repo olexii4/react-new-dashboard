@@ -17,7 +17,7 @@ import { WorkspaceStatus } from '../../../services/workspaceStatus';
 
 describe('The workspace status label component', () => {
 
-  it('Default status renders correctly', () => {
+  it('should render default status correctly', () => {
     const element = (<WorkspaceStatusLabel
       status={undefined}
     />);
@@ -25,7 +25,7 @@ describe('The workspace status label component', () => {
     expect(renderer.create(element).toJSON()).toMatchSnapshot();
   });
 
-  it('Status STOPPED renders correctly', () => {
+  it('should render STOPPED status correctly', () => {
     const element = (<WorkspaceStatusLabel
       status={WorkspaceStatus[WorkspaceStatus.STOPPED]}
     />);
@@ -33,7 +33,7 @@ describe('The workspace status label component', () => {
     expect(renderer.create(element).toJSON()).toMatchSnapshot();
   });
 
-  it('Status RUNNING renders correctly', () => {
+  it('should render RUNNING status correctly', () => {
     const element = (<WorkspaceStatusLabel
       status={WorkspaceStatus[WorkspaceStatus.RUNNING]}
     />);
@@ -41,7 +41,7 @@ describe('The workspace status label component', () => {
     expect(renderer.create(element).toJSON()).toMatchSnapshot();
   });
 
-  it('Status ERROR renders correctly', () => {
+  it('should render ERROR status correctly', () => {
     const element = (<WorkspaceStatusLabel
       status={WorkspaceStatus[WorkspaceStatus.ERROR]}
     />);
@@ -49,7 +49,7 @@ describe('The workspace status label component', () => {
     expect(renderer.create(element).toJSON()).toMatchSnapshot();
   });
 
-  it('Status PAUSE renders correctly', () => {
+  it('should render PAUSE status correctly', () => {
     const element = (<WorkspaceStatusLabel
       status={WorkspaceStatus[WorkspaceStatus.PAUSED]}
     />);

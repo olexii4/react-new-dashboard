@@ -17,7 +17,7 @@ import { WorkspaceStatus } from '../../../services/workspaceStatus';
 
 describe('The header component for IDE-loader and Factory-loader pages', () => {
 
-  it('Start workspace renders correctly', () => {
+  it('should render start workspace correctly', () => {
     const element = (<Header
       title="Start workspace"
       status={WorkspaceStatus[WorkspaceStatus.STARTING]}
@@ -26,7 +26,7 @@ describe('The header component for IDE-loader and Factory-loader pages', () => {
     expect(renderer.create(element).toJSON()).toMatchSnapshot();
   });
 
-  it('Workspace error renders correctly', () => {
+  it('should render workspace error correctly', () => {
     const element = (<Header
       title="Workspace error"
       status={WorkspaceStatus[WorkspaceStatus.ERROR]}

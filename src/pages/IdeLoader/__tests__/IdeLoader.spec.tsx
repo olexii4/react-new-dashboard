@@ -26,7 +26,7 @@ const store = createFakeStore([workspace]);
 
 describe('The Ide Loader page  component', () => {
 
-  it('INITIALIZING step renders correctly', () => {
+  it('should render INITIALIZING step correctly', () => {
     const currentStep = LoadIdeSteps.INITIALIZING;
     const hasError = false;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
@@ -34,7 +34,7 @@ describe('The Ide Loader page  component', () => {
     expect(component.toJSON()).toMatchSnapshot();
   });
 
-  it('INITIALIZING step with an error renders correctly', () => {
+  it('should render INITIALIZING step with an error correctly', () => {
     const currentStep = LoadIdeSteps.INITIALIZING;
     const hasError = true;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
@@ -42,7 +42,7 @@ describe('The Ide Loader page  component', () => {
     expect(component.toJSON()).toMatchSnapshot();
   });
 
-  it('START_WORKSPACE step renders correctly', () => {
+  it('should render START_WORKSPACE step correctly', () => {
     const currentStep = LoadIdeSteps.START_WORKSPACE;
     const hasError = false;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
@@ -50,7 +50,7 @@ describe('The Ide Loader page  component', () => {
     expect(component.toJSON()).toMatchSnapshot();
   });
 
-  it('START_WORKSPACE step with an error renders correctly', () => {
+  it('should render START_WORKSPACE step with an error correctly', () => {
     const currentStep = LoadIdeSteps.START_WORKSPACE;
     const hasError = true;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
@@ -58,7 +58,7 @@ describe('The Ide Loader page  component', () => {
     expect(component.toJSON()).toMatchSnapshot();
   });
 
-  it('OPEN_IDE step renders correctly', () => {
+  it('should render OPEN_IDE step correctly', () => {
     const currentStep = LoadIdeSteps.OPEN_IDE;
     const hasError = false;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
@@ -66,7 +66,7 @@ describe('The Ide Loader page  component', () => {
     expect(component.toJSON()).toMatchSnapshot();
   });
 
-  it('OPEN_IDE step with an error renders correctly', () => {
+  it('should render OPEN_IDE step with an error correctly', () => {
     const currentStep = LoadIdeSteps.OPEN_IDE;
     const hasError = true;
     const component = renderComponent(store, currentStep, workspaceName, workspaceId, hasError);
@@ -74,7 +74,7 @@ describe('The Ide Loader page  component', () => {
     expect(component.toJSON()).toMatchSnapshot();
   });
 
-  it('Open IDE in the iframe renders correctly', () => {
+  it('should render Open IDE in the iframe correctly', () => {
     const currentStep = LoadIdeSteps.OPEN_IDE;
     const hasError = false;
     const ideUrl = 'https://server-test-4400.192.168.99.100.nip.io';

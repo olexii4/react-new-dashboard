@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`The Factory Loader page  component APPLYING_DEVFILE step renders correctly 1`] = `
+exports[`The Factory Loader page  component should render APPLYING_DEVFILE step correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -550,7 +550,7 @@ Array [
 ]
 `;
 
-exports[`The Factory Loader page  component APPLYING_DEVFILE step with an error renders correctly 1`] = `
+exports[`The Factory Loader page  component should render APPLYING_DEVFILE step with an error correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -1100,7 +1100,7 @@ Array [
 ]
 `;
 
-exports[`The Factory Loader page  component INITIALIZING step renders correctly 1`] = `
+exports[`The Factory Loader page  component should render INITIALIZING step correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -1547,7 +1547,7 @@ Array [
 ]
 `;
 
-exports[`The Factory Loader page  component INITIALIZING step with an error renders correctly 1`] = `
+exports[`The Factory Loader page  component should render INITIALIZING step with an error correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -1994,7 +1994,7 @@ Array [
 ]
 `;
 
-exports[`The Factory Loader page  component LOOKING_FOR_DEVFILE step with an error renders correctly 1`] = `
+exports[`The Factory Loader page  component should render LOOKING_FOR_DEVFILE step with an error correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -2526,7 +2526,7 @@ Array [
 ]
 `;
 
-exports[`The Factory Loader page  component LOOKING_FOR_DEVFILE step with devfile location renders correctly 1`] = `
+exports[`The Factory Loader page  component should render LOOKING_FOR_DEVFILE step with devfile location correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -3058,7 +3058,7 @@ Array [
 ]
 `;
 
-exports[`The Factory Loader page  component LOOKING_FOR_DEVFILE step without devfile location renders correctly 1`] = `
+exports[`The Factory Loader page  component should render LOOKING_FOR_DEVFILE step without devfile location correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -3590,7 +3590,7 @@ Array [
 ]
 `;
 
-exports[`The Factory Loader page  component OPEN_IDE step renders correctly 1`] = `
+exports[`The Factory Loader page  component should render OPEN_IDE step correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -4127,7 +4127,7 @@ Array [
 ]
 `;
 
-exports[`The Factory Loader page  component START_WORKSPACE step renders correctly 1`] = `
+exports[`The Factory Loader page  component should render START_WORKSPACE step correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -4646,7 +4646,7 @@ Array [
 ]
 `;
 
-exports[`The Factory Loader page  component START_WORKSPACE step with an error renders correctly 1`] = `
+exports[`The Factory Loader page  component should render START_WORKSPACE step with an error correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"

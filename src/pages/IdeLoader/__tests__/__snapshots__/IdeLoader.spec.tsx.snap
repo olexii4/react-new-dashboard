@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`The Ide Loader page  component INITIALIZING step renders correctly 1`] = `
+exports[`The Ide Loader page  component should render INITIALIZING step correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -389,7 +389,7 @@ Array [
 ]
 `;
 
-exports[`The Ide Loader page  component INITIALIZING step with an error renders correctly 1`] = `
+exports[`The Ide Loader page  component should render INITIALIZING step with an error correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -778,7 +778,7 @@ Array [
 ]
 `;
 
-exports[`The Ide Loader page  component OPEN_IDE step renders correctly 1`] = `
+exports[`The Ide Loader page  component should render OPEN_IDE step correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -1203,7 +1203,7 @@ Array [
 ]
 `;
 
-exports[`The Ide Loader page  component OPEN_IDE step with an error renders correctly 1`] = `
+exports[`The Ide Loader page  component should render OPEN_IDE step with an error correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -1628,7 +1628,7 @@ Array [
 ]
 `;
 
-exports[`The Ide Loader page  component Open IDE in the iframe renders correctly 1`] = `
+exports[`The Ide Loader page  component should render Open IDE in the iframe correctly 1`] = `
 <div
   className="ide-iframe-page"
 >
@@ -1640,7 +1640,7 @@ exports[`The Ide Loader page  component Open IDE in the iframe renders correctly
 </div>
 `;
 
-exports[`The Ide Loader page  component START_WORKSPACE step renders correctly 1`] = `
+exports[`The Ide Loader page  component should render START_WORKSPACE step correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
@@ -2047,7 +2047,7 @@ Array [
 ]
 `;
 
-exports[`The Ide Loader page  component START_WORKSPACE step with an error renders correctly 1`] = `
+exports[`The Ide Loader page  component should render START_WORKSPACE step with an error correctly 1`] = `
 Array [
   <section
     className="pf-c-page__main-section pf-m-light"
