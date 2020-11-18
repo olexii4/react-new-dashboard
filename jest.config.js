@@ -29,6 +29,23 @@ module.exports = {
       'tsConfig': 'tsconfig.test.json'
     }
   },
+  coverageThreshold: {
+    global: {
+      branches: 32,
+      functions: 40,
+      lines: 50,
+      statements: 51
+    },
+    './src/components/Header': {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    },
+  },
+  collectCoverage: true,
+  coverageReporters: ['html'],
+  coverageDirectory: './coverage',
   maxWorkers: 4,
   setupFilesAfterEnv: ['./jest.setup.ts'],
 }

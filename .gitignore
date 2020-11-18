@@ -10,3 +10,5 @@ build/
 tests/e2e/dist/
 tests/e2e/node_modules/
 tests/e2e/report/
+
+coverage
