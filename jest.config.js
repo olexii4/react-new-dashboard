@@ -44,8 +44,7 @@ module.exports = {
   ],
   coverageDirectory: './coverage',
   coverageReporters: [
-    ['html', { coverageDirectory: './coverage_html' }],
-    //['html-spa', {coverageDirectory: './coverage_html-spa' }],
+    'html',
     'text-summary'
   ],
   coverageThreshold: {
