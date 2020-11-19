@@ -223,6 +223,5 @@ const connector = connect(
   mapStateToProps,
   WorkspaceStore.actionCreators,
 );
-// need a different type for testing
-type MappedProps = ConnectedProps<typeof connector> | any
+type MappedProps = ConnectedProps<typeof connector>;
 export default connector(IdeLoader);

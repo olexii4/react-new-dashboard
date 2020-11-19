@@ -30,7 +30,7 @@
 | `select-hose@2.0.0` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `sshpk@1.16.1` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `stealthy-require@1.1.1` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
-| `typescript@3.9.5` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
+| `typescript@3.9.7` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `watchpack-chokidar2@2.0.0` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `wbuf@1.7.3` | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | `chokidar@2.1.8` | [CQ21965](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=21965) |

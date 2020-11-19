@@ -30,7 +30,8 @@
     "stylelint": "stylelint */**/*.css",
     "stylelint:fix": "stylelint */**/*.css --fix",
     "serve:prod": "webpack-dev-server --color --disable-host-check --config webpack.config.prod-dev.js",
-    "test": "jest --coverage",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
     "licenseCheck:prepare": "license-tool/build.sh",
     "licenseCheck:run": "license-tool/run.sh"
