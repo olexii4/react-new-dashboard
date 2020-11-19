@@ -223,5 +223,5 @@ const connector = connect(
   mapStateToProps,
   WorkspaceStore.actionCreators,
 );
-type MappedProps = ConnectedProps<typeof connector>;
+type MappedProps = ConnectedProps<typeof connector> | any;
 export default connector(IdeLoader);
