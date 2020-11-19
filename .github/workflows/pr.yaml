@@ -13,13 +13,36 @@ on:
     branches: [ master ]
 
 jobs:
-  docker-build:
+
+  # build:
+
+  #   runs-on: ubuntu-latest
+
+  #   strategy:
+  #     matrix:
+  #       node-version: [10.x, 12.x, 14.x]
+
+  #   steps:
+  #   - name: Checkout che-dashboard-next source code
+  #     uses: actions/checkout@v2
+  #   - name: Use Node.js ${{ matrix.node-version }}
+  #     uses: actions/setup-node@v1
+  #     with:
+  #       node-version: ${{ matrix.node-version }}
+  #   - name: Install dependencies
+  #     run: yarn
+  #   - name: Build
+  #     run: yarn compile
+  #   - name: Run unit tests
+  #     run: yarn test --runInBand
+
+  test-coverage:
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x]
+        node-version: [14.x]
 
     steps:
     - name: Checkout che-dashboard-next source code
@@ -30,7 +53,32 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies
       run: yarn
-    - name: Build
-      run: yarn compile
-    - name: Run unit tests
-      run: yarn test --coverage --runInBand
+    - name: Jest Code Coverage Report
+      uses: ziishaned/jest-reporter-action@0.1.1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        test-command: yarn jest --coverage --changedSince=origin/master
+
+  test-coverage-diff:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+    - name: Checkout che-dashboard-next source code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: yarn
+    - name: Jest Coverage Diff
+      uses: anuraag016/Jest-Coverage-Diff@1.0
+      with:
+        fullCoverageDiff: false
