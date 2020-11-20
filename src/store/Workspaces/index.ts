@@ -296,7 +296,7 @@ export const actionCreators: ActionCreators = {
     dispatch({ type: 'REQUEST_WORKSPACES' });
 
     try {
-      const updatedWorkspace = await WorkspaceClient.restApiClient.update<che.Workspace>(workspace.id, workspace as api.che.workspace.Workspace);
+      const updatedWorkspace = await WorkspaceClient.restApiClient.update<che.Workspace>(workspace.id, workspace as any);
       dispatch({ type: 'UPDATE_WORKSPACE', workspace: updatedWorkspace });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });

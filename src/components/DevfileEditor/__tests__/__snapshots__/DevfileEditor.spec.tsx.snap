@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The DevfileEditor component should render devfile-editor correctly 1`] = `
+<div
+  className="devfile-editor"
+>
+  <div
+    className="monaco"
+  >
+     
+  </div>
+  <div
+    className="error"
+  >
+    
+  </div>
+  <a
+    href="https://www.eclipse.org/che/docs/che-7"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Devfile Documentation
+  </a>
+</div>
+`;

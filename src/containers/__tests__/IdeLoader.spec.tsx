@@ -88,7 +88,7 @@ describe('IDE Loader container', () => {
         },
       },
     },
-  ] as che.Workspace[];
+  ] as any;
 
   const renderComponent = (
     namespace: string,

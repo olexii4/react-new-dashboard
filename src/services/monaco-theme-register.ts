@@ -10,14 +10,16 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
+import { editor } from 'monaco-editor-core/esm/vs/editor/editor.main';
 
-export const DEFAULT_CHE_THEME = 'che';
+const DEFAULT_CHE_THEME = 'che';
 
-export const registerCustomThemes = (): void => {
-
+export const initDefaultEditorTheme = (): string | undefined => {
+  if (!editor) {
+    return undefined;
+  }
   // register the white editor theme
-  Monaco.editor.defineTheme(DEFAULT_CHE_THEME, {
+  editor.defineTheme(DEFAULT_CHE_THEME, {
     base: 'vs', // can also be vs-dark or hc-black
     inherit: true, // can also be false to completely replace the builtin rules
     rules: [
@@ -34,5 +36,9 @@ export const registerCustomThemes = (): void => {
       'editorGutter.background': '#f8f8f8'
     }
   });
+
+  editor.setTheme(DEFAULT_CHE_THEME);
+
+  return DEFAULT_CHE_THEME;
 };
 

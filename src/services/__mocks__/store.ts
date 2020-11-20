@@ -38,7 +38,13 @@ export const createFakeStore = (workspaces: che.Workspace[]): Store => {
       workspaceId: '',
       recentNumber: 5,
     },
-    branding: {} as any,
+    branding: {
+      data: {
+        docs: {
+          devfile: 'https://www.eclipse.org/che/docs/che-7'
+        }
+      }
+    } as any,
     devfileRegistries: {} as any,
     user: {} as any,
     infrastructureNamespace: {} as any,

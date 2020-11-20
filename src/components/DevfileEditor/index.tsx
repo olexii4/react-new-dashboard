@@ -14,31 +14,30 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AppState } from '../../store';
 import { DisposableCollection } from '../../services/disposable';
-import * as monacoConversion from 'monaco-languageclient/lib/monaco-converter';
-import * as Monaco from 'monaco-editor-core/esm/vs/editor/editor.main';
-import { language, conf } from 'monaco-languages/release/esm/yaml/yaml';
-import * as yamlLanguageServer from 'yaml-language-server';
-import { registerCustomThemes, DEFAULT_CHE_THEME } from '../../services/monaco-theme-register';
+import { ProtocolToMonacoConverter, MonacoToProtocolConverter } from 'monaco-languageclient/lib/monaco-converter';
+import { languages } from 'monaco-editor-core/esm/vs/editor/editor.main';
+import { TextDocument, getLanguageService } from 'yaml-language-server';
+import { initDefaultEditorTheme } from '../../services/monaco-theme-register';
 import { safeLoad } from 'js-yaml';
-import stringify from './stringify';
+import stringify, { language, conf } from '../../services/devfile/stringify';
 import $ from 'jquery';
 
 import './DevfileEditor.styl';
 
 interface Editor {
   getValue(): string;
+
   getModel(): any;
 }
 
-const EDITOR_THEME = DEFAULT_CHE_THEME;
 const LANGUAGE_ID = 'yaml';
 const YAML_SERVICE = 'yamlService';
-const MONACO_CONFIG: Monaco.IEditorConstructionOptions = {
+const MONACO_CONFIG = {
   language: 'yaml',
   wordWrap: 'on',
   lineNumbers: 'on',
   scrollBeyondLastLine: false,
-};
+} as any;
 
 type Props =
   MappedProps
@@ -52,17 +51,18 @@ type State = {
 };
 
 export class DevfileEditor extends React.PureComponent<Props, State> {
+  public static EDITOR_THEME: string | undefined;
   private readonly toDispose = new DisposableCollection();
   private handleResize: () => void;
   private editor: any;
-  private yamlService: any;
-  private m2p = new monacoConversion.MonacoToProtocolConverter();
-  private p2m = new monacoConversion.ProtocolToMonacoConverter();
-  private createDocument = (model): yamlLanguageServer.TextDocument => yamlLanguageServer.TextDocument.create(
+  private readonly yamlService: any;
+  private m2p = new MonacoToProtocolConverter();
+  private p2m = new ProtocolToMonacoConverter();
+  private createDocument = (model): TextDocument => TextDocument.create(
     'inmemory://model.yaml',
     model.getModeId(),
     model.getVersionId(),
-    model.getValue()
+    model.getValue(),
   );
   private skipNextOnChange: boolean;
 
@@ -75,23 +75,29 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
 
     // lazy initialization
     if (!window[YAML_SERVICE]) {
-      this.yamlService = yamlLanguageServer.getLanguageService(() => Promise.resolve(''), {} as any, []);
+      this.yamlService = getLanguageService(() => Promise.resolve(''), {} as any, []);
       window[YAML_SERVICE] = this.yamlService;
     } else {
       this.yamlService = window[YAML_SERVICE];
       return;
     }
-    // register the YAML language with Monaco
-    Monaco.languages.register({
-      id: LANGUAGE_ID,
-      extensions: ['.yaml', '.yml'],
-      aliases: ['YAML'],
-      mimetypes: ['application/json']
-    });
-    Monaco.languages.setMonarchTokensProvider(LANGUAGE_ID, language);
-    Monaco.languages.setLanguageConfiguration(LANGUAGE_ID, conf);
-    // register language server providers
-    this.registerLanguageServerProviders(Monaco.languages);
+    if (!DevfileEditor.EDITOR_THEME) {
+      // define the default
+      DevfileEditor.EDITOR_THEME = initDefaultEditorTheme();
+    }
+    if (languages) {
+      // register the YAML language with Monaco
+      languages.register({
+        id: LANGUAGE_ID,
+        extensions: ['.yaml', '.yml'],
+        aliases: ['YAML'],
+        mimetypes: ['application/json'],
+      });
+      languages.setMonarchTokensProvider(LANGUAGE_ID, language);
+      languages.setLanguageConfiguration(LANGUAGE_ID, conf);
+      // register language server providers
+      this.registerLanguageServerProviders(languages);
+    }
     const jsonSchema = this.props.devfileRegistries.schema || {};
     const items = this.props.plugins.plugins;
     const components = jsonSchema && jsonSchema.properties ? jsonSchema.properties.components : undefined;
@@ -114,7 +120,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
           components.defaultSnippets.push({
             label: item.displayName,
             description: item.description,
-            body: { id: id, type: 'chePlugin' }
+            body: { id: id, type: 'chePlugin' },
           });
         } else {
           pluginsId.push(item.id);
@@ -124,7 +130,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
         if (!components.items.properties.id) {
           components.items.properties.id = {
             type: 'string',
-            description: 'Plugin\'s/Editor\'s id.'
+            description: 'Plugin\'s/Editor\'s id.',
           };
         }
         components.items.properties.id.examples = pluginsId;
@@ -133,10 +139,6 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
     const schemas = [{ uri: 'inmemory:yaml', fileMatch: ['*'], schema: jsonSchema }];
     // add the devfile schema into yaml language server configuration
     this.yamlService.configure({ validate: true, schemas, hover: true, completion: true });
-    // register custom themes
-    registerCustomThemes();
-    // define the default
-    Monaco.editor.setTheme(EDITOR_THEME);
   }
 
   public updateContent(devfile: che.WorkspaceDevfile): void {
@@ -168,9 +170,8 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
       const value = stringify(this.props.devfile);
       this.editor = monaco.editor.create(element, Object.assign(
         { value },
-        MONACO_CONFIG
+        MONACO_CONFIG,
       ));
-
       const doc = this.editor.getModel();
       doc.updateOptions({ tabSize: 2 });
 
@@ -193,7 +194,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
             this.editor.dispose();
           }
           window.removeEventListener('resize', handleResize);
-        }
+        },
       });
 
       let oldDecorationIds: string[] = []; // Array containing previous decorations identifiers.
@@ -250,8 +251,8 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
             endColumn: endPosition.column,
           },
           options: {
-            inlineClassName: 'devfile-editor-decoration'
-          }
+            inlineClassName: 'devfile-editor-decoration',
+          },
         } as monaco.editor.IModelDecoration);
         match = decorationRegExp.exec(value);
       }
@@ -331,7 +332,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
             const suggestions = completionResult.suggestions.map(suggestion => {
               return Object.assign(suggestion, {
                 insertTextRules: suggestion.insertTextRules ? suggestion.insertTextRules : defaultInsertTextRules,
-                sortText: createSortText(suggestion.insertText)
+                sortText: createSortText(suggestion.insertText),
               });
             });
             return { suggestions };
@@ -367,9 +368,13 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
       }
       validationTimer = setTimeout(() => {
         this.yamlService.doValidation(document, false).then(diagnostics => {
-          const markers = this.p2m.asDiagnostics(diagnostics);
+          const markers = this.p2m.asDiagnostics(diagnostics) as {
+            message: string,
+            startLineNumber: number,
+            startColumn: number
+          }[] | undefined;
           let errorMessage = '';
-          if (markers && markers[0]) {
+          if (markers !== undefined && markers.length > 0) {
             const { message, startLineNumber, startColumn } = markers[0];
             if (startLineNumber && startColumn) {
               errorMessage += `line[${startLineNumber}] column[${startColumn}]: `;
@@ -380,7 +385,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
             this.setState({ errorMessage: `Error. ${errorMessage}` });
             this.onChange(editor.getValue(), false);
           }
-          monaco.editor.setModelMarkers(model, 'default', markers || []);
+          monaco.editor.setModelMarkers(model, 'default', markers as any);
         });
       });
     });
@@ -397,8 +402,8 @@ const connector = connect(
   mapStateToProps,
   null,
   null,
-  { forwardRef: true }
+  { forwardRef: true },
 );
 
-type MappedProps = ConnectedProps<typeof connector>;
+type MappedProps = ConnectedProps<typeof connector> | any;
 export default connector(DevfileEditor);
