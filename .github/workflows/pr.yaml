@@ -62,7 +62,7 @@ jobs:
       uses: raulanatol/jest-coverage-comment-action@v1.0.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        jest-command: 'npm run jest --changedSince=origin/master'
+        jest-command: 'npm run test --changedSince=origin/master'
 
   test-coverage-diff:
 
