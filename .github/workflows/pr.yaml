@@ -58,11 +58,13 @@ jobs:
     #   with:
     #     github-token: ${{ secrets.GITHUB_TOKEN }}
     #     test-command: yarn jest --coverage --changedSince=origin/master
-    - name: Jest Coverage Comment Action
-      uses: raulanatol/jest-coverage-comment-action@v1.0.1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        jest-command: 'npm run test --coverage --changedSince=origin/master'
+    - name: test test
+      run: npm run test --coverage --changedSince=origin/master
+    # - name: Jest Coverage Comment Action
+    #   uses: raulanatol/jest-coverage-comment-action@v1.0.1
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     jest-command: 'npm run test --coverage --changedSince=origin/master'
 
   test-coverage-diff:
 
