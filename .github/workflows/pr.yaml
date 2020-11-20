@@ -53,11 +53,16 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies
       run: yarn
-    - name: Jest Code Coverage Report
-      uses: ziishaned/jest-reporter-action@0.1.1
+    # - name: Jest Code Coverage Report
+    #   uses: ChristiaanScheermeijer/jest-reporter-action@v0.4.0
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     test-command: yarn jest --coverage --changedSince=origin/master
+    - name: Jest Coverage Comment Action
+      uses: raulanatol/jest-coverage-comment-action@v1.0.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        test-command: yarn jest --coverage --changedSince=origin/master
+        jest-command: 'npm run jest --changedSince=origin/master'
 
   test-coverage-diff:
 
