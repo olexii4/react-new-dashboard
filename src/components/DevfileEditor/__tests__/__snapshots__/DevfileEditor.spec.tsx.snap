@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`The DevfileEditor component should render devfile-editor correctly 1`] = `
+exports[`The DevfileEditor component should initialize the component correctly 1`] = `
 <div
   className="devfile-editor"
 >

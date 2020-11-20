@@ -15,11 +15,11 @@ import { connect, ConnectedProps } from 'react-redux';
 import { AppState } from '../../store';
 import { DisposableCollection } from '../../services/disposable';
 import { ProtocolToMonacoConverter, MonacoToProtocolConverter } from 'monaco-languageclient/lib/monaco-converter';
-import { languages } from 'monaco-editor-core/esm/vs/editor/editor.main';
+import { languages, IEditorConstructionOptions } from 'monaco-editor-core/esm/vs/editor/editor.main';
 import { TextDocument, getLanguageService } from 'yaml-language-server';
 import { initDefaultEditorTheme } from '../../services/monaco-theme-register';
 import { safeLoad } from 'js-yaml';
-import stringify, { language, conf } from '../../services/devfile/stringify';
+import stringify, { language, conf } from '../../services/editor/helper';
 import $ from 'jquery';
 
 import './DevfileEditor.styl';
@@ -32,12 +32,12 @@ interface Editor {
 
 const LANGUAGE_ID = 'yaml';
 const YAML_SERVICE = 'yamlService';
-const MONACO_CONFIG = {
+const MONACO_CONFIG: IEditorConstructionOptions = {
   language: 'yaml',
   wordWrap: 'on',
   lineNumbers: 'on',
   scrollBeyondLastLine: false,
-} as any;
+};
 
 type Props =
   MappedProps
@@ -368,11 +368,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
       }
       validationTimer = setTimeout(() => {
         this.yamlService.doValidation(document, false).then(diagnostics => {
-          const markers = this.p2m.asDiagnostics(diagnostics) as {
-            message: string,
-            startLineNumber: number,
-            startColumn: number
-          }[] | undefined;
+          const markers = this.p2m.asDiagnostics(diagnostics) as monaco.editor.IMarkerData[] | undefined;
           let errorMessage = '';
           if (markers !== undefined && markers.length > 0) {
             const { message, startLineNumber, startColumn } = markers[0];
@@ -385,7 +381,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
             this.setState({ errorMessage: `Error. ${errorMessage}` });
             this.onChange(editor.getValue(), false);
           }
-          monaco.editor.setModelMarkers(model, 'default', markers as any);
+          monaco.editor.setModelMarkers(model, 'default', markers ? markers : []);
         });
       });
     });

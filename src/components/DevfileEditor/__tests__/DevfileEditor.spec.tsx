@@ -10,7 +10,6 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { AlertVariant } from '@patternfly/react-core';
 import React from 'react';
 import renderer, { ReactTestRenderer } from 'react-test-renderer';
 import { Provider } from 'react-redux';
@@ -25,7 +24,7 @@ jest.mock('../../../../node_modules/monaco-editor-core/esm/vs/editor/editor.main
 
 describe('The DevfileEditor component', () => {
 
-  it('should render devfile-editor correctly', () => {
+  it('should initialize the component correctly', () => {
     const workspaceName = 'wksp-test';
     const workspaceId = 'testWorkspaceId';
     const location = 'location[ \t]*(.*)[ \t]*$';
