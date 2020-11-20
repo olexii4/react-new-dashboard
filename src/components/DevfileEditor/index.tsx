@@ -401,5 +401,5 @@ const connector = connect(
   { forwardRef: true },
 );
 
-type MappedProps = ConnectedProps<typeof connector> | any;
+type MappedProps = ConnectedProps<typeof connector>;
 export default connector(DevfileEditor);
