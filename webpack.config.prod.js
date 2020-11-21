@@ -48,6 +48,7 @@ module.exports = merge(common, {
       ]
     }),
     new StylelintPlugin({
+      context: path.join(__dirname, 'src'),
       files: '**/*.css',
       fix: true,
     }),

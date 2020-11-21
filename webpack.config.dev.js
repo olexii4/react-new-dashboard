@@ -54,9 +54,10 @@ module.exports = env => {
       new CleanTerminalPlugin(),
       new HardSourceWebpackPlugin(),
       new StylelintPlugin({
+        context: path.join(__dirname, 'src'),
+        emitWarning: true,
         files: '**/*.css',
         lintDirtyModulesOnly: true,
-        emitWarning: true,
       }),
     ],
     optimization: {
