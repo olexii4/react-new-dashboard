@@ -13,6 +13,7 @@
 import React from 'react';
 import { Flex, FlexItem, Button, Divider } from '@patternfly/react-core';
 import { CompressIcon, DownloadIcon, ExpandIcon } from '@patternfly/react-icons/dist/js/icons';
+import { getBlobUrl } from '../../../services/tools/helper';
 
 import styles from './index.module.css';
 
@@ -52,7 +53,7 @@ class LogsTools extends React.PureComponent<Props, State> {
 
   public render(): React.ReactElement {
     const logsText = this.props.logs.join('\n');
-    const logsBlobUrl = URL.createObjectURL(new Blob([logsText], { type: 'text/x-log' }));
+    const logsBlobUrl = getBlobUrl ? getBlobUrl(logsText) : '';
 
     return (
       <div className={styles.logsTools}>

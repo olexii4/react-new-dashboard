@@ -15,6 +15,7 @@ import { WorkspaceStatus } from '../workspaceStatus';
 export const createFakeWorkspace = (
   workspaceId: string,
   workspaceName: string,
+  namespace = 'admin',
   runtime?: che.WorkspaceRuntime,
 ): che.Workspace => {
   return {
@@ -22,13 +23,25 @@ export const createFakeWorkspace = (
     attributes: {
       infrastructureNamespace: 'che',
     },
-    status: WorkspaceStatus[WorkspaceStatus.STOPPED],
+    status: runtime !== undefined ? WorkspaceStatus[WorkspaceStatus.RUNNING] : WorkspaceStatus[WorkspaceStatus.STOPPED],
     devfile: {
       apiVersion: '1.0.0',
       metadata: {
         name: workspaceName,
       },
     },
+    namespace,
     runtime: runtime,
   } as che.Workspace;
+};
+
+export const createFakeWorkspaceLogs = (
+  workspaceId: string,
+  logs: string[] = []
+): Map<string, string[]> => {
+  const workspacesLogs = new Map<string, string[]>();
+  if (logs.length > 0) {
+    workspacesLogs.set(workspaceId, logs);
+  }
+  return workspacesLogs;
 };

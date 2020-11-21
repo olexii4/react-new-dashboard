@@ -84,12 +84,10 @@ declare namespace che {
 
   export interface WorkspaceRuntime {
     activeEnv: string;
-    links: any[];
+    status: string;
     machines: {
       [machineName: string]: WorkspaceRuntimeMachine;
     };
-    owner: string;
-    warnings: WorkspaceWarning[];
     machineToken?: string;
   }
 
@@ -101,15 +99,13 @@ declare namespace che {
   export interface WorkspaceRuntimeMachine {
     attributes: { [propName: string]: string };
     servers: { [serverName: string]: WorkspaceRuntimeMachineServer };
+    status: string;
   }
 
   export interface WorkspaceRuntimeMachineServer {
     status: string;
-    port: string;
     url: string;
-    ref: string;
-    protocol: string;
-    path: string;
+    attributes: { [propName: string]: string };
   }
 
   export interface ProjectSource {

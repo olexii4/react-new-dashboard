@@ -17,12 +17,12 @@ import { RenderResult, render, screen } from '@testing-library/react';
 import { ROUTE } from '../../route.enum';
 import { getMockRouterProps } from '../../services/__mocks__/router';
 import { createFakeStore } from '../../services/__mocks__/store';
+import { createFakeWorkspace } from '../../services/__mocks__/workspace';
 import { WorkspaceStatus } from '../../services/workspaceStatus';
 import IdeLoader, { LoadIdeSteps } from '../IdeLoader';
-import * as StoreWorkspaces from '../../store/Workspaces/index';
 
 jest.mock('../../store/Workspaces/index', () => {
-  return () => StoreWorkspaces;
+  return { actionCreators: {} };
 });
 
 const showAlert = jest.fn();
@@ -53,42 +53,41 @@ jest.mock('../../pages/IdeLoader', () => {
 
 describe('IDE Loader container', () => {
 
-  const workspaces = [
-    {
-      id: 'id-wksp-1',
-      status: WorkspaceStatus[WorkspaceStatus.STOPPED],
-      devfile: {
-        metadata: {
-          name: 'name-wksp-1',
+  const runtime: che.WorkspaceRuntime = {
+    machines: {
+      'theia-ide-test': {
+        attributes: {
+          source: 'tool',
         },
-      },
-      namespace: 'admin1',
-    },
-    {
-      id: 'id-wksp-2',
-      status: WorkspaceStatus[WorkspaceStatus.RUNNING],
-      devfile: {
-        metadata: {
-          name: 'name-wksp-2',
-        },
-      },
-      namespace: 'admin2',
-      runtime: {
-        machines: {
-          'theia-ide-test': {
-            servers: {
-              theia: {
-                attributes: {
-                  type: 'ide',
-                },
-                url: 'https://server-test-4402.192.168.99.100.nip.io',
-              },
+        servers: {
+          theia: {
+            status: WorkspaceStatus[WorkspaceStatus.RUNNING],
+            attributes: {
+              type: 'ide',
             },
+            url: 'https://server-test-4402.192.168.99.100.nip.io',
           },
         },
+        status: WorkspaceStatus[WorkspaceStatus.RUNNING],
       },
     },
-  ] as any;
+    status: WorkspaceStatus[WorkspaceStatus.RUNNING],
+    activeEnv: 'default',
+  };
+
+  const store = createFakeStore([
+    createFakeWorkspace(
+      'id-wksp-1',
+      'name-wksp-1',
+      'admin1',
+    ),
+    createFakeWorkspace(
+      'id-wksp-2',
+      'name-wksp-2',
+      'admin2',
+      runtime
+    )
+  ]);
 
   const renderComponent = (
     namespace: string,
@@ -96,7 +95,6 @@ describe('IDE Loader container', () => {
     startWorkspace: jest.Mock,
     requestWorkspace: jest.Mock,
   ): RenderResult => {
-    const store = createFakeStore(workspaces);
     const { history, location, match } = getMockRouterProps(ROUTE.IDE, { namespace, workspaceName });
     return render(
       <Provider store={store}>

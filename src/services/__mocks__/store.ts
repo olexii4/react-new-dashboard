@@ -15,7 +15,9 @@ import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { AppState } from '../../store';
 
-export const createFakeStore = (workspaces: che.Workspace[]): Store => {
+export const createFakeStore = (
+  workspaces: che.Workspace[],
+  workspacesLogs: Map<string, string[]> = new Map<string, string[]>()): Store => {
   const middleware = [thunk];
   const mockStore = createMockStore(middleware);
   return mockStore({
@@ -31,8 +33,7 @@ export const createFakeStore = (workspaces: che.Workspace[]): Store => {
       isLoading: false,
       settings: {} as any,
       workspaces,
-      workspacesLogs: new Map<string, string[]>(),
-
+      workspacesLogs,
       namespace: '',
       workspaceName: '',
       workspaceId: '',
