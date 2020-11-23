@@ -16,7 +16,6 @@ import { Tooltip } from '@patternfly/react-core';
 import { TrashIcon } from '@patternfly/react-icons';
 import { container } from '../../../inversify.config';
 import { Debounce } from '../../../services/debounce/Debounce';
-import { AppState } from '../../../store';
 import * as WorkspaceStore from '../../../store/Workspaces';
 
 import * as styles from '../action.module.css';
@@ -26,6 +25,7 @@ type Props = MappedProps
     workspaceId: string;
     disabled: boolean;
   };
+
 type State = {
   isDebounceDelay: boolean;
 };
@@ -35,6 +35,10 @@ class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
 
   constructor(props: Props) {
     super(props);
+
+    this.state = {
+      isDebounceDelay: false,
+    };
 
     this.debounce = container.get(Debounce);
     this.debounce.subscribe(isDebounceDelay => {
@@ -50,21 +54,24 @@ class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
   private onClick(event: React.MouseEvent): void {
     event.stopPropagation();
 
-    if (this.props.disabled) {
+    if (this.props.disabled || this.state.isDebounceDelay) {
       return;
     }
 
-    this.props.deleteWorkspace(this.props.workspaceId);
     this.debounce.setDelay();
+    this.props.deleteWorkspace(this.props.workspaceId);
   }
 
   public render(): React.ReactElement {
     const tooltipContent = 'Delete Workspace';
-    const className = this.props.disabled ? styles.disabledWorkspaceStatus : styles.workspaceStatus;
+    const { workspaceId, disabled } = this.props;
+    const { isDebounceDelay } = this.state;
+    const className = disabled || isDebounceDelay ? styles.disabledWorkspaceStatus : styles.workspaceStatus;
 
     return (
       <span
-        key={`wrks-delete-${this.props.workspaceId}`}
+        data-testid={`delete-${workspaceId}`}
+        key={`wrks-delete-${workspaceId}`}
         className={className}
         onClick={e => this.onClick(e)}
       >
@@ -81,12 +88,12 @@ class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
 
 }
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = () => ({});
 
 const connector = connect(
   mapStateToProps,
-  WorkspaceStore.actionCreators
+  WorkspaceStore.actionCreators,
 );
 
-type MappedProps = ConnectedProps<typeof connector>;
+type MappedProps = ConnectedProps<typeof connector> | any;
 export default connector(WorkspaceDeleteAction);
