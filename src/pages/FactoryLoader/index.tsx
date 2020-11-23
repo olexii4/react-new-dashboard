@@ -26,7 +26,7 @@ import {
 } from '@patternfly/react-core';
 import Header from '../../components/Header';
 import { LoadFactorySteps } from '../../containers/FactoryLoader';
-import { WorkspaceStatus } from '../../services/workspaceStatus';
+import { WorkspaceStatus } from '../../services/helpers/types';
 import WorkspaceLogs from '../../components/LogsTab';
 
 import workspaceStatusLabelStyles from '../../components/WorkspaceStatusLabel/index.module.css';

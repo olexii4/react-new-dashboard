@@ -30,7 +30,7 @@ import { SearchIcon } from '@patternfly/react-icons';
 import { AppState } from '../../../store';
 import * as DevfileRegistriesStore from '../../../store/DevfileRegistries';
 import { SampleCard } from './SampleCard';
-import { AlertItem } from '../../../services/types';
+import { AlertItem } from '../../../services/helpers/types';
 import { selectMetadataFiltered } from '../../../store/DevfileRegistries/selectors';
 
 type Props =

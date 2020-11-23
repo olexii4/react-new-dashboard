@@ -10,6 +10,26 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
+import { AlertVariant } from '@patternfly/react-core';
+
+export interface AlertItem {
+  key: string;
+  title: string;
+  variant: AlertVariant;
+}
+
+export enum StorageType {
+  async = 'Asynchronous',
+  ephemeral = 'Ephemeral',
+  persistent = 'Persistent',
+}
+
+export interface FactoryResolver {
+  v: string;
+  source: string;
+  devfile: api.che.workspace.devfile.Devfile
+}
+
 export enum WorkspaceStatus {
   RUNNING = 1,
   STOPPING,

@@ -13,7 +13,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import Header from '../';
-import { WorkspaceStatus } from '../../../services/workspaceStatus';
+import { WorkspaceStatus } from '../../../services/helpers/types';
 
 describe('The header component for IDE-loader and Factory-loader pages', () => {
 

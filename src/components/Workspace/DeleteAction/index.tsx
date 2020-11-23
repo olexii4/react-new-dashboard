@@ -15,7 +15,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { Tooltip } from '@patternfly/react-core';
 import { TrashIcon } from '@patternfly/react-icons';
 import { container } from '../../../inversify.config';
-import { Debounce } from '../../../services/debounce/Debounce';
+import { Debounce } from '../../../services/helpers/debounce';
 import * as WorkspaceStore from '../../../store/Workspaces';
 
 import * as styles from '../action.module.css';

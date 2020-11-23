@@ -17,11 +17,11 @@ import { Store } from 'redux';
 import LogsTab from '../';
 import { createFakeStore } from '../../../services/__mocks__/store';
 import { createFakeWorkspace, createFakeWorkspaceLogs } from '../../../services/__mocks__/workspace';
-import { WorkspaceStatus } from '../../../services/workspaceStatus';
+import { WorkspaceStatus } from '../../../services/helpers/types';
 
-jest.mock('../../../services/tools/helper', () => {
+jest.mock('../../../services/helpers/tools', () => {
   return {
-    getBlobUrl: () => 'https://fake.blob.url'
+    getBlobUrl: () => 'https://fake.blob.url',
   };
 });
 
@@ -29,6 +29,7 @@ describe('The LogsTab component', () => {
   const namespace = 'admin';
   const workspaceId = 'workspace-test-id';
   const workspaceName = 'workspace-test-name';
+  const status = WorkspaceStatus[WorkspaceStatus.RUNNING];
   const runtime: che.WorkspaceRuntime = {
     machines: {},
     status: WorkspaceStatus[WorkspaceStatus.RUNNING],
@@ -45,7 +46,7 @@ describe('The LogsTab component', () => {
   });
 
   it('should render workspace-logs widget without logs correctly', () => {
-    const workspace = createFakeWorkspace(workspaceId, workspaceName, namespace, runtime);
+    const workspace = createFakeWorkspace(workspaceId, workspaceName, namespace, status, runtime);
 
     const store = createFakeStore([workspace]);
 
@@ -55,7 +56,7 @@ describe('The LogsTab component', () => {
   });
 
   it('should render workspace-logs widget with logs inside correctly', () => {
-    const workspace = createFakeWorkspace(workspaceId, workspaceName, namespace, runtime);
+    const workspace = createFakeWorkspace(workspaceId, workspaceName, namespace, status, runtime);
     const workspacesLogs = createFakeWorkspaceLogs(workspaceId, [
       'Pulling image "quay.io/eclipse/che-theia-endpoint-runtime-binary:next"',
       'Successfully pulled image "quay.io/eclipse/che-theia-endpoint-runtime-binary:next"',

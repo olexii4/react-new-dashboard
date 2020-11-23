@@ -14,7 +14,7 @@ import React from 'react';
 import renderer, { ReactTestRenderer } from 'react-test-renderer';
 import LogsTools from '../';
 
-jest.mock('../../../../services/tools/helper', () => {
+jest.mock('../../../../services/helpers/tools', () => {
   return {
     getBlobUrl: (text: string) => encodeURI(`https://fake.blob.url?blobText=${text}`),
   };

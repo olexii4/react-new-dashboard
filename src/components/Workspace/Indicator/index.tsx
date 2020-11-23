@@ -17,7 +17,7 @@ import {
   ResourcesFullIcon,
 } from '@patternfly/react-icons/dist/js/icons';
 import React from 'react';
-import { WorkspaceStatus } from '../../../services/workspaceStatus';
+import { WorkspaceStatus } from '../../../services/helpers/types';
 import { ColorType, StoppedIcon } from '../../WorkspaceStatusLabel';
 
 import styles from './Indicator.module.css';

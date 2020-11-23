@@ -11,7 +11,7 @@
  */
 
 import { Action, Reducer } from 'redux';
-import { FactoryResolver } from '../services/types';
+import { FactoryResolver } from '../services/helpers/types';
 import { AppState, AppThunk } from './';
 import { container } from '../inversify.config';
 import { CheWorkspaceClient } from '../services/workspace-client/CheWorkspaceClient';

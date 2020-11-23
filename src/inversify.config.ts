@@ -13,7 +13,7 @@
 import { Container } from 'inversify';
 import { KeycloakSetup } from './services/bootstrap/KeycloakSetup';
 import { Keycloak } from './services/keycloak/Keycloak';
-import { Debounce } from './services/debounce/Debounce';
+import { Debounce } from './services/helpers/debounce';
 import { CheWorkspaceClient } from './services/workspace-client/CheWorkspaceClient';
 
 const container = new Container();

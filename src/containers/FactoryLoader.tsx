@@ -14,13 +14,13 @@ import { AlertVariant } from '@patternfly/react-core';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { History } from 'history';
-import { delay } from '../services/delay';
+import { delay } from '../services/helpers/delay';
 import { AppState } from '../store';
 import * as FactoryResolverStore from '../store/FactoryResolver';
 import * as WorkspaceStore from '../store/Workspaces';
 import FactoryLoaderPage from '../pages/FactoryLoader';
 import { selectAllWorkspaces, selectWorkspaceById } from '../store/Workspaces/selectors';
-import { WorkspaceStatus } from '../services/workspaceStatus';
+import { WorkspaceStatus } from '../services/helpers/types';
 
 const WS_ATTRIBUTES_TO_SAVE: string[] = ['workspaceDeploymentLabels', 'workspaceDeploymentAnnotations'];
 // todo remove it after investigation why does it happens sometimes

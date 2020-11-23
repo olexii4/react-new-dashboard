@@ -21,7 +21,7 @@ import {
 } from '@patternfly/react-core';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { WorkspaceStatus } from '../../services/workspaceStatus';
+import { WorkspaceStatus } from '../../services/helpers/types';
 import LogsTools from './LogsTools';
 import { AppState } from '../../store';
 import { selectAllWorkspaces, selectLogs } from '../../store/Workspaces/selectors';

@@ -13,7 +13,7 @@
 import React from 'react';
 import { Form, FormGroup, PageSection, PageSectionVariants } from '@patternfly/react-core';
 import StorageTypeFormGroup from './StorageType';
-import { StorageType } from '../../../services/types';
+import { StorageType } from '../../../services/helpers/types';
 import { WorkspaceNameFormGroup } from './WorkspaceName';
 import InfrastructureNamespaceFormGroup from './InfrastructureNamespace';
 

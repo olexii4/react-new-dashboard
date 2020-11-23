@@ -28,7 +28,7 @@ import {
 import { fallback } from '../../App';
 import * as WorkspaceStore from '../../store/Workspaces';
 import { AppState } from '../../store';
-import { AlertItem } from '../../services/types';
+import { AlertItem } from '../../services/helpers/types';
 import { ROUTE } from '../../route.enum';
 
 const SamplesListTab = React.lazy(() => import('./GetStartedTab'));

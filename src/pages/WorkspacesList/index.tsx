@@ -24,9 +24,9 @@ import WorkspaceIndicator from '../../components/Workspace/Indicator';
 import WorkspaceRunAction from '../../components/Workspace/RunAction';
 import WorkspaceStopAction from '../../components/Workspace/StopAction';
 import WorkspaceDeleteAction from '../../components/Workspace/DeleteAction';
-import { Debounce } from '../../services/debounce/Debounce';
+import { Debounce } from '../../services/helpers/debounce';
 import { selectIsLoading, selectAllWorkspacesByName } from '../../store/Workspaces/selectors';
-import { WorkspaceStatus } from '../../services/workspaceStatus';
+import { WorkspaceStatus } from '../../services/helpers/types';
 
 import './WorkspacesList.styl';
 

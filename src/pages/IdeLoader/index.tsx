@@ -28,8 +28,8 @@ import React, { RefObject } from 'react';
 import Header from '../../components/Header';
 import WorkspaceLogs from '../../components/LogsTab';
 import { LoadIdeSteps } from '../../containers/IdeLoader';
-import { delay } from '../../services/delay';
-import { WorkspaceStatus } from '../../services/workspaceStatus';
+import { delay } from '../../services/helpers/delay';
+import { WorkspaceStatus } from '../../services/helpers/types';
 
 import workspaceStatusLabelStyles from '../../components/WorkspaceStatusLabel/index.module.css';
 import './IdeLoader.styl';

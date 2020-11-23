@@ -18,7 +18,7 @@ import { ROUTE } from '../../route.enum';
 import { getMockRouterProps } from '../../services/__mocks__/router';
 import { createFakeStore } from '../../services/__mocks__/store';
 import { createFakeWorkspace } from '../../services/__mocks__/workspace';
-import { WorkspaceStatus } from '../../services/workspaceStatus';
+import { WorkspaceStatus } from '../../services/helpers/types';
 import IdeLoader, { LoadIdeSteps } from '../IdeLoader';
 
 jest.mock('../../store/Workspaces/index', () => {
@@ -85,6 +85,7 @@ describe('IDE Loader container', () => {
       'id-wksp-2',
       'name-wksp-2',
       'admin2',
+      WorkspaceStatus[WorkspaceStatus.RUNNING],
       runtime
     )
   ]);

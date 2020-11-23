@@ -13,13 +13,13 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { AppState } from '../../store';
-import { DisposableCollection } from '../../services/disposable';
+import { DisposableCollection } from '../../services/helpers/disposable';
 import { ProtocolToMonacoConverter, MonacoToProtocolConverter } from 'monaco-languageclient/lib/monaco-converter';
 import { languages, IEditorConstructionOptions } from 'monaco-editor-core/esm/vs/editor/editor.main';
 import { TextDocument, getLanguageService } from 'yaml-language-server';
-import { initDefaultEditorTheme } from '../../services/monaco-theme-register';
+import { initDefaultEditorTheme } from '../../services/monaco/monaco-theme-register';
 import { safeLoad } from 'js-yaml';
-import stringify, { language, conf } from '../../services/editor/helper';
+import stringify, { language, conf } from '../../services/helpers/editor';
 import $ from 'jquery';
 
 import './DevfileEditor.styl';

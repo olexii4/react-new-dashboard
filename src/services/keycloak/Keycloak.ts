@@ -12,7 +12,7 @@
 
 import { injectable } from 'inversify';
 import { KeycloakInstance } from 'keycloak-js';
-import { getDefer, IDeferred } from '../deferred';
+import { getDefer, IDeferred } from '../helpers/deferred';
 import { KeycloakSetup } from '../bootstrap/KeycloakSetup';
 
 export type IKeycloakUserInfo = {

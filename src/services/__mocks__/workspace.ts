@@ -10,20 +10,24 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { WorkspaceStatus } from '../workspaceStatus';
+import { WorkspaceStatus } from '../helpers/types';
 
 export const createFakeWorkspace = (
   workspaceId: string,
   workspaceName: string,
   namespace = 'admin',
+  status = WorkspaceStatus[WorkspaceStatus.STOPPED],
   runtime?: che.WorkspaceRuntime,
 ): che.Workspace => {
+  if (runtime && WorkspaceStatus[status] !== WorkspaceStatus.RUNNING) {
+    throw new Error('Failed creating a stub workspace. Workspace runtime object is only combined with "RUNNING" status');
+  }
   return {
     id: workspaceId,
     attributes: {
       infrastructureNamespace: 'che',
     },
-    status: runtime !== undefined ? WorkspaceStatus[WorkspaceStatus.RUNNING] : WorkspaceStatus[WorkspaceStatus.STOPPED],
+    status,
     devfile: {
       apiVersion: '1.0.0',
       metadata: {
@@ -37,7 +41,7 @@ export const createFakeWorkspace = (
 
 export const createFakeWorkspaceLogs = (
   workspaceId: string,
-  logs: string[] = []
+  logs: string[] = [],
 ): Map<string, string[]> => {
   const workspacesLogs = new Map<string, string[]>();
   if (logs.length > 0) {

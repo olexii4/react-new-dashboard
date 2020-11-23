@@ -29,7 +29,7 @@ import * as DevfileRegistriesStore from '../../../../store/DevfileRegistries';
 import * as FactoryResolverStore from '../../../../store/FactoryResolver';
 import { DevfileSelect } from './DevfileSelect';
 import { DevfileLocationInput } from './DevfileLocationInput';
-import { AlertItem } from '../../../../services/types';
+import { AlertItem } from '../../../../services/helpers/types';
 import { safeLoad } from 'js-yaml';
 
 import styles from './index.module.css';

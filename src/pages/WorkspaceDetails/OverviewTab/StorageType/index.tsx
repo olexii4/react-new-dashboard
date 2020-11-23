@@ -23,7 +23,7 @@ import {
   Alert,
   AlertVariant,
 } from '@patternfly/react-core';
-import { StorageType } from '../../../../services/types';
+import { StorageType } from '../../../../services/helpers/types';
 import { AppState } from '../../../../store';
 import { connect, ConnectedProps } from 'react-redux';
 import { OutlinedQuestionCircleIcon, PencilAltIcon } from '@patternfly/react-icons';

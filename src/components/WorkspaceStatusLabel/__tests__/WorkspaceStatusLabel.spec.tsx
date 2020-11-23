@@ -13,7 +13,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import WorkspaceStatusLabel from '../';
-import { WorkspaceStatus } from '../../../services/workspaceStatus';
+import { WorkspaceStatus } from '../../../services/helpers/types';
 
 describe('The workspace status label component', () => {
 

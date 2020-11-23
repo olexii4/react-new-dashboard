@@ -16,7 +16,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AppThunk } from '../';
 import { container } from '../../inversify.config';
 import { CheWorkspaceClient } from '../../services/workspace-client/CheWorkspaceClient';
-import { WorkspaceStatus } from '../../services/workspaceStatus';
+import { WorkspaceStatus } from '../../services/helpers/types';
 import { createState } from '../helpers';
 
 const WorkspaceClient = container.get(CheWorkspaceClient);

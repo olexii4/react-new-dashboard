@@ -14,7 +14,7 @@ import React from 'react';
 import { Flex, FlexItem, Button, Divider } from '@patternfly/react-core';
 import { CompressIcon, CopyIcon, DownloadIcon, ExpandIcon } from '@patternfly/react-icons/dist/js/icons';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import stringify from '../../../../services/editor/helper';
+import stringify from '../../../../services/helpers/editor';
 
 import './EditorTools.styl';
 
