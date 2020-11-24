@@ -15,6 +15,9 @@ import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { AppState } from '../../store';
 
+/**
+ * @deprecated
+ */
 export const createFakeStore = (
   workspaces: che.Workspace[],
   workspacesLogs: Map<string, string[]> = new Map<string, string[]>()): Store => {

@@ -18,14 +18,14 @@ import * as WorkspacesStore from './Workspaces';
 import * as DevfileRegistriesStore from './DevfileRegistries';
 import * as InfrastructureNamespaceStore from './InfrastructureNamespace';
 import * as BrandingStore from './Branding';
-import userReducer from './User';
+import userReducer, { UserState } from './User';
 
 // the top-level state object
 export interface AppState {
   branding: BrandingStore.State;
   devfileRegistries: DevfileRegistriesStore.State;
   infrastructureNamespace: InfrastructureNamespaceStore.State;
-  user: any;
+  user: UserState;
   workspaces: WorkspacesStore.State;
   plugins: Plugins.State;
   factoryResolver: FactoryResolver.State;
