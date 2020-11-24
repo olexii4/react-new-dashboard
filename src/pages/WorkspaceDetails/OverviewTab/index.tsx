@@ -13,9 +13,9 @@
 import React from 'react';
 import { Form, FormGroup, PageSection, PageSectionVariants } from '@patternfly/react-core';
 import StorageTypeFormGroup from './StorageType';
-import { StorageType } from '../../../services/helpers/types';
 import { WorkspaceNameFormGroup } from './WorkspaceName';
 import InfrastructureNamespaceFormGroup from './InfrastructureNamespace';
+import { updateDevfile } from '../../../services/storageTypes';
 
 type Props = {
   onSave: (workspace: che.Workspace) => Promise<void>;
@@ -23,7 +23,7 @@ type Props = {
 };
 
 export type State = {
-  storageType: StorageType;
+  storageType: che.WorkspaceStorageType;
   namespace: string;
   workspaceName: string;
 };
@@ -60,51 +60,23 @@ export class OverviewTab extends React.Component<Props, State> {
     await this.onSave(newDevfile);
   }
 
-  private async handleStorageSave(storageType: StorageType): Promise<void> {
-    const newDevfile = Object.assign({}, this.props.workspace.devfile);
-    switch (storageType) {
-      case StorageType.persistent:
-        if (newDevfile.attributes) {
-          delete newDevfile.attributes.persistVolumes;
-          delete newDevfile.attributes.asyncPersist;
-          if (Object.keys(newDevfile.attributes).length === 0) {
-            delete newDevfile.attributes;
-          }
-        }
-        break;
-      case StorageType.ephemeral:
-        if (!newDevfile.attributes) {
-          newDevfile.attributes = {};
-        }
-        newDevfile.attributes.persistVolumes = 'false';
-        delete newDevfile.attributes.asyncPersist;
-        break;
-      case StorageType.async:
-        if (!newDevfile.attributes) {
-          newDevfile.attributes = {};
-        }
-        newDevfile.attributes.persistVolumes = 'false';
-        newDevfile.attributes.asyncPersist = 'true';
-        break;
-    }
+  private async handleStorageSave(storageType: che.WorkspaceStorageType): Promise<void> {
+    const newDevfile = updateDevfile(this.props.workspace.devfile, storageType);
     this.setState({ storageType });
     await this.onSave(newDevfile);
   }
 
-  private getStorageType(devfile: che.WorkspaceDevfile): StorageType {
-    let storageType: StorageType;
-    // storage type
+  private getStorageType(devfile: che.WorkspaceDevfile): che.WorkspaceStorageType {
     if (devfile.attributes && devfile.attributes.persistVolumes === 'false') {
       const isAsync = devfile.attributes && devfile.attributes.asyncPersist === 'true';
       if (isAsync) {
-        storageType = StorageType.async;
+        return 'async';
       } else {
-        storageType = StorageType.ephemeral;
+        return 'ephemeral';
       }
     } else {
-      storageType = StorageType.persistent;
+      return 'persistent';
     }
-    return storageType;
   }
 
   public render(): React.ReactElement {

@@ -18,12 +18,6 @@ export interface AlertItem {
   variant: AlertVariant;
 }
 
-export enum StorageType {
-  async = 'Asynchronous',
-  ephemeral = 'Ephemeral',
-  persistent = 'Persistent',
-}
-
 export interface FactoryResolver {
   v: string;
   source: string;
