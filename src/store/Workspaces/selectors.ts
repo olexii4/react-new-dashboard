@@ -12,6 +12,7 @@
 
 import { createSelector } from 'reselect';
 import { AppState } from '../';
+import * as storageTypesService from '../../services/storageTypes';
 
 const selectState = (state: AppState) => state.workspaces;
 
@@ -23,6 +24,16 @@ export const selectIsLoading = createSelector(
 export const selectSettings = createSelector(
   selectState,
   state => state.settings,
+);
+
+export const selectAvailableStorageTypes = createSelector(
+  selectSettings,
+  settings => storageTypesService.getAvailable(settings)
+);
+
+export const selectPreferredStorageType = createSelector(
+  selectSettings,
+  settings => storageTypesService.getPreferred(settings)
 );
 
 export const selectLogs = createSelector(

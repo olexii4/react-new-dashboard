@@ -16,8 +16,8 @@ import { Store } from 'redux';
 import { Provider } from 'react-redux';
 import FactoryLoaderTabs from '../';
 import { LoadFactorySteps } from '../../../containers/FactoryLoader';
-import { createFakeStore } from '../../../services/__mocks__/store';
-import { createFakeWorkspace } from '../../../services/__mocks__/workspace';
+import { createFakeStore } from '../../../store/__mocks__/store';
+import { createFakeWorkspace } from '../../../store/__mocks__/workspace';
 
 const workspaceName = 'wksp-test';
 const workspaceId = 'testWorkspaceId';

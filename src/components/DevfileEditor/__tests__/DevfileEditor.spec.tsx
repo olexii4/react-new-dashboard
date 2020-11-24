@@ -14,8 +14,8 @@ import React from 'react';
 import renderer, { ReactTestRenderer } from 'react-test-renderer';
 import { Provider } from 'react-redux';
 import DevfileEditor from '../';
-import { createFakeStore } from '../../../services/__mocks__/store';
-import { createFakeWorkspace } from '../../../services/__mocks__/workspace';
+import { createFakeStore } from '../../../store/__mocks__/store';
+import { createFakeWorkspace } from '../../../store/__mocks__/workspace';
 import { languages, editor } from 'monaco-editor-core/esm/vs/editor/editor.main';
 
 jest.mock('../../../../node_modules/monaco-editor-core/esm/vs/editor/editor.main', () => {

@@ -16,7 +16,7 @@ import renderer, { ReactTestRendererJSON } from 'react-test-renderer';
 import { render, RenderResult, screen } from '@testing-library/react';
 import { WorkspaceDeleteAction } from '../';
 import { WorkspaceStatus } from '../../../../services/helpers/types';
-import { createFakeStore } from '../../../../services/__mocks__/store';
+import { createFakeStore } from '../../../../store/__mocks__/store';
 
 jest.mock('@patternfly/react-core', () => {
   return {

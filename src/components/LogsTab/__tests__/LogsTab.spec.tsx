@@ -15,8 +15,8 @@ import { Provider } from 'react-redux';
 import renderer, { ReactTestRenderer } from 'react-test-renderer';
 import { Store } from 'redux';
 import LogsTab from '../';
-import { createFakeStore } from '../../../services/__mocks__/store';
-import { createFakeWorkspace, createFakeWorkspaceLogs } from '../../../services/__mocks__/workspace';
+import { createFakeStore } from '../../../store/__mocks__/store';
+import { createFakeWorkspace, createFakeWorkspaceLogs } from '../../../store/__mocks__/workspace';
 import { WorkspaceStatus } from '../../../services/helpers/types';
 
 jest.mock('../../../services/helpers/tools', () => {

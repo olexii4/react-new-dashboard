@@ -27,7 +27,6 @@ import {
   Text,
   Button,
 } from '@patternfly/react-core';
-import LogsTab from '../../components/LogsTab';
 import { WorkspaceStatus } from '../../services/helpers/types';
 import Header from './Header';
 import CheProgress from '../../components/Progress';

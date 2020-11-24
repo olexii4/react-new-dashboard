@@ -16,8 +16,8 @@ import { Provider } from 'react-redux';
 import { RenderResult, render, screen } from '@testing-library/react';
 import { ROUTE } from '../../route.enum';
 import { getMockRouterProps } from '../../services/__mocks__/router';
-import { createFakeStore } from '../../services/__mocks__/store';
-import { createFakeWorkspace } from '../../services/__mocks__/workspace';
+import { createFakeStore } from '../../store/__mocks__/store';
+import { createFakeWorkspace } from '../../store/__mocks__/workspace';
 import { WorkspaceStatus } from '../../services/helpers/types';
 import IdeLoader, { LoadIdeSteps } from '../IdeLoader';
 

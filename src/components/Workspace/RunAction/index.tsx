@@ -16,7 +16,6 @@ import { Tooltip } from '@patternfly/react-core';
 import { PlayIcon } from '@patternfly/react-icons';
 import { container } from '../../../inversify.config';
 import { Debounce } from '../../../services/helpers/debounce';
-import { AppState } from '../../../store';
 import * as WorkspaceStore from '../../../store/Workspaces';
 
 import * as styles from '../action.module.css';
@@ -80,7 +79,7 @@ class WorkspaceRunAction extends React.PureComponent<Props, State> {
 
 }
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = () => ({});
 
 const connector = connect(
   mapStateToProps,

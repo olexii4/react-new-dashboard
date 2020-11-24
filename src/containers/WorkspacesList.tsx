@@ -12,7 +12,6 @@
 
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
 import { History } from 'history';
 
 import { AppState } from '../store';

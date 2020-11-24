@@ -10,7 +10,7 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { WorkspaceStatus } from '../helpers/types';
+import { WorkspaceStatus } from '../../services/helpers/types';
 
 export const createFakeWorkspace = (
   workspaceId: string,
