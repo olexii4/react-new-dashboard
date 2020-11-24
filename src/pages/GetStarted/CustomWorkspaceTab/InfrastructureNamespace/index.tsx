@@ -85,7 +85,9 @@ export class InfrastructureNamespaceFormGroup extends React.PureComponent<Props>
           </Tooltip>
         }
       >
-        <div className={styles.namespaceSelector}>{infrastructureNamespaces}</div>
+        <div className={styles.namespaceSelector}>
+          {infrastructureNamespaces}
+        </div>
       </FormGroup>
     );
   }
