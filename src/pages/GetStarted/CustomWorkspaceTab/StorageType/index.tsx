@@ -25,77 +25,75 @@ import {
 } from '@patternfly/react-core';
 import { connect, ConnectedProps } from 'react-redux';
 import { AppState } from '../../../../store';
+import { selectAvailableStorageTypes, selectPreferredStorageType } from '../../../../store/Workspaces/selectors';
+import * as storageTypeService from '../../../../services/storageTypes';
 
 import styles from './index.module.css';
-import { selectSettings } from '../../../../store/Workspaces/selectors';
-
-export enum StorageType {
-  async = 'Asynchronous',
-  ephemeral = 'Ephemeral',
-  persistent = 'Persistent',
-}
 
 type Props =
   MappedProps
   & {
-    storageType?: StorageType;
-    onChange?: (storageType: StorageType) => void;
+    storageType?: che.WorkspaceStorageType;
+    onChange?: (storageType: che.WorkspaceStorageType) => void;
   };
 type State = {
-  isOpen?: boolean;
-  selected?: string;
-  isModalOpen?: boolean;
+  isOpen: boolean;
+  selected: string;
+  isModalOpen: boolean;
 };
 
 export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
-  storageTypes: StorageType[] = [];
-  preferredType: string;
+  storageTypes: che.WorkspaceStorageType[] = [];
+  preferredType: che.WorkspaceStorageType;
   options: string[] = [];
 
   constructor(props: Props) {
     super(props);
 
+    const availableTypes = this.props.availableStorageTypes;
+    if (Array.isArray(availableTypes)) {
+      this.storageTypes = availableTypes;
+      this.storageTypes.forEach(type =>
+        this.options.push(storageTypeService.toTitle(type))
+      );
+    }
+    const preferredType = this.props.preferredStorageType;
+    if (preferredType) {
+      this.preferredType = preferredType;
+    }
+
     this.state = {
       isOpen: false,
       isModalOpen: false,
+      selected: '',
     };
-
-    const settings = this.props.settings;
-    if (settings) {
-      const available_types = settings['che.workspace.storage.available_types'];
-      if (available_types) {
-        this.storageTypes = available_types.split(',') as StorageType[];
-        this.preferredType = settings['che.workspace.storage.preferred_type'];
-        this.storageTypes.forEach(type => {
-          const value = StorageType[type];
-          this.options.push(value);
-        });
-      }
-    }
   }
 
   public componentDidUpdate(prevProps: Props): void {
     if (prevProps.storageType !== this.props.storageType) {
-      const selected = this.props.storageType;
+      const selected = this.props.storageType ? storageTypeService.toTitle(this.props.storageType) : '';
       this.setState({ selected });
     }
   }
 
   public componentDidMount(): void {
-    const selected = this.props.storageType ? this.props.storageType : this.preferredType;
-    this.setState({ selected });
+    if (this.props.storageType) {
+      this.setState({ selected: storageTypeService.toTitle(this.props.storageType) });
+    } else {
+      this.setState({ selected: storageTypeService.toTitle(this.preferredType) });
+    }
   }
 
   private handleToggle(isOpen: boolean): void {
     this.setState({ isOpen });
   }
 
-  private handleSelect(event, selection): void {
+  private handleSelect(selectedTitle: string): void {
     if (this.props.onChange) {
-      this.props.onChange(selection);
+      this.props.onChange(storageTypeService.fromTitle(selectedTitle));
     }
     this.setState({
-      selected: selection,
+      selected: selectedTitle,
       isOpen: false
     });
   }
@@ -107,16 +105,16 @@ export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
   }
 
   private getModalContent(): React.ReactNode {
-    const hasAsync = this.storageTypes.some(type => StorageType[type] === StorageType.async);
+    const hasAsync = this.storageTypes.some(type => type === 'async');
     const asyncTypeDescr = hasAsync ?
       (<Text><span className={styles.experimentalStorageType}> Experimental feature </span><br />
         <b>Asynchronous Storage </b>
         is combination of Ephemeral and Persistent storages. It allows for faster I / O and keeps your changes,
         it does backup the workspace on stop and restores it on start.</Text>) : '';
-    const hasPersistent = this.storageTypes.some(type => StorageType[type] === StorageType.persistent);
+    const hasPersistent = this.storageTypes.some(type => type === 'persistent');
     const persistentTypeDescr = hasPersistent ?
       (<Text><b>Persistent Storage</b> is slow I/O but persistent.</Text>) : '';
-    const hasEphemeral = this.storageTypes.some(type => StorageType[type] === StorageType.ephemeral);
+    const hasEphemeral = this.storageTypes.some(type => type === 'ephemeral');
     const ephemeralTypeDescr = hasEphemeral ?
       (<Text><b>Ephemeral Storage</b> allows for faster I/O but may have limited
         storage and is not persistent.</Text>) : '';
@@ -141,11 +139,12 @@ export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
         <Select
           className={styles.storageTypeSelector}
           aria-label="Storage Type Selector"
-          aria-labelledby="storage-type-selector-id-1"
+          aria-labelledby="storage-type-selector-id"
           variant={SelectVariant.single}
           direction={SelectDirection.down}
+          toggleId="storage-type-toggle-button"
           onToggle={_isOpen => this.handleToggle(_isOpen)}
-          onSelect={(event, selection) => this.handleSelect(event, selection)}
+          onSelect={(event, selection) => this.handleSelect(selection as string)}
           selections={selected}
           isOpen={isOpen}
         >
@@ -176,7 +175,8 @@ export class StorageTypeFormGroup extends React.PureComponent<Props, State> {
 
 const mapStateToProps = (state: AppState) => ({
   brandingStore: state.branding,
-  settings: selectSettings(state),
+  availableStorageTypes: selectAvailableStorageTypes(state),
+  preferredStorageType: selectPreferredStorageType(state),
 });
 
 const connector = connect(
