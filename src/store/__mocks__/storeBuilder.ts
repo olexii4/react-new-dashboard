@@ -81,7 +81,6 @@ export class FakeStoreBuilder {
   public withInfrastructureNamespace(namespaces: che.KubernetesNamespace[], isLoading = false): FakeStoreBuilder {
     this.state.infrastructureNamespace.namespaces = Object.assign([], namespaces);
     this.state.infrastructureNamespace.isLoading = isLoading;
-    console.log('>>> this.state', this.state);
     return this;
   }
 
