@@ -12,7 +12,7 @@
 
 import { Action, Reducer } from 'redux';
 import { FactoryResolver } from '../services/helpers/types';
-import { AppState, AppThunk } from './';
+import { AppThunk } from './';
 import { container } from '../inversify.config';
 import { CheWorkspaceClient } from '../services/workspace-client/CheWorkspaceClient';
 
@@ -39,19 +39,12 @@ interface ReceiveFactoryResolverAction {
 type KnownAction = RequestFactoryResolverAction
   | ReceiveFactoryResolverAction;
 
-// todo proper type instead of 'any'
 export type ActionCreators = {
   requestFactoryResolver: (location: string) => AppThunk<KnownAction, Promise<void>>;
 };
 
 export const actionCreators: ActionCreators = {
-  requestFactoryResolver: (location: string): AppThunk<KnownAction, Promise<void>> => async (dispatch, getState): Promise<void> => {
-    const appState: AppState = getState();
-    if (!appState || !appState.infrastructureNamespace) {
-      // todo throw a nice error
-      throw Error('something unexpected happened');
-    }
-
+  requestFactoryResolver: (location: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
     dispatch({ type: 'REQUEST_FACTORY_RESOLVER' });
 
     try {
