@@ -60,6 +60,7 @@
 | [`@testing-library/dom@7.16.2`](https://github.com/testing-library/dom-testing-library) | MIT | clearlydefined |
 | [`@testing-library/jest-dom@5.10.1`](https://github.com/testing-library/jest-dom) | MIT | clearlydefined |
 | [`@testing-library/react@10.3.0`](https://github.com/testing-library/react-testing-library) | MIT | clearlydefined |
+| [`@testing-library/user-event@12.2.2`](https://github.com/testing-library/user-event) | MIT |  |
 | [`@types/anymatch@1.3.1`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/axios@0.14.0`](https://github.com/mzabriskie/axios) | MIT | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | [`@types/babel__core@7.1.7`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
