@@ -51,20 +51,19 @@ export class DevfileSelect extends React.PureComponent<Props, State> {
     return metadata.map(meta => (
       <SelectOption
         key={meta.links.self}
-        value={this.createState(meta)}
+        value={this.buildOption(meta)}
       />
     ));
   }
 
-  private createState(meta: che.DevfileMetaData): MetadataSelectOptionObject {
+  private buildOption(meta: che.DevfileMetaData): MetadataSelectOptionObject {
     return {
       metadata: meta,
       toString: () => {
         return meta.displayName;
       },
       compareTo: value => {
-        return this.toString()
-          .toLowerCase()
+        return meta.displayName.toLowerCase()
           .includes(value.toLowerCase());
       }
     };
@@ -77,7 +76,6 @@ export class DevfileSelect extends React.PureComponent<Props, State> {
   }
 
   private handleSelect(
-    event: React.MouseEvent | React.ChangeEvent,
     value: string | SelectOptionObject,
   ): void {
     const selected = value as MetadataSelectOptionObject;
@@ -121,7 +119,7 @@ export class DevfileSelect extends React.PureComponent<Props, State> {
           isOpen={isOpen}
           onClear={() => this.handleClearSelection()}
           onFilter={event => this.handleCustomFilter(event)}
-          onSelect={(event, value) => this.handleSelect(event, value)}
+          onSelect={(event, value) => this.handleSelect(value)}
           onToggle={isExpanded => this.handleToggle(isExpanded)}
           placeholderText='Select a devfile template'
           selections={selected}

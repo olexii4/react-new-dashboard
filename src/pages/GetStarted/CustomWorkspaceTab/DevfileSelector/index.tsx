@@ -65,14 +65,14 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
     this.devfileLocationRef = React.createRef();
   }
 
+  public componentDidUpdate(): void {
+    this.factoryResolver = this.props.factoryResolver;
+  }
+
   private handleDevfileClear(): void {
     if (this.props.onClear) {
       this.props.onClear();
     }
-  }
-
-  public componentDidUpdate(): void {
-    this.factoryResolver = this.props.factoryResolver;
   }
 
   private async handleDevfileSelect(meta: che.DevfileMetaData): Promise<void> {
@@ -88,11 +88,10 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
         title: `Failed to load devfile. ${e}`,
         variant: AlertVariant.danger,
       });
-      throw new Error(e);
     }
   }
 
-  private async onLocationChanged(location: string): Promise<void> {
+  private async handleLocationChange(location: string): Promise<void> {
     // clear devfile select
     this.devfileSelectRef.current?.clearSelect();
     try {
@@ -112,7 +111,6 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
         title: `Failed to resolve or load the devfile. ${e}`,
         variant: AlertVariant.danger,
       });
-      throw new Error(e);
     }
   }
 
@@ -168,7 +166,7 @@ export class DevfileSelectorFormGroup extends React.PureComponent<Props, State> 
               <DevfileLocationInput
                 ref={this.devfileLocationRef}
                 isLoading={isLoading}
-                onChange={location => this.onLocationChanged(location)}
+                onChange={location => this.handleLocationChange(location)}
               />
             </FlexItem>
           </Flex>
