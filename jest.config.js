@@ -45,7 +45,8 @@ module.exports = {
   coverageDirectory: './coverage',
   coverageReporters: [
     'html',
-    'text-summary'
+    'lcov',
+    'text-summary',
   ],
   coverageThreshold: {
     global: {
