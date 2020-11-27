@@ -12,10 +12,9 @@
 
 import { Store } from 'redux';
 import createMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { BrandingData } from '../../services/bootstrap/branding.constant';
 import { FactoryResolver } from '../../services/helpers/types';
-import { AppState } from '../../store';
+import { AppState } from '..';
 import { State as DevfileRegistriesState } from '../DevfileRegistries/index';
 import { State as WorkspacesState } from '../Workspaces/index';
 import { State as BrandingState } from '../Branding';
@@ -23,6 +22,7 @@ import { State as FactoryResolverState } from '../FactoryResolver';
 import { State as InfrastructureNamespaceState } from '../InfrastructureNamespace';
 import { State as PluginsState } from '../Plugins';
 import { UserState as UserState } from '../User';
+import mockThunk from './thunk';
 
 export class FakeStoreBuilder {
 
@@ -154,8 +154,8 @@ export class FakeStoreBuilder {
   }
 
   public build(): Store {
-    const middleware = [thunk];
-    const mockStore = createMockStore(middleware);
+    const middlewares = [mockThunk];
+    const mockStore = createMockStore(middlewares);
     return mockStore(this.state);
   }
 
