@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | [`@babel/runtime@7.10.2`](https://github.com/babel/babel.git) | MIT | clearlydefined |
 | `@eclipse-che/api@7.18.1` | EPL-2.0 | - |
-| [`@eclipse-che/workspace-client@0.0.1-1600695209`](https://github.com/eclipse/che-workspace-client) | EPL-2.0 | - |
+| [`@eclipse-che/workspace-client@0.0.1-1604083811`](https://github.com/eclipse/che-workspace-client) | EPL-2.0 | - |
 | [`@patternfly/patternfly@4.10.31`](https://github.com/patternfly/patternfly.git) | MIT | [CQ22346](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22346) |
 | [`@patternfly/react-core@4.18.5`](https://github.com/patternfly/patternfly-react.git) | MIT | [CQ22347](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22347) |
 | [`@patternfly/react-icons@4.3.5`](https://github.com/patternfly/patternfly-react.git) | MIT | clearlydefined |
@@ -77,7 +77,7 @@
 | [`monaco-languageclient@0.13.0`](https://github.com/TypeFox/monaco-languageclient.git) | MIT | clearlydefined |
 | [`monaco-languages@1.10.0`](https://github.com/Microsoft/monaco-languages) | MIT | clearlydefined |
 | [`ms@2.0.0`](https://github.com/zeit/ms.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
-| [`nan@2.14.1`](git://github.com/nodejs/nan.git) | MIT | [CQ22352](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22352) |
+| [`nan@2.14.2`](git://github.com/nodejs/nan.git) | MIT | [CQ22352](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22352) |
 | [`object-assign@4.1.1`](https://github.com/sindresorhus/object-assign.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`object-inspect@1.7.0`](git://github.com/substack/object-inspect.git) | MIT | clearlydefined |
 | [`object-is@1.1.2`](git://github.com/es-shims/object-is.git) | MIT | clearlydefined |

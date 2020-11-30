@@ -108,6 +108,7 @@
 | [`@types/react-redux@7.1.9`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | [`@types/react-router-dom@5.1.5`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/react-router@5.1.7`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
+| [`@types/react-test-renderer@16.9.3`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/react@16.9.35`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/reactstrap@8.4.2`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/redux-mock-store@1.0.2`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
@@ -659,6 +660,7 @@
 | [`multicast-dns-service-types@1.1.0`](https://github.com/mafintosh/multicast-dns-service-types.git) | MIT | clearlydefined |
 | [`multicast-dns@6.2.3`](https://github.com/mafintosh/multicast-dns.git) | MIT | clearlydefined |
 | [`mute-stream@0.0.8`](git://github.com/isaacs/mute-stream) | ISC | clearlydefined |
+| [`nan@2.14.1`](git://github.com/nodejs/nan.git) | MIT | [CQ22352](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22352) |
 | [`nanomatch@1.2.13`](https://github.com/micromatch/nanomatch.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`natural-compare@1.4.0`](git://github.com/litejs/natural-compare-lite.git) | MIT | clearlydefined |
 | [`negotiator@0.6.2`](https://github.com/jshttp/negotiator.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
@@ -783,6 +785,8 @@
 | [`randomfill@1.0.4`](https://github.com/crypto-browserify/randomfill.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`range-parser@1.2.1`](https://github.com/jshttp/range-parser.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`raw-body@2.4.0`](https://github.com/stream-utils/raw-body.git) | MIT | clearlydefined |
+| [`react-shallow-renderer@16.14.1`](https://github.com/NMinhNguyen/react-shallow-renderer.git) | MIT |  |
+| [`react-test-renderer@17.0.1`](https://github.com/facebook/react.git) | MIT | clearlydefined |
 | [`read-pkg-up@7.0.1`](https://github.com/sindresorhus/read-pkg-up.git) | MIT | clearlydefined |
 | [`read-pkg@5.2.0`](https://github.com/sindresorhus/read-pkg.git) | MIT | clearlydefined |
 | [`readable-stream@2.3.7`](git://github.com/nodejs/readable-stream) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
@@ -863,8 +867,8 @@
 | [`source-map@0.6.1`](http://github.com/mozilla/source-map.git) | BSD-3-Clause | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`spdx-correct@3.1.1`](https://github.com/jslicense/spdx-correct.js.git) | Apache-2.0 | emo_ip_team |
 | [`spdx-exceptions@2.3.0`](https://github.com/kemitchell/spdx-exceptions.json.git) | CC-BY-3.0 | clearlydefined |
-| [`spdx-expression-parse@3.0.1`](https://github.com/jslicense/spdx-expression-parse.js.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
-| [`spdx-license-ids@3.0.5`](https://github.com/shinnn/spdx-license-ids.git) | CC0-1.0 | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
+| [`spdx-expression-parse@3.0.1`](https://github.com/jslicense/spdx-expression-parse.js.git) | MIT | emo_ip_team |
+| [`spdx-license-ids@3.0.5`](https://github.com/shinnn/spdx-license-ids.git) | CC0-1.0 | emo_ip_team |
 | [`spdy-transport@3.0.0`](git://github.com/spdy-http2/spdy-transport.git) | MIT | clearlydefined |
 | [`spdy@4.0.2`](git://github.com/indutny/node-spdy.git) | MIT | clearlydefined |
 | [`specificity@0.4.1`](https://github.com/keeganstreet/specificity.git) | MIT | clearlydefined |
@@ -944,7 +948,7 @@
 | [`type-is@1.6.18`](https://github.com/jshttp/type-is.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`typedarray@0.0.6`](git://github.com/substack/typedarray.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`typescript-formatter@7.2.2`](git@github.com:vvakame/typescript-formatter.git) | MIT | clearlydefined |
-| [`typescript@3.9.5`](https://github.com/Microsoft/TypeScript.git) | Apache-2.0 | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
+| [`typescript@3.9.7`](https://github.com/Microsoft/TypeScript.git) | Apache-2.0 | [CQ22386](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22386) |
 | [`unherit@1.1.3`](https://github.com/wooorm/unherit.git) | MIT | clearlydefined |
 | [`unified@9.0.0`](https://github.com/unifiedjs/unified.git) | MIT | clearlydefined |
 | [`union-value@1.0.1`](https://github.com/jonschlinkert/union-value.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
@@ -972,7 +976,7 @@
 | [`uuid@3.4.0`](https://github.com/uuidjs/uuid.git) | MIT | clearlydefined |
 | [`v8-compile-cache@2.1.1`](https://github.com/zertosh/v8-compile-cache.git) | MIT | clearlydefined |
 | [`v8-to-istanbul@4.1.4`](https://github.com/istanbuljs/v8-to-istanbul.git) | ISC | clearlydefined |
-| [`validate-npm-package-license@3.0.4`](https://github.com/kemitchell/validate-npm-package-license.js.git) | Apache-2.0 | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
+| [`validate-npm-package-license@3.0.4`](https://github.com/kemitchell/validate-npm-package-license.js.git) | Apache-2.0 | emo_ip_team |
 | [`vary@1.1.2`](https://github.com/jshttp/vary.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`verror@1.10.0`](git://github.com/davepacheco/node-verror.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`vfile-location@3.0.1`](https://github.com/vfile/vfile-location.git) | MIT | clearlydefined |
