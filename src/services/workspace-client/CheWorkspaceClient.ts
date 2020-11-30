@@ -38,9 +38,6 @@ export class CheWorkspaceClient {
 
     // todo change this temporary solution after adding the proper method to workspace-client https://github.com/eclipse/che/issues/18311
     this.axios = (WorkspaceClient as any).createAxiosInstance({ loggingEnabled: false });
-    if (this.axios.defaults === undefined) {
-      this.axios.defaults = {};
-    }
     if (this.axios.defaults.headers === undefined) {
       this.axios.defaults.headers = {};
     }
