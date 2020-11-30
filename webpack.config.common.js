@@ -86,6 +86,18 @@ module.exports = {
         loader: 'umd-compat-loader'
       },
       {
+        test: /node_modules[\\\\|/](vscode-json-languageservice)/,
+        loader: 'umd-compat-loader',
+      },
+      {
+        test: /prettier\/parser-yaml/,
+        loader: 'null-loader',
+      },
+      {
+        test: /prettier/,
+        loader: 'null-loader',
+      },
+      {
         test: /\.styl$/,
         loader: 'style-loader!css-loader!stylus-loader',
       },
@@ -108,7 +120,6 @@ module.exports = {
     module: 'empty'
   },
   plugins: [
-    new webpack.IgnorePlugin(/prettier/),
     new HtmlWebpackPlugin({
       template: './index.html'
     }),
