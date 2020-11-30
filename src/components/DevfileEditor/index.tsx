@@ -75,7 +75,7 @@ export class DevfileEditor extends React.PureComponent<Props, State> {
 
     // lazy initialization
     if (!window[YAML_SERVICE]) {
-      this.yamlService = getLanguageService(() => Promise.resolve(''), {} as any, []);
+      this.yamlService = getLanguageService(() => Promise.resolve(''), {} as any);
       window[YAML_SERVICE] = this.yamlService;
     } else {
       this.yamlService = window[YAML_SERVICE];

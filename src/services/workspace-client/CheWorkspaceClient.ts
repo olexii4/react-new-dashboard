@@ -10,6 +10,7 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
+import { AxiosInstance } from 'axios';
 import { injectable } from 'inversify';
 import WorkspaceClient, { IWorkspaceMasterApi, IRemoteAPI } from '@eclipse-che/workspace-client';
 import { KeycloakSetup } from '../bootstrap/KeycloakSetup';
@@ -19,6 +20,7 @@ import { KeycloakSetup } from '../bootstrap/KeycloakSetup';
  */
 @injectable()
 export class CheWorkspaceClient {
+  private readonly axios: AxiosInstance;
   private originLocation: string;
   private baseUrl: string;
   private websocketContext: string;
@@ -35,45 +37,49 @@ export class CheWorkspaceClient {
     this.originLocation = new URL(window.location.href).origin;
 
     // todo change this temporary solution after adding the proper method to workspace-client https://github.com/eclipse/che/issues/18311
-    const axios = (WorkspaceClient as any).createAxiosInstance({ loggingEnabled: false });
-    if (axios) {
-      let isUpdated: boolean;
-      const updateTimer = () => {
-        if (!isUpdated) {
-          isUpdated = true;
-          setTimeout(() => {
-            isUpdated = false;
-          }, 30000);
-        }
-      };
-      updateTimer();
-      axios.interceptors.request.use(async request => {
-        const keycloak = KeycloakSetup.keycloakAuth.keycloak as any;
-        if (keycloak && keycloak.updateToken && !isUpdated) {
-          updateTimer();
-          try {
-            await new Promise((resolve, reject) => {
-              keycloak.updateToken(5).success((refreshed: boolean) => {
-                if (refreshed && keycloak.token && axios.defaults && axios.defaults.headers && axios.defaults.headers.common) {
-                  const header = 'Authorization';
-                  axios.defaults.headers.common[header] = `Bearer ${keycloak.token}`;
-                }
-                resolve(keycloak);
-              }).error((error: any) => {
-                reject(new Error(error));
-              });
+    this.axios = (WorkspaceClient as any).createAxiosInstance({ loggingEnabled: false });
+    if (this.axios.defaults.headers === undefined) {
+      this.axios.defaults.headers = {};
+    }
+    if (this.axios.defaults.headers.common === undefined) {
+      this.axios.defaults.headers.common = {};
+    }
+    let isUpdated: boolean;
+    const updateTimer = () => {
+      if (!isUpdated) {
+        isUpdated = true;
+        setTimeout(() => {
+          isUpdated = false;
+        }, 30000);
+      }
+    };
+    updateTimer();
+    this.axios.interceptors.request.use(async request => {
+      const keycloak = KeycloakSetup.keycloakAuth.keycloak as any;
+      if (keycloak && keycloak.updateToken && !isUpdated) {
+        updateTimer();
+        try {
+          await new Promise((resolve, reject) => {
+            keycloak.updateToken(5).success((refreshed: boolean) => {
+              if (refreshed && keycloak.token) {
+                const header = 'Authorization';
+                this.axios.defaults.headers.common[header] = `Bearer ${keycloak.token}`;
+              }
+              resolve(keycloak);
+            }).error((error: any) => {
+              reject(new Error(error));
             });
-          } catch (e) {
-            console.error('Failed to update token.', e);
-            window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
-            if (keycloak.login) {
-              keycloak.login();
-            }
+          });
+        } catch (e) {
+          console.error('Failed to update token.', e);
+          window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
+          if (keycloak.login) {
+            keycloak.login();
           }
         }
-        return request;
-      });
-    }
+      }
+      return request;
+    });
   }
 
   private get token(): string | null {
@@ -121,11 +127,14 @@ export class CheWorkspaceClient {
 
   async updateJsonRpcMasterApi(): Promise<void> {
     let jsonRpcApiLocation = this.originLocation.replace('http', 'ws') + this.websocketContext;
-    this._jsonRpcMasterApi = WorkspaceClient.getJsonRpcApi(jsonRpcApiLocation);
     // connect
     if (this.token) {
+      const header = 'Authorization';
+      this.axios.defaults.headers.common[header] = `Bearer ${this.token}`;
+
       jsonRpcApiLocation += `?token=${this.token}`;
     }
+    this._jsonRpcMasterApi = WorkspaceClient.getJsonRpcApi(jsonRpcApiLocation);
     await this._jsonRpcMasterApi.connect(jsonRpcApiLocation);
     const clientId = this._jsonRpcMasterApi.getClientId();
     console.log('WebSocket connection clientId', clientId);
