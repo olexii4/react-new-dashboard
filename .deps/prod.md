@@ -12,7 +12,10 @@
 | [`@patternfly/react-table@4.5.7`](https://github.com/patternfly/patternfly-react.git) | MIT | clearlydefined |
 | [`@patternfly/react-tokens@4.4.4`](https://github.com/patternfly/patternfly-react.git) | MIT | clearlydefined |
 | [`@types/classnames@2.2.10`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
+| [`@types/json-schema@7.0.6`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`agent-base@4.3.0`](git://github.com/TooTallNate/node-agent-base.git) | MIT | clearlydefined |
+| [`ajv-keywords@3.5.2`](git+https://github.com/epoberezkin/ajv-keywords.git) | MIT | clearlydefined |
+| [`ajv@6.12.6`](https://github.com/ajv-validator/ajv.git) | MIT | emo_ip_team |
 | [`argparse@1.0.10`](https://github.com/nodeca/argparse.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`ast-types@0.9.14`](git://github.com/benjamn/ast-types.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`attr-accept@1.1.3`](https://github.com/okonet/attr-accept.git) | MIT | [CQ22348](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22348) |
@@ -35,6 +38,8 @@
 | [`es6-promisify@5.0.0`](https://github.com/digitaldesignlabs/es6-promisify.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`esprima@4.0.1`](https://github.com/jquery/esprima.git) | BSD-2-Clause | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`eventsource@1.0.7`](git://github.com/EventSource/eventsource.git) | MIT | clearlydefined |
+| [`fast-deep-equal@3.1.1`](git+https://github.com/epoberezkin/fast-deep-equal.git) | MIT | clearlydefined |
+| [`fast-json-stable-stringify@2.1.0`](git://github.com/epoberezkin/fast-json-stable-stringify.git) | MIT | clearlydefined |
 | [`faye-websocket@0.11.3`](git://github.com/faye/faye-websocket-node.git) | Apache-2.0 | clearlydefined |
 | `file-selector@0.1.12` | MIT | [CQ22350](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22350) |
 | [`focus-trap@4.0.2`](git+https://github.com/davidtheclark/focus-trap.git) | MIT | clearlydefined |
@@ -64,6 +69,7 @@
 | [`jquery@3.5.1`](https://github.com/jquery/jquery.git) | MIT | clearlydefined |
 | [`js-tokens@4.0.0`](https://github.com/lydell/js-tokens.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`js-yaml@3.14.0`](https://github.com/nodeca/js-yaml.git) | MIT | clearlydefined |
+| [`json-schema-traverse@0.4.1`](git+https://github.com/epoberezkin/json-schema-traverse.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`json3@3.3.3`](git://github.com/bestiejs/json3.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`json5@1.0.1`](git+https://github.com/json5/json5.git) | MIT | [CQ22351](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22351) |
 | [`jsonc-parser@2.2.1`](https://github.com/microsoft/node-jsonc-parser) | MIT | clearlydefined |
@@ -78,6 +84,7 @@
 | [`monaco-languages@1.10.0`](https://github.com/Microsoft/monaco-languages) | MIT | clearlydefined |
 | [`ms@2.0.0`](https://github.com/zeit/ms.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`nan@2.14.2`](git://github.com/nodejs/nan.git) | MIT | [CQ22352](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22352) |
+| [`null-loader@4.0.1`](https://github.com/webpack-contrib/null-loader.git) | MIT | clearlydefined |
 | [`object-assign@4.1.1`](https://github.com/sindresorhus/object-assign.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`object-inspect@1.7.0`](git://github.com/substack/object-inspect.git) | MIT | clearlydefined |
 | [`object-is@1.1.2`](git://github.com/es-shims/object-is.git) | MIT | clearlydefined |
@@ -86,10 +93,11 @@
 | [`original@1.0.2`](https://github.com/unshiftio/original) | MIT | clearlydefined |
 | [`path-to-regexp@1.8.0`](https://github.com/pillarjs/path-to-regexp.git) | MIT | clearlydefined |
 | [`popper.js@1.16.1`](git+https://github.com/FezVrasta/popper.js.git) | MIT | [CQ22353](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22353) |
-| [`prettier@1.19.1`](https://github.com/prettier/prettier.git) | MIT | clearlydefined |
+| [`prettier@2.0.5`](https://github.com/prettier/prettier.git) | MIT | clearlydefined |
 | [`private@0.1.8`](git://github.com/benjamn/private.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`prop-types-extra@1.1.1`](git+https://github.com/react-bootstrap/prop-types-extra.git) | MIT | [CQ22354](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22354) |
 | [`prop-types@15.7.2`](https://github.com/facebook/prop-types.git) | MIT | clearlydefined |
+| [`punycode@2.1.1`](https://github.com/bestiejs/punycode.js.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`qs@6.9.4`](https://github.com/ljharb/qs.git) | BSD-3-Clause | clearlydefined |
 | [`querystringify@2.1.1`](https://github.com/unshiftio/querystringify) | MIT | clearlydefined |
 | [`react-copy-to-clipboard@5.0.2`](https://github.com/nkbt/react-copy-to-clipboard.git) | MIT | clearlydefined |
@@ -117,6 +125,7 @@
 | [`resolve-pathname@3.0.0`](https://github.com/mjackson/resolve-pathname.git) | MIT | clearlydefined |
 | [`safe-buffer@5.2.1`](git://github.com/feross/safe-buffer.git) | MIT | clearlydefined |
 | [`scheduler@0.19.1`](https://github.com/facebook/react.git) | MIT | clearlydefined |
+| [`schema-utils@3.0.0`](https://github.com/webpack/schema-utils.git) | MIT | clearlydefined |
 | [`semver@6.3.0`](https://github.com/npm/node-semver) | ISC | clearlydefined |
 | [`sockjs-client@1.4.0`](https://github.com/sockjs/sockjs-client.git) | MIT | clearlydefined |
 | [`source-map@0.5.7`](http://github.com/mozilla/source-map.git) | BSD-3-Clause | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
@@ -137,9 +146,10 @@
 | `typed-styles@0.0.7` | MIT | clearlydefined |
 | [`typedarray-to-buffer@3.1.5`](git://github.com/feross/typedarray-to-buffer.git) | MIT | clearlydefined |
 | [`umd-compat-loader@2.1.1`](http://github.com/matt-gadd/umd-compat-loader.git) | BSD | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
+| [`uri-js@4.2.2`](http://github.com/garycourt/uri-js) | BSD-2-Clause | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`url-parse@1.4.7`](https://github.com/unshiftio/url-parse.git) | MIT | clearlydefined |
 | [`value-equal@1.0.1`](https://github.com/mjackson/value-equal.git) | MIT | clearlydefined |
-| [`vscode-json-languageservice@3.6.0`](https://github.com/Microsoft/vscode-json-languageservice) | MIT | clearlydefined |
+| [`vscode-json-languageservice@3.10.0`](https://github.com/Microsoft/vscode-json-languageservice) | MIT | clearlydefined |
 | [`vscode-jsonrpc@5.0.1`](https://github.com/Microsoft/vscode-languageserver-node.git) | MIT | clearlydefined |
 | [`vscode-languageclient@6.1.3`](https://github.com/Microsoft/vscode-languageserver-node.git) | MIT | [CQ22358](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22358) |
 | [`vscode-languageserver-protocol@3.14.1`](https://github.com/Microsoft/vscode-languageserver-node.git) | MIT | clearlydefined |
@@ -154,5 +164,5 @@
 | [`websocket@1.0.23`](https://github.com/theturtle32/WebSocket-Node.git) | Apache-2.0 | [CQ22360](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22360) |
 | [`xtend@4.0.2`](git://github.com/Raynos/xtend.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`yaeti@0.0.4`](https://github.com/ibc/yaeti.git) | MIT | clearlydefined |
-| [`yaml-ast-parser-custom-tags@0.0.43`](https://github.com/jpinkney/yaml-ast-parser.git) | Apache-2.0 | clearlydefined |
-| [`yaml-language-server@0.7.2`](https://github.com/redhat-developer/yaml-language-server.git) | MIT | clearlydefined |
+| [`yaml-language-server-parser@0.1.1`](https://github.com/redhat-developer/yaml-ast-parser.git) | Apache-2.0 | clearlydefined |
+| [`yaml-language-server@0.13.0`](https://github.com/redhat-developer/yaml-language-server.git) | MIT | [CQ22829](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22829) |
