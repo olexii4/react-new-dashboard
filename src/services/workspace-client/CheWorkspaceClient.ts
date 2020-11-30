@@ -38,44 +38,51 @@ export class CheWorkspaceClient {
 
     // todo change this temporary solution after adding the proper method to workspace-client https://github.com/eclipse/che/issues/18311
     this.axios = (WorkspaceClient as any).createAxiosInstance({ loggingEnabled: false });
-    if (this.axios) {
-      let isUpdated: boolean;
-      const updateTimer = () => {
-        if (!isUpdated) {
-          isUpdated = true;
-          setTimeout(() => {
-            isUpdated = false;
-          }, 30000);
-        }
-      };
-      updateTimer();
-      this.axios.interceptors.request.use(async request => {
-        const keycloak = KeycloakSetup.keycloakAuth.keycloak as any;
-        if (keycloak && keycloak.updateToken && !isUpdated) {
-          updateTimer();
-          try {
-            await new Promise((resolve, reject) => {
-              keycloak.updateToken(5).success((refreshed: boolean) => {
-                if (refreshed && keycloak.token && this.axios.defaults && this.axios.defaults.headers && this.axios.defaults.headers.common) {
-                  const header = 'Authorization';
-                  this.axios.defaults.headers.common[header] = `Bearer ${keycloak.token}`;
-                }
-                resolve(keycloak);
-              }).error((error: any) => {
-                reject(new Error(error));
-              });
+    if (this.axios.defaults === undefined) {
+      this.axios.defaults = {};
+    }
+    if (this.axios.defaults.headers === undefined) {
+      this.axios.defaults.headers = {};
+    }
+    if (this.axios.defaults.headers.common === undefined) {
+      this.axios.defaults.headers.common = {};
+    }
+    let isUpdated: boolean;
+    const updateTimer = () => {
+      if (!isUpdated) {
+        isUpdated = true;
+        setTimeout(() => {
+          isUpdated = false;
+        }, 30000);
+      }
+    };
+    updateTimer();
+    this.axios.interceptors.request.use(async request => {
+      const keycloak = KeycloakSetup.keycloakAuth.keycloak as any;
+      if (keycloak && keycloak.updateToken && !isUpdated) {
+        updateTimer();
+        try {
+          await new Promise((resolve, reject) => {
+            keycloak.updateToken(5).success((refreshed: boolean) => {
+              if (refreshed && keycloak.token) {
+                const header = 'Authorization';
+                this.axios.defaults.headers.common[header] = `Bearer ${keycloak.token}`;
+              }
+              resolve(keycloak);
+            }).error((error: any) => {
+              reject(new Error(error));
             });
-          } catch (e) {
-            console.error('Failed to update token.', e);
-            window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
-            if (keycloak.login) {
-              keycloak.login();
-            }
+          });
+        } catch (e) {
+          console.error('Failed to update token.', e);
+          window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
+          if (keycloak.login) {
+            keycloak.login();
           }
         }
-        return request;
-      });
-    }
+      }
+      return request;
+    });
   }
 
   private get token(): string | null {
@@ -125,10 +132,9 @@ export class CheWorkspaceClient {
     let jsonRpcApiLocation = this.originLocation.replace('http', 'ws') + this.websocketContext;
     // connect
     if (this.token) {
-      if (this.axios.defaults && this.axios.defaults.headers && this.axios.defaults.headers.common) {
-        const header = 'Authorization';
-        this.axios.defaults.headers.common[header] = `Bearer ${this.token}`;
-      }
+      const header = 'Authorization';
+      this.axios.defaults.headers.common[header] = `Bearer ${this.token}`;
+
       jsonRpcApiLocation += `?token=${this.token}`;
     }
     this._jsonRpcMasterApi = WorkspaceClient.getJsonRpcApi(jsonRpcApiLocation);
