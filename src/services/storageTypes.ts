@@ -45,6 +45,32 @@ export function getPreferred(settings: che.WorkspaceSettings): che.WorkspaceStor
   return settings['che.workspace.storage.preferred_type'] as che.WorkspaceStorageType;
 }
 
+export function typeToAttributes(type: che.WorkspaceStorageType): che.WorkspaceConfigAttributes | undefined {
+  switch (type) {
+    case 'persistent':
+      return;
+    case 'ephemeral':
+      return {
+        persistVolumes: 'false',
+      };
+    case 'async':
+      return {
+        asyncPersist: 'true',
+        persistVolumes: 'false',
+      };
+  }
+}
+
+export function attributesToType(attrs: che.WorkspaceConfigAttributes | undefined): che.WorkspaceStorageType {
+  if ( attrs?.persistVolumes === 'false') {
+    if (attrs.asyncPersist === 'true') {
+      return 'async';
+    }
+    return 'ephemeral';
+  }
+  return 'persistent';
+}
+
 export function updateDevfile(devfile: che.WorkspaceDevfile, storageType: che.WorkspaceStorageType): che.WorkspaceDevfile {
   const copy = JSON.parse(JSON.stringify(devfile));
   switch (storageType) {

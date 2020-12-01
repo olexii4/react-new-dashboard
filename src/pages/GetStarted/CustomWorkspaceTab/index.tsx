@@ -20,7 +20,7 @@ import { WorkspaceNameFormGroup } from './WorkspaceName';
 import DevfileSelectorFormGroup from './DevfileSelector';
 import InfrastructureNamespaceFormGroup from './InfrastructureNamespace';
 import { selectSettings } from '../../../store/Workspaces/selectors';
-import { updateDevfile } from '../../../services/storageTypes';
+import { attributesToType, updateDevfile } from '../../../services/storageTypes';
 
 type Props = MappedProps
   & {
@@ -42,7 +42,7 @@ export class CustomWorkspaceTab extends React.PureComponent<Props, State> {
     super(props);
 
     const devfile = this.buildInitialDevfile();
-    const storageType = this.getStorageType(devfile);
+    const storageType = attributesToType(devfile.attributes);
     const workspaceName = devfile.metadata.name ? devfile.metadata.name : '';
     const generateName = !workspaceName ? devfile.metadata.generateName : '';
     this.state = { devfile, storageType, generateName, workspaceName };
@@ -115,25 +115,12 @@ export class CustomWorkspaceTab extends React.PureComponent<Props, State> {
     }
   }
 
-  private getStorageType(devfile: che.WorkspaceDevfile): che.WorkspaceStorageType {
-    if (devfile.attributes && devfile.attributes.persistVolumes === 'false') {
-      const isAsync = devfile.attributes && devfile.attributes.asyncPersist === 'true';
-      if (isAsync) {
-        return 'async';
-      } else {
-        return 'ephemeral';
-      }
-    } else {
-      return 'persistent';
-    }
-  }
-
   private handleDevfileChange(devfile: che.WorkspaceDevfile, isValid: boolean): void {
     if (!isValid) {
       return;
     }
     this.setState({ devfile });
-    const storageType = this.getStorageType(devfile);
+    const storageType = attributesToType(devfile.attributes);
     if (storageType !== this.state.storageType) {
       this.setState({ storageType });
     }
