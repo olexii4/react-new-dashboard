@@ -14,16 +14,24 @@ import React from 'react';
 import {
   Progress,
   ProgressMeasureLocation,
-  ProgressSize
+  ProgressSize,
 } from '@patternfly/react-core';
 
-import './Progress.styl';
+import styles from './index.module.css';
 
-class CheProgress extends React.PureComponent<{ isLoading: boolean }, { progressVal: number }> {
+type Props = {
+  isLoading: boolean
+};
+
+type State = {
+  progressVal: number
+};
+
+class CheProgress extends React.PureComponent<Props, State> {
   private intervalId: any;
   private readonly onProgressInc: () => void;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
 
     this.state = { progressVal: 0 };
@@ -61,8 +69,7 @@ class CheProgress extends React.PureComponent<{ isLoading: boolean }, { progress
     this.updateProgressInterval();
   }
 
-  // This method is called when the component is removed from the document
-  componentWillUnmount(): void {
+  public componentWillUnmount(): void {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
@@ -72,11 +79,13 @@ class CheProgress extends React.PureComponent<{ isLoading: boolean }, { progress
     const { progressVal } = this.state;
 
     return (
-      <span className='progress-line'>
+      <span className={styles.progressLine}>
         {this.props.isLoading || this.state.progressVal !== 0 ?
-          (<Progress value={progressVal}
+          (<Progress id="che-progress-ind"
+            value={progressVal}
             size={ProgressSize.sm}
-            measureLocation={ProgressMeasureLocation.none} />) : ''}</span>
+            measureLocation={ProgressMeasureLocation.none} />) : ''}
+      </span>
     );
   }
 

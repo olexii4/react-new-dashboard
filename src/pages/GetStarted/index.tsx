@@ -15,9 +15,6 @@ import { History } from 'history';
 import { connect, ConnectedProps } from 'react-redux';
 import { load } from 'js-yaml';
 import {
-  Alert,
-  AlertActionCloseButton,
-  AlertGroup,
   AlertVariant,
   PageSection,
   PageSectionVariants,
@@ -25,7 +22,9 @@ import {
   Tabs,
   Title,
 } from '@patternfly/react-core';
-import { fallback } from '../../App';
+import { fallback } from '../../components/Fallback';
+import { container } from '../../inversify.config';
+import { NavbarAlerts } from '../../services/alerts/navbarAlerts';
 import * as WorkspaceStore from '../../store/Workspaces';
 import { AppState } from '../../store';
 import { AlertItem } from '../../services/helpers/types';
@@ -44,10 +43,10 @@ type Props = {
 
 type State = {
   activeTabKey: string;
-  alerts: AlertItem[];
 }
 
 export class GetStarted extends React.PureComponent<Props, State> {
+  private readonly navbarAlerts: NavbarAlerts;
 
   constructor(props: Props) {
     super(props);
@@ -56,8 +55,9 @@ export class GetStarted extends React.PureComponent<Props, State> {
 
     this.state = {
       activeTabKey,
-      alerts: [],
     };
+
+    this.navbarAlerts = container.get(NavbarAlerts);
   }
 
   public componentDidUpdate(): void {
@@ -151,12 +151,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
   }
 
   private showAlert(alert: AlertItem): void {
-    const alerts = [...this.state.alerts, alert];
-    this.setState({ alerts });
-  }
-
-  private removeAlert(key: string): void {
-    this.setState({ alerts: [...this.state.alerts.filter(al => al.key !== key)] });
+    this.navbarAlerts.showAlert(alert);
   }
 
   private handleTabClick(event: React.MouseEvent<HTMLElement, MouseEvent>, activeTabKey: React.ReactText): void {
@@ -168,21 +163,11 @@ export class GetStarted extends React.PureComponent<Props, State> {
   }
 
   render(): React.ReactNode {
-    const { alerts, activeTabKey } = this.state;
+    const { activeTabKey } = this.state;
     const title = this.getTitle();
 
     return (
       <React.Fragment>
-        <AlertGroup isToast>
-          {alerts.map(({ title, variant, key }) => (
-            <Alert
-              variant={variant}
-              title={title}
-              key={key}
-              actionClose={<AlertActionCloseButton onClose={() => this.removeAlert(key)} />}
-            />
-          ))}
-        </AlertGroup>
         <PageSection variant={PageSectionVariants.light}>
           <Title headingLevel={'h1'}>{title}</Title>
         </PageSection>

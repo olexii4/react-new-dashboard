@@ -12,6 +12,7 @@
 
 import { Alert, AlertActionCloseButton, AlertGroup, AlertVariant, Spinner, spinnerSize } from '@patternfly/react-core';
 import { ConnectedRouter } from 'connected-react-router';
+import { fallback } from './components/Fallback';
 import { NavbarAlerts } from './services/alerts/navbarAlerts';
 import { AlertItem } from './services/helpers/types';
 import { Redirect, Switch } from 'react-router';
@@ -22,12 +23,6 @@ import Layout from './Layout';
 import Routes from './Routes';
 
 import './app.styl';
-
-export const fallback = (
-  <div style={{ height: '100%', textAlign: 'center', opacity: '0.5' }}>
-    <Spinner size={spinnerSize.xl} style={{ top: 'calc(50% - 18px)' }} />
-  </div>
-);
 
 type Props = {
   history: History
