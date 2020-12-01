@@ -38,10 +38,11 @@
   overflow: auto;
   font-size: small;
   line-height: 20px;
+  white-space: normal;
   background-color: #030303;
   cursor: text;
 }
 
-.errorColor {
+.consoleOutput .errorColor {
   color: #e22812;
 }

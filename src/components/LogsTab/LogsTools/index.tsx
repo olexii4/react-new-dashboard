@@ -18,7 +18,7 @@ import { getBlobUrl } from '../../../services/helpers/tools';
 import styles from './index.module.css';
 
 type Props = {
-  logs: string[];
+  logs: string[] | undefined;
   handleExpand: (isExpand: boolean) => void;
 };
 
@@ -52,7 +52,8 @@ class LogsTools extends React.PureComponent<Props, State> {
   }
 
   public render(): React.ReactElement {
-    const logsText = this.props.logs.join('\n');
+    const { logs } = this.props;
+    const logsText = logs ? logs.join('\n') : '';
     const logsBlobUrl = getBlobUrl(logsText);
 
     return (

@@ -11,13 +11,10 @@
  */
 
 import React from 'react';
-import { Provider } from 'react-redux';
 import renderer, { ReactTestRendererJSON } from 'react-test-renderer';
-import { render, screen } from '@testing-library/react';
-import { Store } from 'redux';
-import WorkspaceDeleteAction from '../';
-import { createFakeStore } from '../../../../services/__mocks__/store';
-import { createFakeWorkspace } from '../../../../services/__mocks__/workspace';
+import { render, RenderResult, screen } from '@testing-library/react';
+import { WorkspaceDeleteAction } from '../';
+import { WorkspaceStatus } from '../../../../services/helpers/types';
 
 jest.mock('../../../../store/Workspaces/index', () => {
   return { actionCreators: {} };
@@ -25,6 +22,16 @@ jest.mock('../../../../store/Workspaces/index', () => {
 
 jest.mock('@patternfly/react-core', () => {
   return {
+    AlertVariant: function FakeAlertVariant() {
+      enum AlertVariant {
+        success = 'success',
+        danger = 'danger',
+        warning = 'warning',
+        info = 'info',
+        default = 'default'
+      }
+      return AlertVariant;
+    },
     Tooltip: function FakeTooltip(props: {
       content: string;
       children: React.ReactElement[];
@@ -41,75 +48,126 @@ jest.mock('@patternfly/react-core', () => {
 
 describe('Workspace delete component', () => {
   const workspaceId = 'workspace-test-id';
-  const workspaceName = 'workspace-test-name';
-  const workspace = createFakeWorkspace(workspaceId, workspaceName);
-  const store = createFakeStore([workspace]);
 
   it('should render delete widget enabled correctly', () => {
+    const status = WorkspaceStatus.STOPPED;
     const disabled = false;
-    const component = createComponent(store, disabled, workspaceId, jest.fn());
+    const component = createComponent(status, disabled, workspaceId, jest.fn(), jest.fn());
 
     expect(getComponentSnapshot(component)).toMatchSnapshot();
   });
 
   it('should render delete widget disabled correctly', () => {
+    const status = WorkspaceStatus.STOPPED;
     const disabled = false;
-    const component = createComponent(store, disabled, workspaceId, jest.fn());
+    const component = createComponent(status, disabled, workspaceId, jest.fn(), jest.fn());
 
     expect(getComponentSnapshot(component)).toMatchSnapshot();
   });
 
+  it('should delete workspace on start correctly', () => {
+    const status = WorkspaceStatus.STOPPED;
+    const disabled = false;
+    WorkspaceDeleteAction.shouldDelete.push(workspaceId);
+    const deleteWorkspace = jest.fn();
+    const stopWorkspace = jest.fn();
+
+    renderComponent(createComponent(status, disabled, workspaceId, deleteWorkspace, stopWorkspace));
+
+    expect(stopWorkspace).not.toBeCalled();
+    expect(deleteWorkspace).toBeCalledWith(workspaceId);
+  });
+
   it('should delete workspace if enable', () => {
+    const status = WorkspaceStatus.STOPPED;
     const disabled = false;
     const deleteWorkspace = jest.fn();
+    const stopWorkspace = jest.fn();
 
-    renderComponent(createComponent(store, disabled, workspaceId, deleteWorkspace));
+    renderComponent(createComponent(status, disabled, workspaceId, deleteWorkspace, stopWorkspace));
 
+    expect(stopWorkspace).not.toBeCalled();
     expect(deleteWorkspace).not.toBeCalled();
 
     const getStartedTabButton = screen.getByTestId(`delete-${workspaceId}`);
     getStartedTabButton.click();
 
+    expect(stopWorkspace).not.toBeCalled();
     expect(deleteWorkspace).toBeCalledWith(workspaceId);
   });
 
   it('shouldn\'t delete workspace if disabled', () => {
+    const status = WorkspaceStatus.STOPPED;
     const disabled = true;
     const deleteWorkspace = jest.fn();
+    const stopWorkspace = jest.fn();
 
-    renderComponent(createComponent(store, disabled, workspaceId, deleteWorkspace));
+    renderComponent(createComponent(status, disabled, workspaceId, deleteWorkspace, stopWorkspace));
 
+    expect(stopWorkspace).not.toBeCalled();
     expect(deleteWorkspace).not.toBeCalled();
 
     const getStartedTabButton = screen.getByTestId(`delete-${workspaceId}`);
     getStartedTabButton.click();
 
+    expect(stopWorkspace).not.toBeCalled();
     expect(deleteWorkspace).not.toBeCalled();
+  });
+
+  it('should stop workspace then delete if enable', () => {
+    WorkspaceDeleteAction.shouldDelete.length = 0;
+    let deleteWorkspace = jest.fn();
+    let stopWorkspace = jest.fn();
+
+    let status = WorkspaceStatus.RUNNING;
+
+    const component = renderComponent(createComponent(status, false, workspaceId, deleteWorkspace, stopWorkspace));
+
+    expect(stopWorkspace).not.toBeCalled();
+    expect(deleteWorkspace).not.toBeCalled();
+    expect(WorkspaceDeleteAction.shouldDelete).toEqual([]);
+
+    const getStartedTabButton = screen.getByTestId(`delete-${workspaceId}`);
+    getStartedTabButton.click();
+
+    expect(deleteWorkspace).not.toBeCalled();
+    expect(stopWorkspace).toBeCalledWith(workspaceId);
+    expect(WorkspaceDeleteAction.shouldDelete).toEqual([workspaceId]);
+
+    status = WorkspaceStatus.STOPPED;
+    deleteWorkspace = jest.fn();
+    stopWorkspace = jest.fn();
+
+    component.rerender(createComponent(status, false, workspaceId, deleteWorkspace, stopWorkspace));
+
+    expect(stopWorkspace).not.toBeCalled();
+    expect(deleteWorkspace).toBeCalledWith(workspaceId);
   });
 
 });
 
 function createComponent(
-  store: Store,
+  workspaceStatus: WorkspaceStatus,
   disabled: boolean,
   workspaceId: string,
   deleteWorkspace: jest.Mock,
+  stopWorkspace: jest.Mock
 ): React.ReactElement {
   return (
-    <Provider store={store}>
-      <WorkspaceDeleteAction
-        disabled={disabled}
-        workspaceId={workspaceId}
-        deleteWorkspace={deleteWorkspace}
-      />
-    </Provider>
+    <WorkspaceDeleteAction
+      status={workspaceStatus}
+      disabled={disabled}
+      workspaceId={workspaceId}
+      deleteWorkspace={async (id: string) => deleteWorkspace(id)}
+      stopWorkspace={async (id: string) => stopWorkspace(id)}
+    />
   );
 }
 
 function renderComponent(
   component: React.ReactElement
-): void {
-  render(component);
+): RenderResult {
+  return render(component);
 }
 
 function getComponentSnapshot(

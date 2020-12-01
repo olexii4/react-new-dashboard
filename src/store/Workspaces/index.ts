@@ -146,9 +146,22 @@ type EnvironmentOutputMessageHandler = (message: api.che.workspace.event.Runtime
 const subscribedWorkspaceStatusCallbacks = new Map<string, WorkspaceStatusMessageHandler>();
 const subscribedEnvironmentOutputCallbacks = new Map<string, EnvironmentOutputMessageHandler>();
 
-function subscribeToStatusChange(workspaceId: string, dispatch: ThunkDispatch<State, undefined, UpdateWorkspaceStatusAction | DeleteWorkspaceLogsAction>): void {
+function subscribeToStatusChange(
+  workspaceId: string,
+  dispatch: ThunkDispatch<State, undefined, UpdateWorkspaceStatusAction | UpdateWorkspacesLogsAction | DeleteWorkspaceLogsAction>): void {
   const callback = message => {
-    const status = message.error ? 'ERROR' : message.status;
+    let status: string;
+    if (message.error) {
+      const workspacesLogs = new Map<string, string[]>();
+      workspacesLogs.set(workspaceId, [`Error: Failed to run the workspace: "${message.error}"`]);
+      dispatch({
+        type: 'UPDATE_WORKSPACES_LOGS',
+        workspacesLogs,
+      });
+      status = WorkspaceStatus[WorkspaceStatus.ERROR];
+    } else {
+      status = message.status;
+    }
     if (WorkspaceStatus[status]) {
       dispatch({
         type: 'UPDATE_WORKSPACE_STATUS',
@@ -158,12 +171,6 @@ function subscribeToStatusChange(workspaceId: string, dispatch: ThunkDispatch<St
     }
     if (WorkspaceStatus[WorkspaceStatus.STARTING] !== status) {
       unSubscribeToEnvironmentOutput(workspaceId);
-    }
-    if (WorkspaceStatus[WorkspaceStatus.STOPPED] === status) {
-      dispatch({
-        type: 'DELETE_WORKSPACE_LOGS',
-        workspaceId,
-      });
     }
   };
   WorkspaceClient.jsonRpcMasterApi.subscribeWorkspaceStatus(workspaceId, callback);
@@ -183,7 +190,7 @@ function subscribeToEnvironmentOutput(workspaceId: string, dispatch: ThunkDispat
   const callback: EnvironmentOutputMessageHandler = message => {
     if (message.text) {
       const workspacesLogs = new Map<string, string[]>();
-      workspacesLogs.set(workspaceId, [`${message.text}\r`]);
+      workspacesLogs.set(workspaceId, [`${message.text}`]);
       dispatch({
         type: 'UPDATE_WORKSPACES_LOGS',
         workspacesLogs,
@@ -285,6 +292,7 @@ export const actionCreators: ActionCreators = {
   deleteWorkspace: (workspaceId: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
     try {
       await WorkspaceClient.restApiClient.delete(workspaceId);
+      dispatch({ type: 'DELETE_WORKSPACE_LOGS', workspaceId });
       dispatch({ type: 'DELETE_WORKSPACE', workspaceId });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
@@ -363,10 +371,6 @@ const unloadedState: State = {
   workspaceId: '',
 
   recentNumber: 5,
-};
-
-type StatePartial = {
-  [key in keyof State]: State[key];
 };
 
 const mapMerge = (originMap: Map<string, string[]>, additionalMap: Map<string, string[]>): Map<string, string[]> => {

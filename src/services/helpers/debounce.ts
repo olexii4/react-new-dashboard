@@ -49,6 +49,20 @@ export class Debounce {
     this.debounceDelayHandlers.push(handler);
   }
 
+  /**
+   * Unsubscribe on the show alert event.
+   * @param handler
+   */
+  public unsubscribe(handler: (isDebounceDelay: boolean) => void): void {
+    const index = this.debounceDelayHandlers.indexOf(handler);
+    if (index !== -1) {
+      this.debounceDelayHandlers.splice(index, 1);
+    }
+  }
+
+  /**
+   * Unsubscribe all.
+   */
   unsubscribeAll(): void {
     this.debounceDelayHandlers = [];
   }

@@ -28,6 +28,9 @@ import { selectAllWorkspaces, selectLogs } from '../../store/Workspaces/selector
 
 import styles from './index.module.css';
 
+const maxLogLength = 200;
+const errorRe = /^Error: /gi;
+
 type Props =
   { workspaceId: string }
   & MappedProps;
@@ -36,7 +39,7 @@ type State = {
   isExpanded: boolean;
   isStopped: boolean;
   hasError: boolean;
-  logs: string[];
+  logs: string[] | undefined;
 };
 
 export class LogsTab extends React.PureComponent<Props, State> {
@@ -69,29 +72,51 @@ export class LogsTab extends React.PureComponent<Props, State> {
         return;
       }
 
-      const hasError = WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR;
-      if (this.state.hasError !== hasError) {
+      const hasError = workspace.status && WorkspaceStatus[workspace.status] === WorkspaceStatus.ERROR;
+      if (hasError && !this.state.hasError) {
         this.setState({ hasError });
       }
 
-      const isStopped = WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPED;
+      const isStopped = workspace.status !== undefined && WorkspaceStatus[workspace.status] === WorkspaceStatus.STOPPED;
       if (this.state.isStopped !== isStopped) {
         this.setState({ isStopped });
       }
 
-      if (workspacesLogs) {
-        const logs = workspacesLogs.get(workspaceId);
-        if (logs && (logs.length !== this.state.logs.length)) {
-          this.setState({ logs });
-        }
+      const logs = workspacesLogs.get(workspaceId);
+      if (this.state.logs !== logs) {
+        this.setState({ logs });
       }
     }
   }
 
-  render() {
-    const { isExpanded, logs, hasError, isStopped } = this.state;
+  private get terminal(): React.ReactElement {
+    let logs = this.state.logs;
+    if (!logs) {
+      logs = [];
+    } else if (logs.length > maxLogLength) {
+      logs.splice(0, maxLogLength);
+    }
 
-    if (isStopped) {
+    return (
+      <div className={styles.consoleOutput}>
+        <div>{logs.length} lines</div>
+        <pre>{logs.map((item: string, i: number) => {
+          if (errorRe.test(item)) {
+            return (
+              <p className={styles.errorColor} key={item + i}>
+                {item.replace(errorRe, '')}
+              </p>
+            );
+          }
+          return (<p key={item + i}>{item}</p>);
+        })}</pre>
+      </div>);
+  }
+
+  render() {
+    const { isExpanded, hasError, isStopped, logs } = this.state;
+
+    if (isStopped && !hasError) {
       return (
         <EmptyState style={{ backgroundColor: '#f1f1f1' }}>
           <EmptyStateIcon icon={FileIcon} />
@@ -108,13 +133,10 @@ export class LogsTab extends React.PureComponent<Props, State> {
     return (
       <PageSection variant={PageSectionVariants.light}>
         <div className={isExpanded ? styles.tabExpanded : ''}>
-          <LogsTools logs={logs} handleExpand={isExpanded => {
-            this.setState({ isExpanded, logs });
+          <LogsTools logs={logs ? logs : []} handleExpand={isExpanded => {
+            this.setState({ isExpanded });
           }} />
-          <div className={styles.consoleOutput}>
-            <div>{logs.length} lines</div>
-            <pre className={hasError ? styles.errorColor : ''}>{logs.join('\n')}</pre>
-          </div>
+          {this.terminal}
         </div>
       </PageSection>
     );

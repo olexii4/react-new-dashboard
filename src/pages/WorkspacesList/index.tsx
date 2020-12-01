@@ -10,23 +10,31 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
+import {
+  Alert,
+  AlertActionCloseButton,
+  AlertGroup,
+  AlertVariant,
+  Button,
+  PageSection,
+  PageSectionVariants,
+  Text,
+} from '@patternfly/react-core';
+import { Table, TableBody, TableHeader } from '@patternfly/react-table';
+import { History } from 'history';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { History } from 'history';
-import { Table, TableBody, TableHeader } from '@patternfly/react-table';
-import { Button, PageSection, PageSectionVariants, Text } from '@patternfly/react-core';
-
-import { container } from '../../inversify.config';
-import { AppState } from '../../store';
-import * as WorkspacesStore from '../../store/Workspaces';
 import CheProgress from '../../components/Progress';
+import WorkspaceDeleteAction from '../../components/Workspace/DeleteAction';
 import WorkspaceIndicator from '../../components/Workspace/Indicator';
 import WorkspaceRunAction from '../../components/Workspace/RunAction';
 import WorkspaceStopAction from '../../components/Workspace/StopAction';
-import WorkspaceDeleteAction from '../../components/Workspace/DeleteAction';
+import { container } from '../../inversify.config';
 import { Debounce } from '../../services/helpers/debounce';
-import { selectIsLoading, selectAllWorkspacesByName } from '../../store/Workspaces/selectors';
 import { WorkspaceStatus } from '../../services/helpers/types';
+import { AppState } from '../../store';
+import * as WorkspacesStore from '../../store/Workspaces';
+import { selectAllWorkspacesByName, selectIsLoading } from '../../store/Workspaces/selectors';
 
 import './WorkspacesList.styl';
 
@@ -114,6 +122,7 @@ export class WorkspacesList extends React.PureComponent<Props> {
       <WorkspaceDeleteAction
         key={`delete_${workspace.id}${workspace.status}`}
         workspaceId={workspace.id}
+        status={WorkspaceStatus[workspace.status]}
         disabled={disabled}
       />
     );
