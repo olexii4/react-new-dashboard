@@ -22,7 +22,7 @@ import {
   Tabs,
   Title,
 } from '@patternfly/react-core';
-import { fallback } from '../../components/Fallback';
+import Fallback from '../../components/Fallback';
 import { container } from '../../inversify.config';
 import { AppAlerts } from '../../services/alerts/appAlerts';
 import * as WorkspaceStore from '../../store/Workspaces';
@@ -180,7 +180,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
             activeKey={activeTabKey}
             onSelect={(event, tabKey) => this.handleTabClick(event, tabKey)}>
             <Tab eventKey={GET_STARTED_TAB_KEY} title="Get Started">
-              <Suspense fallback={fallback}>
+              <Suspense fallback={Fallback}>
                 <SamplesListTab
                   onDevfile={(devfileContent: string, stackName: string) => {
                     return this.handleDevfileContent(devfileContent, { stackName });
@@ -189,7 +189,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
               </Suspense>
             </Tab>
             <Tab eventKey={CUSTOM_WORKSPACE_TAB_KEY} title="Custom Workspace">
-              <Suspense fallback={fallback}>
+              <Suspense fallback={Fallback}>
                 <CustomWorkspaceTab
                   onDevfile={(devfile: che.WorkspaceDevfile, infrastructureNamespace?: string) => {
                     return this.handleDevfile(devfile, { infrastructureNamespace });
