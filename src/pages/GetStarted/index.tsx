@@ -24,7 +24,7 @@ import {
 } from '@patternfly/react-core';
 import { fallback } from '../../components/Fallback';
 import { container } from '../../inversify.config';
-import { NavbarAlerts } from '../../services/alerts/navbarAlerts';
+import { AppAlerts } from '../../services/alerts/appAlerts';
 import * as WorkspaceStore from '../../store/Workspaces';
 import { AppState } from '../../store';
 import { AlertItem } from '../../services/helpers/types';
@@ -46,7 +46,7 @@ type State = {
 }
 
 export class GetStarted extends React.PureComponent<Props, State> {
-  private readonly navbarAlerts: NavbarAlerts;
+  private readonly navbarAlerts: AppAlerts;
 
   constructor(props: Props) {
     super(props);
@@ -57,7 +57,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
       activeTabKey,
     };
 
-    this.navbarAlerts = container.get(NavbarAlerts);
+    this.navbarAlerts = container.get(AppAlerts);
   }
 
   public componentDidUpdate(): void {

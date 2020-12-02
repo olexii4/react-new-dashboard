@@ -83,6 +83,7 @@ export class LogsTab extends React.PureComponent<Props, State> {
       }
 
       const logs = workspacesLogs.get(workspaceId);
+      // it's comparing of internal references of two objects
       if (this.state.logs !== logs) {
         this.setState({ logs });
       }

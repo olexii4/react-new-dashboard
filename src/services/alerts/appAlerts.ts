@@ -14,11 +14,11 @@ import { injectable } from 'inversify';
 import { AlertItem } from '../helpers/types';
 
 /**
- * This class is handling the navbar alert service.
+ * This class is handling the app alerts service.
  * @author Oleksii Orel
  */
 @injectable()
-export class NavbarAlerts {
+export class AppAlerts {
   private showAlertHandlers: Array<Function> = [];
   private alerts: AlertItem[] = [];
 

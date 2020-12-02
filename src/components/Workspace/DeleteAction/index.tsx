@@ -15,7 +15,7 @@ import { TrashIcon } from '@patternfly/react-icons';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { container } from '../../../inversify.config';
-import { NavbarAlerts } from '../../../services/alerts/navbarAlerts';
+import { AppAlerts } from '../../../services/alerts/appAlerts';
 import { Debounce } from '../../../services/helpers/debounce';
 import { WorkspaceStatus } from '../../../services/helpers/types';
 import * as WorkspaceStore from '../../../store/Workspaces';
@@ -38,7 +38,7 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
   static shouldDelete: string[] = [];
 
   private readonly debounce: Debounce;
-  private readonly navbarAlerts: NavbarAlerts;
+  private readonly navbarAlerts: AppAlerts;
 
   constructor(props: Props) {
     super(props);
@@ -47,7 +47,7 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
       isDebounceDelay: false,
     };
 
-    this.navbarAlerts = container.get(NavbarAlerts);
+    this.navbarAlerts = container.get(AppAlerts);
 
     this.debounce = container.get(Debounce);
     this.debounce.subscribe(isDebounceDelay => {
