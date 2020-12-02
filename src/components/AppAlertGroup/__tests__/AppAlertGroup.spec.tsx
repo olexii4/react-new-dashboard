@@ -45,7 +45,6 @@ describe('AppAlertGroup component', () => {
     expect(screen.queryAllByText(title).length).toEqual(1);
 
     const closeButton = screen.getByRole('button');
-    expect(closeButton).toBeTruthy();
     fireEvent.click(closeButton);
 
     expect(screen.queryAllByText(title).length).toEqual(0);
