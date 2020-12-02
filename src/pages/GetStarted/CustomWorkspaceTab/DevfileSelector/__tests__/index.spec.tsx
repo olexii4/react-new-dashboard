@@ -23,7 +23,6 @@ import { AppThunk } from '../../../../../store';
 
 jest.mock('../../../../../store/FactoryResolver.ts', () => {
   return {
-    __esModule: true,
     actionCreators: {
       requestFactoryResolver: (location: string): AppThunk<Action, Promise<void>> => async (): Promise<void> => {
         if (/nonexisting/.test(location)) {
@@ -192,7 +191,7 @@ describe('Devfile Selector', () => {
 
   });
 
-  describe('clicking on "Load devfile" button', () => { 
+  describe('clicking on "Load devfile" button', () => {
 
     beforeEach(() => {
       /* enter devfile location into location input */
@@ -209,7 +208,7 @@ describe('Devfile Selector', () => {
 
   });
 
-  describe('clicking on "Load devfile" button when a template is selected', () => { 
+  describe('clicking on "Load devfile" button when a template is selected', () => {
 
     const expectedMeta = JSON.stringify({
       displayName: 'Java Maven Stub',
@@ -238,7 +237,7 @@ describe('Devfile Selector', () => {
 
   });
 
-  describe('clicking on "Load devfile" button when request failed', () => { 
+  describe('clicking on "Load devfile" button when request failed', () => {
 
     beforeEach(() => {
       /* enter devfile location into location input */
