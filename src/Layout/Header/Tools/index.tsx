@@ -22,7 +22,7 @@ import {
   PageHeaderToolsItem,
 } from '@patternfly/react-core';
 
-import { ThemeVariant } from './themeVariant';
+import { ThemeVariant } from '../../themeVariant';
 
 type Props = {
   userEmail: string;

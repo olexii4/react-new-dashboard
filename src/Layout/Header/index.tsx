@@ -17,10 +17,10 @@ import {
 } from '@patternfly/react-core';
 import { User } from 'che';
 
-import { HeaderTools } from './HeaderTools';
-import { ThemeVariant } from './themeVariant';
+import { HeaderTools } from './Tools';
+import { ThemeVariant } from '../themeVariant';
 
-import * as styles from './Header.module.css';
+import * as styles from './index.module.css';
 
 type Props = {
   isVisible: boolean;
