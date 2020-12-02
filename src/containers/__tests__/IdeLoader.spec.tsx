@@ -102,8 +102,8 @@ describe('IDE Loader container', () => {
         <IdeLoader match={match}
           history={history}
           location={location}
-          startWorkspace={startWorkspace}
-          requestWorkspace={requestWorkspace} />
+          requestWorkspace={async (id: string) => requestWorkspace(id)}
+          startWorkspace={async (id: string) => startWorkspace(id)} />
       </Provider>,
     );
   };

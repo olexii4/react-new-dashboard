@@ -11,14 +11,12 @@
  */
 
 import React from 'react';
+import { Provider } from 'react-redux';
 import renderer, { ReactTestRendererJSON } from 'react-test-renderer';
 import { render, RenderResult, screen } from '@testing-library/react';
 import { WorkspaceDeleteAction } from '../';
 import { WorkspaceStatus } from '../../../../services/helpers/types';
-
-jest.mock('../../../../store/Workspaces/index', () => {
-  return { actionCreators: {} };
-});
+import { createFakeStore } from '../../../../services/__mocks__/store';
 
 jest.mock('@patternfly/react-core', () => {
   return {
@@ -151,16 +149,29 @@ function createComponent(
   disabled: boolean,
   workspaceId: string,
   deleteWorkspace: jest.Mock,
-  stopWorkspace: jest.Mock
+  stopWorkspace: jest.Mock,
 ): React.ReactElement {
+  const store = createFakeStore([]);
   return (
-    <WorkspaceDeleteAction
-      status={workspaceStatus}
-      disabled={disabled}
-      workspaceId={workspaceId}
-      deleteWorkspace={async (id: string) => deleteWorkspace(id)}
-      stopWorkspace={async (id: string) => stopWorkspace(id)}
-    />
+    <Provider store={store}>
+      <WorkspaceDeleteAction
+        status={workspaceStatus}
+        disabled={disabled}
+        workspaceId={workspaceId}
+        requestWorkspaces={jest.fn()}
+        requestWorkspace={jest.fn()}
+        startWorkspace={jest.fn()}
+        stopWorkspace={async (id: string) => stopWorkspace(id)}
+        deleteWorkspace={async (id: string) => deleteWorkspace(id)}
+        updateWorkspace={jest.fn()}
+        createWorkspaceFromDevfile={jest.fn()}
+        requestSettings={jest.fn()}
+        setWorkspaceQualifiedName={jest.fn()}
+        clearWorkspaceQualifiedName={jest.fn()}
+        setWorkspaceId={jest.fn()}
+        clearWorkspaceId={jest.fn()}
+      />
+    </Provider>
   );
 }
 

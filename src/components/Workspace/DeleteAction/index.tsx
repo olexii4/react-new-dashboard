@@ -22,7 +22,7 @@ import * as WorkspaceStore from '../../../store/Workspaces';
 
 import * as styles from '../action.module.css';
 
-type Props = MappedProps | any
+type Props = MappedProps
   & {
     workspaceId: string;
     disabled: boolean;
