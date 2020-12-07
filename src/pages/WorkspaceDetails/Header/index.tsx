@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { PageSection, Text, TextVariants, TextContent } from '@patternfly/react-core';
+import { PageSection, Text, TextVariants, FlexItem, Flex } from '@patternfly/react-core';
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 import { ROUTE } from '../../../route.enum';
 import { SECTION_THEME } from '../index';
@@ -27,7 +27,7 @@ type Props = {
 class Header extends React.PureComponent<Props> {
 
   public render(): React.ReactElement {
-    const { workspaceName, status } = this.props;
+    const { workspaceName, status, children } = this.props;
 
     return (
       <PageSection variant={SECTION_THEME} className={styles.workspaceDetailsHeader}>
@@ -37,12 +37,17 @@ class Header extends React.PureComponent<Props> {
           </BreadcrumbItem>
           <BreadcrumbItem isActive>{workspaceName}</BreadcrumbItem>
         </Breadcrumb>
-        <TextContent>
-          <Text component={TextVariants.h1}>
-            {workspaceName}
-            <WorkspaceStatusLabel status={status} />
-          </Text>
-        </TextContent>
+        <Flex>
+          <FlexItem>
+            <Text component={TextVariants.h1}>
+              {workspaceName}
+              <WorkspaceStatusLabel status={status} />
+            </Text>
+          </FlexItem>
+          <FlexItem align={{ default: 'alignRight' }}>
+            {children}
+          </FlexItem>
+        </Flex>
       </PageSection>
     );
   }

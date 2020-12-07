@@ -25,8 +25,9 @@ import * as styles from '../action.module.css';
 type Props = MappedProps
   & {
     workspaceId: string;
-    disabled: boolean;
+    disabled?: boolean;
     status: WorkspaceStatus;
+    children?: React.ReactNode;
   };
 
 type State = {
@@ -38,7 +39,7 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
   static shouldDelete: string[] = [];
 
   private readonly debounce: Debounce;
-  private readonly navbarAlerts: AppAlerts;
+  private readonly appAlerts: AppAlerts;
 
   constructor(props: Props) {
     super(props);
@@ -47,7 +48,7 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
       isDebounceDelay: false,
     };
 
-    this.navbarAlerts = container.get(AppAlerts);
+    this.appAlerts = container.get(AppAlerts);
 
     this.debounce = container.get(Debounce);
     this.debounce.subscribe(isDebounceDelay => {
@@ -57,7 +58,7 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
 
   private showAlert(message: string, alertVariant?: AlertVariant): void {
     const variant = alertVariant ? alertVariant : AlertVariant.danger;
-    this.navbarAlerts.showAlert({
+    this.appAlerts.showAlert({
       key: `wrks-delete-${this.props.workspaceId}-${AlertVariant[variant]}`,
       title: message,
       variant,
@@ -101,7 +102,7 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
     }
 
     this.debounce.setDelay();
-    if (this.props.status === WorkspaceStatus.RUNNING) {
+    if (this.props.status !== WorkspaceStatus.STOPPED) {
       if (!WorkspaceDeleteAction.shouldDelete.includes(this.props.workspaceId)) {
         WorkspaceDeleteAction.shouldDelete.push(this.props.workspaceId);
       }
@@ -125,10 +126,14 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
 
   public render(): React.ReactElement {
     const tooltipContent = 'Delete Workspace';
-    const { workspaceId, disabled } = this.props;
+    const { workspaceId, disabled, children } = this.props;
     const { isDebounceDelay } = this.state;
     const shouldDelete = WorkspaceDeleteAction.shouldDelete.includes(workspaceId);
     const className = disabled || isDebounceDelay || shouldDelete ? styles.disabledWorkspaceStatus : styles.workspaceStatus;
+
+    if (children) {
+      return (<div onClick={e => this.onClick(e)}>{children}</div>);
+    }
 
     return (
       <span

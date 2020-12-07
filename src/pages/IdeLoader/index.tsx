@@ -29,23 +29,19 @@ import Header from '../../components/Header';
 import WorkspaceLogs from '../../components/LogsTab';
 import { LoadIdeSteps } from '../../containers/IdeLoader';
 import { delay } from '../../services/helpers/delay';
-import { WorkspaceStatus } from '../../services/helpers/types';
+import { IdeLoaderTabs, WorkspaceStatus } from '../../services/helpers/types';
 
 import workspaceStatusLabelStyles from '../../components/WorkspaceStatusLabel/index.module.css';
 import './IdeLoader.styl';
 
 export const SECTION_THEME = PageSectionVariants.light;
 
-export enum IdeLoaderTabs {
-  Progress = 0,
-  Logs = 1,
-}
-
 type Props = {
   hasError: boolean,
   currentStep: LoadIdeSteps,
   workspaceName: string;
   workspaceId: string;
+  preselectedTabKey?: IdeLoaderTabs
   ideUrl?: string;
   callbacks?: {
     showAlert?: (variant: AlertVariant, title: string) => void
@@ -76,9 +72,9 @@ class IdeLoader extends React.PureComponent<Props, State> {
     this.state = {
       alertVisible: false,
       loaderVisible: false,
-      activeTabKey: IdeLoaderTabs.Progress,
       currentRequestError: '',
-      workspaceId: this.props.workspaceId
+      workspaceId: this.props.workspaceId,
+      activeTabKey: this.props.preselectedTabKey ? this.props.preselectedTabKey : IdeLoaderTabs.Progress,
     };
 
     this.wizardRef = React.createRef();
@@ -155,9 +151,11 @@ class IdeLoader extends React.PureComponent<Props, State> {
     }
 
     if (this.state.workspaceId !== workspaceId) {
-      this.setState({ workspaceId });
-      this.setState({ alertVisible: false });
-      this.setState({ loaderVisible: false });
+      this.setState({
+        workspaceId,
+        alertVisible: false,
+        loaderVisible: false,
+      });
       if (this.loaderTimer) {
         clearTimeout(this.loaderTimer);
       }

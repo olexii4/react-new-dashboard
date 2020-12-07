@@ -120,10 +120,13 @@ type KnownAction =
   | UpdateWorkspacesLogsAction
   | DeleteWorkspaceLogsAction;
 
+export type ResourceQueryParams = {
+  [propName: string]: string | boolean | undefined;
+}
 export type ActionCreators = {
   requestWorkspaces: () => AppThunk<KnownAction, Promise<void>>;
   requestWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
-  startWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
+  startWorkspace: (workspaceId: string, params?: ResourceQueryParams) => AppThunk<KnownAction, Promise<void>>;
   stopWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
   deleteWorkspace: (workspaceId: string) => AppThunk<KnownAction, Promise<void>>;
   updateWorkspace: (workspace: che.Workspace) => AppThunk<KnownAction, Promise<void>>;
@@ -267,9 +270,9 @@ export const actionCreators: ActionCreators = {
     }
   },
 
-  startWorkspace: (workspaceId: string): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
+  startWorkspace: (workspaceId: string, params?: ResourceQueryParams): AppThunk<KnownAction, Promise<void>> => async (dispatch): Promise<void> => {
     try {
-      const workspace = await WorkspaceClient.restApiClient.start<che.Workspace>(workspaceId);
+      const workspace = await WorkspaceClient.restApiClient.start<che.Workspace>(workspaceId, params);
       subscribeToEnvironmentOutput(workspaceId, dispatch);
       dispatch({ type: 'UPDATE_WORKSPACE', workspace });
     } catch (e) {

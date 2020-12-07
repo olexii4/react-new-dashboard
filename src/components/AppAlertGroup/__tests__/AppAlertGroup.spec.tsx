@@ -17,7 +17,7 @@ import AppAlertGroup from '../';
 import { container } from '../../../inversify.config';
 import { AppAlerts } from '../../../services/alerts/appAlerts';
 
-const navbarAlerts = container.get(AppAlerts);
+const appAlerts = container.get(AppAlerts);
 
 jest.useFakeTimers();
 
@@ -26,7 +26,7 @@ describe('AppAlertGroup component', () => {
   const showAlert = (title: string): void => {
     const key = 'wrks-delete';
     const variant = AlertVariant.success;
-    navbarAlerts.showAlert({
+    appAlerts.showAlert({
       key,
       title,
       variant,

@@ -10,19 +10,25 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
+import { AlertVariant } from '@patternfly/react-core';
+import { History } from 'history';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import { History } from 'history';
+import WorkspaceDetailsPage, { WorkspaceDetails as Details, WorkspaceDetailsTabs } from '../pages/WorkspaceDetails';
+import { IdeLoaderTabs } from '../services/helpers/types';
 
 import { AppState } from '../store';
 import * as WorkspacesStore from '../store/Workspaces';
-import {
-  selectIsLoading,
-  selectAllWorkspaces,
-} from '../store/Workspaces/selectors';
-import WorkspaceDetailsPage, { WorkspaceDetailsTabs, WorkspaceDetails as Details } from '../pages/WorkspaceDetails';
-import { AlertVariant } from '@patternfly/react-core';
+import { selectAllWorkspaces, selectIsLoading } from '../store/Workspaces/selectors';
+
+export enum Actions {
+  OPEN = 'Open',
+  OPEN_IN_VERBOSE_MODE = 'Open in verbose mode',
+  START_IN_BACKGROUND = 'Start in background',
+  STOP_WORKSPACE = 'Stop Workspace',
+  DELETE_WORKSPACE = 'Delete Workspace',
+}
 
 type Props =
   MappedProps
@@ -31,7 +37,7 @@ type Props =
 
 class WorkspaceDetails extends React.PureComponent<Props> {
   workspaceDetailsPageRef: React.RefObject<Details>;
-  private showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
+  private showAlert: (title: string, variant?: AlertVariant) => void;
 
   constructor(props: Props) {
     super(props);
@@ -57,13 +63,24 @@ class WorkspaceDetails extends React.PureComponent<Props> {
       this.props.requestWorkspaces();
     }
     const showAlert = this.workspaceDetailsPageRef.current?.showAlert;
-    this.showAlert = (variant: AlertVariant, title: string, timeDelay?: number) => {
+    this.showAlert = (title: string, variant?: AlertVariant) => {
       if (showAlert) {
-        showAlert(variant, title, timeDelay);
+        showAlert(variant ? variant : AlertVariant.danger, title);
       } else {
         console.error(title);
       }
     };
+  }
+
+  public componentDidUpdate(): void {
+    const namespace = this.props.match.params.namespace;
+    const workspaceName = this.props.match.params.workspaceName;
+
+    const workspace = this.props.allWorkspaces?.find(workspace =>
+      workspace.namespace === namespace && workspace.devfile.metadata.name === workspaceName);
+    if (!workspace) {
+      this.props.history.replace({ pathname: '/workspaces' });
+    }
   }
 
   render() {
@@ -71,8 +88,51 @@ class WorkspaceDetails extends React.PureComponent<Props> {
       <WorkspaceDetailsPage
         ref={this.workspaceDetailsPageRef}
         onSave={(workspace: che.Workspace) => this.onSave(workspace)}
+        onAction={(action => this.onAction(action))}
       />
     );
+  }
+
+  async onAction(action: Actions): Promise<void> {
+    const namespace = this.props.match.params.namespace;
+    const workspaceName = this.props.match.params.workspaceName;
+    const workspace = this.props.allWorkspaces?.find(workspace =>
+      workspace.namespace === namespace && workspace.devfile.metadata.name === workspaceName);
+
+    if (!workspace) {
+      this.showAlert('Unable to find the workspace');
+      return;
+    }
+
+    switch (action) {
+      case Actions.OPEN:
+        this.props.history.replace({ pathname: `/ide/${namespace}/${workspaceName}` });
+        break;
+      case Actions.OPEN_IN_VERBOSE_MODE:
+        try {
+          await this.props.startWorkspace(workspace.id, { 'debug-workspace-start': true });
+          this.props.history.replace({
+            pathname: `/ide/${namespace}/${workspaceName}?tab=${IdeLoaderTabs[IdeLoaderTabs.Logs]}`
+          });
+        } catch (e) {
+          this.showAlert(`Unable to ${Actions.OPEN_IN_VERBOSE_MODE.toLowerCase()}. ${e}`);
+        }
+        break;
+      case Actions.START_IN_BACKGROUND:
+        try {
+          await this.props.startWorkspace(workspace.id);
+        } catch (e) {
+          this.showAlert(`Unable to ${Actions.START_IN_BACKGROUND.toLowerCase()}. ${e}`);
+        }
+        break;
+      case Actions.STOP_WORKSPACE:
+        try {
+          await this.props.stopWorkspace(workspace.id);
+        } catch (e) {
+          this.showAlert(`Unable to ${Actions.STOP_WORKSPACE.toLowerCase()}. ${e}`);
+        }
+        break;
+    }
   }
 
   async onSave(newWorkspaceObj: che.Workspace): Promise<void> {
@@ -81,7 +141,7 @@ class WorkspaceDetails extends React.PureComponent<Props> {
 
     try {
       await this.props.updateWorkspace(newWorkspaceObj);
-      this.showAlert(AlertVariant.success, 'Workspace has been updated', 2000);
+      this.showAlert('Workspace has been updated', AlertVariant.success);
       const pathname = `/workspace/${namespace}/${workspaceName}`;
       this.props.history.replace({ pathname });
       this.props.setWorkspaceId(newWorkspaceObj.id);
@@ -89,7 +149,7 @@ class WorkspaceDetails extends React.PureComponent<Props> {
       if (this.workspaceDetailsPageRef.current?.state.activeTabKey === WorkspaceDetailsTabs.Devfile) {
         throw new Error(e.toString().replace(/^Error: /gi, ''));
       }
-      this.showAlert(AlertVariant.danger, 'Failed to update workspace data', 10000);
+      this.showAlert('Failed to update workspace data');
     }
   }
 

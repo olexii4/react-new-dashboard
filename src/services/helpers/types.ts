@@ -32,3 +32,8 @@ export enum WorkspaceStatus {
   PAUSED,
   ERROR,
 }
+
+export enum IdeLoaderTabs {
+  Progress = 0,
+  Logs = 1,
+}

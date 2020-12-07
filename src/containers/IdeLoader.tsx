@@ -18,7 +18,7 @@ import { RouteComponentProps } from 'react-router';
 import { container } from '../inversify.config';
 import IdeLoaderPage from '../pages/IdeLoader';
 import { Debounce } from '../services/helpers/debounce';
-import { WorkspaceStatus } from '../services/helpers/types';
+import { IdeLoaderTabs, WorkspaceStatus } from '../services/helpers/types';
 import { AppState } from '../store';
 import * as WorkspaceStore from '../store/Workspaces';
 import { selectAllWorkspaces, selectWorkspaceById } from '../store/Workspaces/selectors';
@@ -39,6 +39,7 @@ type State = {
   workspaceName: string,
   workspaceId?: string,
   currentStep: LoadIdeSteps;
+  preselectedTabKey?: IdeLoaderTabs;
   ideUrl?: string;
   hasError?: boolean;
 };
@@ -55,9 +56,9 @@ class IdeLoader extends React.PureComponent<Props, State> {
     this.loadFactoryPageCallbacks = {};
     const { match: { params }, history } = this.props;
     const namespace = params.namespace;
-    const workspaceName = (params.workspaceName.split('&'))[0];
+    const workspaceName = (this.workspaceName.split('&'))[0];
 
-    if (workspaceName !== params.workspaceName) {
+    if (workspaceName !== this.workspaceName) {
       const pathname = `/ide/${namespace}/${workspaceName}`;
       history.replace({ pathname });
     }
@@ -66,12 +67,32 @@ class IdeLoader extends React.PureComponent<Props, State> {
       currentStep: LoadIdeSteps.INITIALIZING,
       namespace,
       workspaceName,
+      preselectedTabKey: this.preselectedTabKey,
     };
 
     this.debounce = container.get(Debounce);
     this.debounce.subscribe(async () => {
       await this.initWorkspace();
     });
+  }
+
+  private get workspaceName(): string {
+    const { match: { params } } = this.props;
+    return params.workspaceName.split('?')[0];
+  }
+
+  private get preselectedTabKey(): IdeLoaderTabs {
+    const { match: { params } } = this.props;
+    const search = params.workspaceName.split('?')[1];
+    if (!search) {
+      return IdeLoaderTabs.Progress;
+    }
+    const searchParam = new URLSearchParams(search);
+    const tab = searchParam.get('tab');
+    if (tab) {
+      return IdeLoaderTabs[tab];
+    }
+    return IdeLoaderTabs.Progress;
   }
 
   public showAlert(message: string, alertVariant: AlertVariant = AlertVariant.danger): void {
@@ -108,10 +129,14 @@ class IdeLoader extends React.PureComponent<Props, State> {
     const { allWorkspaces, match: { params } } = this.props;
     const { hasError } = this.state;
     const workspace = allWorkspaces.find(workspace =>
-      workspace.namespace === params.namespace && workspace.devfile.metadata.name === params.workspaceName);
+      workspace.namespace === params.namespace && workspace.devfile.metadata.name === this.workspaceName);
     if (workspace && !hasError && workspace.status === WorkspaceStatus[WorkspaceStatus.ERROR]) {
       try {
         await this.props.requestWorkspace(workspace.id);
+        if (workspace.status === WorkspaceStatus[WorkspaceStatus.ERROR]) {
+          this.setState({ hasError: true });
+          this.showAlert(`Workspace ${this.state.workspaceName} failed to start. Check logs.`);
+        }
       } catch (e) {
         this.showAlert(`Getting workspace detail data failed. ${e}`);
         return;
@@ -159,20 +184,20 @@ class IdeLoader extends React.PureComponent<Props, State> {
     const { allWorkspaces, match: { params } } = this.props;
     const { namespace, workspaceName } = this.state;
 
-    if (namespace !== params.namespace || workspaceName !== params.workspaceName) {
+    if (namespace !== params.namespace || workspaceName !== this.workspaceName) {
       this.setState({
         currentStep: LoadIdeSteps.INITIALIZING,
         hasError: false,
         ideUrl: '',
         namespace: params.namespace,
-        workspaceName: params.workspaceName,
+        workspaceName: this.workspaceName,
       });
       return;
     } else if (this.state.currentStep === LoadIdeSteps.OPEN_IDE) {
       return;
     }
     const workspace = allWorkspaces.find(workspace =>
-      workspace.namespace === params.namespace && workspace.devfile.metadata.name === params.workspaceName);
+      workspace.namespace === params.namespace && workspace.devfile.metadata.name === this.workspaceName);
     if (workspace) {
       this.setState({ workspaceId: workspace.id });
       if ((workspace.runtime || this.state.currentStep === LoadIdeSteps.START_WORKSPACE) &&
@@ -198,12 +223,13 @@ class IdeLoader extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const { currentStep, hasError, ideUrl, workspaceId, workspaceName } = this.state;
+    const { currentStep, hasError, ideUrl, workspaceId, workspaceName, preselectedTabKey } = this.state;
 
     return (
       <IdeLoaderPage
         currentStep={currentStep}
         workspaceId={workspaceId || ''}
+        preselectedTabKey={preselectedTabKey}
         ideUrl={ideUrl}
         hasError={hasError === true}
         workspaceName={workspaceName || ''}

@@ -46,7 +46,7 @@ type State = {
 }
 
 export class GetStarted extends React.PureComponent<Props, State> {
-  private readonly navbarAlerts: AppAlerts;
+  private readonly appAlerts: AppAlerts;
 
   constructor(props: Props) {
     super(props);
@@ -57,7 +57,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
       activeTabKey,
     };
 
-    this.navbarAlerts = container.get(AppAlerts);
+    this.appAlerts = container.get(AppAlerts);
   }
 
   public componentDidUpdate(): void {
@@ -151,7 +151,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
   }
 
   private showAlert(alert: AlertItem): void {
-    this.navbarAlerts.showAlert(alert);
+    this.appAlerts.showAlert(alert);
   }
 
   private handleTabClick(event: React.MouseEvent<HTMLElement, MouseEvent>, activeTabKey: React.ReactText): void {

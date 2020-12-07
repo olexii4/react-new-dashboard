@@ -180,7 +180,7 @@ export class FactoryLoader extends React.PureComponent<Props, State> {
     try {
       workspace = await this.props.createWorkspaceFromDevfile(devfile, undefined, undefined, attrs) as any;
     } catch (e) {
-      this.showAlert('Failed to create a workspace.');
+      this.showAlert(`Failed to create a workspace. ${e}`);
       return;
     }
     if (!workspace) {

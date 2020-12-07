@@ -19,7 +19,6 @@ import {
   Tab,
   Alert,
   AlertActionCloseButton,
-  AlertGroup,
   Modal,
   ModalVariant,
   AlertVariant,
@@ -27,10 +26,14 @@ import {
   Text,
   Button,
 } from '@patternfly/react-core';
+import { Actions } from '../../containers/WorkspaceDetails';
 import { WorkspaceStatus } from '../../services/helpers/types';
 import Header from './Header';
 import CheProgress from '../../components/Progress';
 import { AppState } from '../../store';
+import { HeaderActionSelect } from './Header/Actions';
+import { container } from '../../inversify.config';
+import { AppAlerts } from '../../services/alerts/appAlerts';
 import OverviewTab, { OverviewTab as Overview } from './OverviewTab';
 import EditorTab, { EditorTab as Editor } from './DevfileTab';
 import { selectIsLoading, selectWorkspaceById } from '../../store/Workspaces/selectors';
@@ -47,21 +50,21 @@ export enum WorkspaceDetailsTabs {
 
 type Props =
   {
-    onSave: (workspace: che.Workspace) => Promise<void>
+    onSave: (workspace: che.Workspace) => Promise<void>;
+    onAction: (action: Actions) => void;
   } & MappedProps;
 
 type State = {
   activeTabKey?: WorkspaceDetailsTabs;
   clickedTabIndex?: WorkspaceDetailsTabs;
-  alertVisible?: boolean;
   hasWarningMessage?: boolean;
   hasDiscardChangesMessage?: boolean;
 };
 
 export class WorkspaceDetails extends React.PureComponent<Props, State> {
+  private static activeTabKey?: WorkspaceDetailsTabs;
   private alert: { variant?: AlertVariant; title?: string } = {};
-  public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
-  private readonly hideAlert: () => void;
+  public showAlert: (variant: AlertVariant, title: string) => void;
   private readonly handleTabClick: (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => void;
 
   private readonly editorTabPageRef: React.RefObject<Editor>;
@@ -74,8 +77,7 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
     this.overviewTabPageRef = React.createRef<Overview>();
 
     this.state = {
-      activeTabKey: 0,
-      alertVisible: false,
+      activeTabKey: WorkspaceDetails.activeTabKey ? WorkspaceDetails.activeTabKey : 0,
       hasWarningMessage: false,
       hasDiscardChangesMessage: false,
     };
@@ -104,19 +106,19 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
         clickedTabIndex: tabIndex as WorkspaceDetailsTabs,
         activeTabKey: tabIndex as WorkspaceDetailsTabs
       });
+      WorkspaceDetails.activeTabKey = tabIndex as WorkspaceDetailsTabs;
     };
-    let showAlertTimer;
-    this.showAlert = (variant: AlertVariant, title: string, timeDelay?: number): void => {
+
+    const appAlerts = container.get(AppAlerts);
+    this.showAlert = (variant: AlertVariant, title: string): void => {
       this.alert = { variant, title };
-      this.setState({ alertVisible: true });
-      if (showAlertTimer) {
-        clearTimeout(showAlertTimer);
-      }
-      showAlertTimer = setTimeout(() => {
-        this.setState({ alertVisible: false });
-      }, timeDelay ? timeDelay : 2000);
+      const key = `wrks-details-${(('0000' + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4))}`;
+      appAlerts.showAlert({
+        key,
+        title,
+        variant,
+      });
     };
-    this.hideAlert = (): void => this.setState({ alertVisible: false });
   }
 
   public componentDidUpdate(): void {
@@ -141,8 +143,7 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
   }
 
   public render(): React.ReactElement {
-    const { alertVisible } = this.state;
-    const { workspace } = this.props;
+    const { workspace, onAction } = this.props;
 
     if (!workspace) {
       return <div>Workspace not found.</div>;
@@ -152,16 +153,9 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
 
     return (
       <React.Fragment>
-        {alertVisible && (
-          <AlertGroup isToast>
-            <Alert
-              variant={this.alert.variant}
-              title={this.alert.title}
-              actionClose={<AlertActionCloseButton onClose={this.hideAlert} />}
-            />
-          </AlertGroup>
-        )}
-        <Header workspaceName={workspaceName} status={workspace.status} />
+        <Header workspaceName={workspaceName} status={workspace.status}>
+          <HeaderActionSelect onAction={onAction} workspaceId={workspace.id} status={workspace.status} />
+        </Header>
         <PageSection variant={SECTION_THEME} className='workspace-details-tabs'>
           {(this.state.hasWarningMessage) && (
             <Alert variant={AlertVariant.warning} isInline

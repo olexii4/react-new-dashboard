@@ -23,7 +23,7 @@ type State = {
 };
 
 class AppAlertGroup extends React.PureComponent<Props, State> {
-  private readonly navbarAlerts: AppAlerts;
+  private readonly appAlerts: AppAlerts;
   private readonly showAlertHandler: (alerts: AlertItem[]) => void;
 
   constructor(props: Props) {
@@ -32,30 +32,30 @@ class AppAlertGroup extends React.PureComponent<Props, State> {
     this.state = {
       alerts: [],
     };
-    this.navbarAlerts = container.get(AppAlerts);
+    this.appAlerts = container.get(AppAlerts);
     this.showAlertHandler = (alerts: AlertItem[]) => {
       this.setState({ alerts });
     };
   }
 
   public componentDidMount(): void {
-    this.navbarAlerts.subscribe(this.showAlertHandler);
+    this.appAlerts.subscribe(this.showAlertHandler);
   }
 
   public componentWillUnmount(): void {
-    this.navbarAlerts.unsubscribe(this.showAlertHandler);
+    this.appAlerts.unsubscribe(this.showAlertHandler);
   }
 
   private getAlert(item: AlertItem): React.ReactElement {
     const { variant, title, key } = item;
     const showAlertTimer = setTimeout(() => {
-      this.navbarAlerts.removeAlert(key);
+      this.appAlerts.removeAlert(key);
     }, variant === AlertVariant.success ? 2000 : 8000);
     return (
       <Alert variant={variant} title={title} key={key} actionClose={
         <AlertActionCloseButton onClose={() => {
           clearTimeout(showAlertTimer);
-          this.navbarAlerts.removeAlert(key);
+          this.appAlerts.removeAlert(key);
         }} />
       } />);
   }
