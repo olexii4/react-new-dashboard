@@ -21,6 +21,11 @@ import { ThemeVariant } from './themeVariant';
 import { AppState } from '../store';
 import { container } from '../inversify.config';
 import { KeycloakService } from '../services/keycloak/Keycloak';
+import { IssuesReporter } from '../services/bootstrap/issuesReporter';
+import { ErrorReporter } from './ErrorReporter';
+import { IssueComponent } from './ErrorReporter/Issue';
+
+const issuesReporterService = container.get(IssuesReporter);
 
 const THEME_KEY = 'theme';
 const IS_MANAGED_SIDEBAR = false;
@@ -90,7 +95,7 @@ export class Layout extends React.PureComponent<Props, State> {
     );
   }
 
-  componentWillUnmount(): void {
+  public componentWillUnmount(): void {
     window.removeEventListener(
       'message',
       event => this.handleMessage(event)
@@ -98,6 +103,22 @@ export class Layout extends React.PureComponent<Props, State> {
   }
 
   public render(): React.ReactElement {
+    /* check for startup issues */
+    if (issuesReporterService.hasIssue) {
+      const issue = issuesReporterService.reportIssue();
+      const brandingData = this.props.brandingStore.data;
+      if (issue) {
+        return (
+          <ErrorReporter>
+            <IssueComponent
+              branding={brandingData}
+              issue={issue}
+            />
+          </ErrorReporter>
+        );
+      }
+    }
+
     const { isHeaderVisible, isSidebarVisible, theme } = this.state;
     const { history } = this.props;
 
