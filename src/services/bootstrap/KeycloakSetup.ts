@@ -15,75 +15,150 @@ import 'keycloak-js';
 import axios from 'axios';
 import { injectable } from 'inversify';
 import { KeycloakInstance } from 'keycloak-js';
+import { container } from '../../inversify.config';
+import { IssuesReporter } from './issuesReporter';
+
+const keycloakSettingsFields = [
+  'che.keycloak.oidc_provider',
+  'che.keycloak.auth_server_url',
+  'che.keycloak.client_id',
+  'che.keycloak.js_adapter_url',
+  'che.keycloak.jwks.endpoint',
+  'che.keycloak.logout.endpoint',
+  'che.keycloak.password.endpoint',
+  'che.keycloak.profile.endpoint',
+  'che.keycloak.realm',
+  'che.keycloak.token.endpoint',
+  'che.keycloak.use_nonce',
+  'che.keycloak.userinfo.endpoint',
+  'che.keycloak.username_claim',
+  'che.keycloak.redirect_url.dashboard'] as const;
+type KeycloakSettingsField = typeof keycloakSettingsFields[number];
+
+function isOfTypeKeycloakSettingsField(settingField: string): settingField is KeycloakSettingsField {
+  return (keycloakSettingsFields as readonly string[]).indexOf(settingField) >= 0;
+}
+
+type KeycloakSettingsMap = Map<KeycloakSettingsField, string>;
+
+// todo extract
+type KeycloakAuth = {
+  sso: boolean;
+  keycloak: KeycloakInstance | undefined;
+}
+type KeycloakConfig = Keycloak.KeycloakConfig | {
+  oidcProvider: string;
+  clientId: string;
+}
 
 /**
  * This class is handling the keycloak settings data.
  * @author Oleksii Orel
  */
-@injectable()
-export class KeycloakSetup {
 
-  static keycloakAuth = {
-    isPresent: false,
-    keycloak: null,
-    config: null
+// todo split in KeycloakSetupService and KeycloakAuthService
+@injectable()
+export class KeycloakSetupService {
+
+  static keycloakAuth: KeycloakAuth = {
+    sso: false,
+    keycloak: undefined,
   };
 
-  private static isDocumentReady = new Promise<void>(resolve => {
-    const state = document.readyState;
-    if (state === 'interactive' || state === 'complete') {
-      resolve();
-    } else {
-      document.onreadystatechange = (): void => resolve();
-    }
-  });
-
   private user: che.User | undefined;
+  private issuesReporterService: IssuesReporter;
+
+  constructor() {
+    this.issuesReporterService = container.get(IssuesReporter);
+  }
 
   async start(): Promise<void> {
-    if (KeycloakSetup.keycloakAuth.isPresent) {
-      return;
-    }
+    await this.doInitialization();
 
-    // initialize keycloak adapter
+    /* test API */
     try {
-      const keycloakSettings = await this.fetchSettings();
-      KeycloakSetup.keycloakAuth.config = this.buildKeycloakConfig(keycloakSettings);
-
-      const src = keycloakSettings['che.keycloak.js_adapter_url'];
-      await this.loadAdapterScript(src);
-
-      const keycloak = await this.keycloakInit(KeycloakSetup);
-
-      KeycloakSetup.keycloakAuth.isPresent = true;
-      KeycloakSetup.keycloakAuth.keycloak = keycloak;
-      (window as any)['_keycloak'] = keycloak;
-    } catch (e) {
-      console.error('Keycloak initialization failed: ', e);
-    }
-
-    // test API
-    try {
-      const keycloak = KeycloakSetup.keycloakAuth.keycloak;
       const endpoint = '/api/user';
-      const result = await this.testApiAttainability<che.User>(keycloak, endpoint);
+      const result = await this.testApiAttainability<che.User>(endpoint);
       this.user = result;
     } catch (e) {
       throw new Error('Failed to get response to API endpoint: \n' + e);
     }
   }
 
-  private async fetchSettings(): Promise<any> {
+  private async doInitialization(): Promise<void> {
+    // todo do we need this check?
+    if (KeycloakSetupService.keycloakAuth.sso) {
+      return;
+    }
+
     try {
-      const response = await axios.get('/api/keycloak/settings');
-      return response.data;
+      /* load Keycloak adapter settings */
+      const settings = await this.fetchSettings();
+      if (!settings) {
+        console.warn('Keycloak is not configured. Running in Single User mode.');
+        return;
+      }
+
+      /* check for Keycloak adapter URL */
+      const src = settings.get('che.keycloak.js_adapter_url');
+      if (!src) {
+        console.warn('Keycloak adapter URL is not found. Skip initializing Keycloak.');
+        return;
+      }
+      KeycloakSetupService.keycloakAuth.sso = true;
+
+      const config = this.buildKeycloakConfig(settings);
+
+      /* load Keycloak adapter */
+      await this.loadAdapterScript(src);
+
+      /* initialize Keycloak adapter */
+      const keycloak = await this.initKeycloak(config, settings);
+
+      KeycloakSetupService.keycloakAuth.keycloak = keycloak;
     } catch (e) {
-      throw new Error('Failed get keycloak settings.');
+      console.warn('Keycloak initialization failed.', e);
     }
   }
 
+  private async fetchSettings(): Promise<KeycloakSettingsMap | undefined> {
+    try {
+      const response = await axios.get('/api/keycloak/settings');
+
+      const settings: KeycloakSettingsMap = new Map();
+      for (const key of Object.keys(response.data)) {
+        if (isOfTypeKeycloakSettingsField(key)) {
+          settings.set(key, response.data[key]);
+        } else {
+          console.warn('Skip keycloak settings field: ', key);
+        }
+      }
+
+      return settings;
+    } catch (e) {
+      // todo add development mode check into condition
+      if (e.response.status === 404) {
+        return;
+      }
+
+      throw new Error(`Can't get Keycloak settings: ${e.response.status} ${e.response.statusText}`);
+    }
+  }
+
+  // todo move into DOM helper
+  private isDocumentReady(): Promise<void> {
+    return new Promise<void>(resolve => {
+      const state = document.readyState;
+      if (state === 'interactive' || state === 'complete') {
+        resolve();
+      } else {
+        document.onreadystatechange = (): void => resolve();
+      }
+    });
+  }
+
   private async loadAdapterScript(src: string): Promise<void> {
-    await KeycloakSetup.isDocumentReady;
+    await this.isDocumentReady();
 
     return new Promise<void>((resolve, reject) => {
       const script = document.createElement('script');
@@ -91,11 +166,13 @@ export class KeycloakSetup {
       script.async = true;
       script.src = src;
       script.addEventListener('load', () => resolve());
-      script.addEventListener('error', e => {
-        reject(new Error(e.toString()));
+      script.addEventListener('error', () => {
+        const error = new Error(`Keycloak adapter script loading failed from "${src}".`);
+        this.issuesReporterService.registerIssue('cert', error);
+        reject(error);
       });
       script.addEventListener('abort', () => {
-        reject(new Error('Loader loading aborted.'));
+        reject(new Error('Keycloak adapter script loading aborted.'));
       });
       document.head.appendChild(script);
     });
@@ -105,36 +182,38 @@ export class KeycloakSetup {
     return this.user;
   }
 
-  private buildKeycloakConfig(keycloakSettings: any): any {
-    const theOidcProvider = keycloakSettings['che.keycloak.oidc_provider'];
+  private buildKeycloakConfig(settings: KeycloakSettingsMap): KeycloakConfig {
+    const theOidcProvider = settings.get('che.keycloak.oidc_provider');
     if (!theOidcProvider) {
       return {
-        url: keycloakSettings['che.keycloak.auth_server_url'],
-        realm: keycloakSettings['che.keycloak.realm'],
-        clientId: keycloakSettings['che.keycloak.client_id']
+        url: settings.get('che.keycloak.auth_server_url'),
+        realm: settings.get('che.keycloak.realm') || '',
+        clientId: settings.get('che.keycloak.client_id') || ''
       };
     } else {
       return {
         oidcProvider: theOidcProvider,
-        clientId: keycloakSettings['che.keycloak.client_id']
+        clientId: settings.get('che.keycloak.client_id') || ''
       };
     }
   }
 
-  private async keycloakInit(keycloakSettings: any): Promise<any> {
+  private async initKeycloak(config: KeycloakConfig, settings: KeycloakSettingsMap): Promise<KeycloakInstance> {
     let useNonce = false;
-    if (typeof keycloakSettings['che.keycloak.use_nonce'] === 'string') {
-      useNonce = keycloakSettings['che.keycloak.use_nonce'].toLowerCase() === 'true';
+    const nonce = settings.get('che.keycloak.use_nonce');
+    if (nonce && typeof nonce === 'string') {
+      useNonce = nonce.toLowerCase() === 'true';
     }
     const initOptions = {
       useNonce,
     };
 
-    if (!window['Keycloak']) {
+    const Keycloak = window['Keycloak'];
+    if (!Keycloak) {
       throw new Error('Keycloak Adapter not found.');
     }
 
-    const keycloak = window['Keycloak'](keycloakSettings.keycloakAuth.config);
+    const keycloak = Keycloak(config as Keycloak.KeycloakConfig);
     window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
 
     return new Promise((resolve, reject) => {
@@ -144,27 +223,31 @@ export class KeycloakSetup {
         useNonce: initOptions['useNonce'],
       }).success(() => {
         resolve(keycloak);
-      }).error((error: any) => {
-        reject(new Error(error));
+      }).error((keycloakError: Keycloak.KeycloakError) => {
+        const errorDescr = keycloakError ? `${keycloakError.error}: ${keycloakError.error_description}` : '';
+        const errorMessage = 'Keycloak initialization failed' + (errorDescr ? ': ' : '') + errorDescr;
+
+        this.issuesReporterService.registerIssue('sso', new Error(errorMessage));
+
+        reject(new Error(errorMessage));
       });
     });
   }
 
-  private async testApiAttainability<T>(keycloak: KeycloakInstance | null, endpoint: string): Promise<T> {
+  private async testApiAttainability<T>(endpoint: string): Promise<T> {
     try {
-      await this.setAuthorizationHeader(keycloak);
+      const { keycloak } = KeycloakSetupService.keycloakAuth;
+      if (keycloak) {
+        await this.setAuthorizationHeader(keycloak);
+      }
       const response = await axios.get(endpoint);
       return response.data;
     } catch (e) {
-      throw new Error(`Failed request to "${endpoint}". \n` + e);
+      throw new Error(`Request to "${endpoint}" failed:` + e);
     }
   }
 
-  private async setAuthorizationHeader(keycloak: KeycloakInstance | null): Promise<void> {
-    if (!keycloak) {
-      return;
-    }
-
+  private async setAuthorizationHeader(keycloak: KeycloakInstance): Promise<void> {
     try {
       await this.updateToken(keycloak);
     } catch (e) {

@@ -11,8 +11,9 @@
  */
 
 import { injectable } from 'inversify';
+import { KeycloakInstance } from 'keycloak-js';
 import { getDefer, IDeferred } from '../helpers/deferred';
-import { KeycloakSetup } from '../bootstrap/KeycloakSetup';
+import { KeycloakSetupService } from '../bootstrap/KeycloakSetup';
 
 export type IKeycloakUserInfo = {
   email: string;
@@ -26,17 +27,17 @@ export type IKeycloakUserInfo = {
  * This class is handling interactions with Keycloak
  */
 @injectable()
-export class Keycloak {
+export class KeycloakService {
 
   fetchUserInfo(): Promise<IKeycloakUserInfo> {
     const defer: IDeferred<IKeycloakUserInfo> = getDefer();
 
-    if (!KeycloakSetup.keycloakAuth.keycloak) {
+    if (!KeycloakSetupService.keycloakAuth.keycloak) {
       defer.reject('Keycloak is not found on the page.');
       return defer.promise;
     }
 
-    (KeycloakSetup.keycloakAuth.keycloak as any).loadUserInfo().success((userInfo: IKeycloakUserInfo) => {
+    (KeycloakSetupService.keycloakAuth.keycloak as any).loadUserInfo().success((userInfo: IKeycloakUserInfo) => {
       defer.resolve(userInfo);
     }).error((error: any) => {
       defer.reject(`User info fetching failed, error: ${error}`);
@@ -46,7 +47,7 @@ export class Keycloak {
   }
 
   async updateToken(minValidity: number): Promise<void> {
-    const keycloak = KeycloakSetup.keycloakAuth.keycloak as any;
+    const keycloak = KeycloakSetupService.keycloakAuth.keycloak as any;
     if (!keycloak || !keycloak.updateToken) {
       return;
     }
@@ -62,18 +63,18 @@ export class Keycloak {
   }
 
   isPresent(): boolean {
-    return KeycloakSetup.keycloakAuth.isPresent;
+    return KeycloakSetupService.keycloakAuth.sso;
   }
 
   getProfileUrl(): string {
-    const keycloak: any = KeycloakSetup.keycloakAuth.keycloak;
+    const keycloak: any = KeycloakSetupService.keycloakAuth.keycloak;
     return keycloak && keycloak.createAccountUrl ? keycloak.createAccountUrl() : '';
   }
 
   logout(): void {
     window.sessionStorage.removeItem('githubToken');
     window.sessionStorage.setItem('oidcDashboardRedirectUrl', location.href);
-    const keycloak = KeycloakSetup.keycloakAuth.keycloak as any;
+    const keycloak = KeycloakSetupService.keycloakAuth.keycloak as any;
     if (keycloak && keycloak.logout) {
       keycloak.logout({});
     }

@@ -20,7 +20,7 @@ import Sidebar from './Sidebar';
 import { ThemeVariant } from './themeVariant';
 import { AppState } from '../store';
 import { container } from '../inversify.config';
-import { Keycloak } from '../services/keycloak/Keycloak';
+import { KeycloakService } from '../services/keycloak/Keycloak';
 
 const THEME_KEY = 'theme';
 const IS_MANAGED_SIDEBAR = false;
@@ -52,8 +52,8 @@ export class Layout extends React.PureComponent<Props, State> {
   }
 
   private logout(): void {
-    const keycloak = container.get(Keycloak);
-    keycloak.logout();
+    const keycloakService = container.get(KeycloakService);
+    keycloakService.logout();
   }
 
   private toggleNav(): void {

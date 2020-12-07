@@ -11,11 +11,11 @@
  */
 
 import { ConnectedRouter } from 'connected-react-router';
+import { History } from 'history';
+import React, { Suspense } from 'react';
+import { Redirect, Switch } from 'react-router';
 import AppAlertGroup from './components/AppAlertGroup';
 import Fallback from './components/Fallback';
-import { Redirect, Switch } from 'react-router';
-import React, { Suspense } from 'react';
-import { History } from 'history';
 import Layout from './Layout';
 import Routes from './Routes';
 
