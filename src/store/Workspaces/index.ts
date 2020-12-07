@@ -15,7 +15,7 @@ import * as api from '@eclipse-che/api';
 import { ThunkDispatch } from 'redux-thunk';
 import { AppThunk } from '../';
 import { container } from '../../inversify.config';
-import { CheWorkspaceClient } from '../../services/workspace-client/CheWorkspaceClient';
+import { CheWorkspaceClient } from '../../services/cheWorkspaceClient';
 import { WorkspaceStatus } from '../../services/helpers/types';
 import { createState } from '../helpers';
 

@@ -12,7 +12,7 @@
 
 import { Action, Reducer } from 'redux';
 import { container } from '../inversify.config';
-import { CheWorkspaceClient } from '../services/workspace-client/CheWorkspaceClient';
+import { CheWorkspaceClient } from '../services/cheWorkspaceClient';
 import { AppThunkAction, AppState } from './';
 
 const WorkspaceClient = container.get(CheWorkspaceClient);

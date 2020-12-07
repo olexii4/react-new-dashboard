@@ -21,7 +21,7 @@ export type Issue = {
 }
 
 @injectable()
-export class IssuesReporter {
+export class IssuesReporterService {
 
   private issues: Issue[] = [];
 

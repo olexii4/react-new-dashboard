@@ -15,7 +15,7 @@ import { AppThunk } from '..';
 import { fetchRegistriesMetadata, fetchDevfile } from '../../services/registry/devfiles';
 import { createState } from '../helpers';
 import { container } from '../../inversify.config';
-import { CheWorkspaceClient } from '../../services/workspace-client/CheWorkspaceClient';
+import { CheWorkspaceClient } from '../../services/cheWorkspaceClient';
 
 const WorkspaceClient = container.get(CheWorkspaceClient);
 

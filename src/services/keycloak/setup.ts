@@ -16,7 +16,9 @@ import axios from 'axios';
 import { injectable } from 'inversify';
 import { KeycloakInstance } from 'keycloak-js';
 import { container } from '../../inversify.config';
-import { IssuesReporter } from './issuesReporter';
+import { IssuesReporterService } from '../bootstrap/issuesReporter';
+import { KeycloakAuthService } from './auth';
+import isDocumentReady from '../helpers/document';
 
 const keycloakSettingsFields = [
   'che.keycloak.oidc_provider',
@@ -41,11 +43,6 @@ function isOfTypeKeycloakSettingsField(settingField: string): settingField is Ke
 
 type KeycloakSettingsMap = Map<KeycloakSettingsField, string>;
 
-// todo extract
-type KeycloakAuth = {
-  sso: boolean;
-  keycloak: KeycloakInstance | undefined;
-}
 type KeycloakConfig = Keycloak.KeycloakConfig | {
   oidcProvider: string;
   clientId: string;
@@ -56,20 +53,14 @@ type KeycloakConfig = Keycloak.KeycloakConfig | {
  * @author Oleksii Orel
  */
 
-// todo split in KeycloakSetupService and KeycloakAuthService
 @injectable()
 export class KeycloakSetupService {
 
-  static keycloakAuth: KeycloakAuth = {
-    sso: false,
-    keycloak: undefined,
-  };
-
   private user: che.User | undefined;
-  private issuesReporterService: IssuesReporter;
+  private issuesReporterService: IssuesReporterService;
 
   constructor() {
-    this.issuesReporterService = container.get(IssuesReporter);
+    this.issuesReporterService = container.get(IssuesReporterService);
   }
 
   async start(): Promise<void> {
@@ -86,8 +77,7 @@ export class KeycloakSetupService {
   }
 
   private async doInitialization(): Promise<void> {
-    // todo do we need this check?
-    if (KeycloakSetupService.keycloakAuth.sso) {
+    if (KeycloakAuthService.sso) {
       return;
     }
 
@@ -105,7 +95,7 @@ export class KeycloakSetupService {
         console.warn('Keycloak adapter URL is not found. Skip initializing Keycloak.');
         return;
       }
-      KeycloakSetupService.keycloakAuth.sso = true;
+      KeycloakAuthService.sso = true;
 
       const config = this.buildKeycloakConfig(settings);
 
@@ -115,7 +105,7 @@ export class KeycloakSetupService {
       /* initialize Keycloak adapter */
       const keycloak = await this.initKeycloak(config, settings);
 
-      KeycloakSetupService.keycloakAuth.keycloak = keycloak;
+      KeycloakAuthService.keycloak = keycloak;
     } catch (e) {
       console.warn('Keycloak initialization failed.', e);
     }
@@ -136,7 +126,6 @@ export class KeycloakSetupService {
 
       return settings;
     } catch (e) {
-      // todo add development mode check into condition
       if (e.response.status === 404) {
         return;
       }
@@ -145,20 +134,8 @@ export class KeycloakSetupService {
     }
   }
 
-  // todo move into DOM helper
-  private isDocumentReady(): Promise<void> {
-    return new Promise<void>(resolve => {
-      const state = document.readyState;
-      if (state === 'interactive' || state === 'complete') {
-        resolve();
-      } else {
-        document.onreadystatechange = (): void => resolve();
-      }
-    });
-  }
-
   private async loadAdapterScript(src: string): Promise<void> {
-    await this.isDocumentReady();
+    await isDocumentReady();
 
     return new Promise<void>((resolve, reject) => {
       const script = document.createElement('script');
@@ -236,7 +213,7 @@ export class KeycloakSetupService {
 
   private async testApiAttainability<T>(endpoint: string): Promise<T> {
     try {
-      const { keycloak } = KeycloakSetupService.keycloakAuth;
+      const { keycloak } = KeycloakAuthService;
       if (keycloak) {
         await this.setAuthorizationHeader(keycloak);
       }

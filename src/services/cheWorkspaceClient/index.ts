@@ -13,7 +13,7 @@
 import { AxiosInstance } from 'axios';
 import { injectable } from 'inversify';
 import WorkspaceClient, { IWorkspaceMasterApi, IRemoteAPI } from '@eclipse-che/workspace-client';
-import { KeycloakSetupService } from '../bootstrap/KeycloakSetup';
+import { KeycloakAuthService } from '../keycloak/auth';
 
 /**
  * This class manages the api connection.
@@ -55,7 +55,7 @@ export class CheWorkspaceClient {
     };
     updateTimer();
     this.axios.interceptors.request.use(async request => {
-      const keycloak = KeycloakSetupService.keycloakAuth.keycloak as any;
+      const { keycloak } = KeycloakAuthService;
       if (keycloak && keycloak.updateToken && !isUpdated) {
         updateTimer();
         try {
@@ -83,8 +83,8 @@ export class CheWorkspaceClient {
   }
 
   private get token(): string | undefined {
-    const keycloak = KeycloakSetupService.keycloakAuth.keycloak;
-    return keycloak ? keycloak['token'] : undefined;
+    const { keycloak } = KeycloakAuthService;
+    return keycloak ? keycloak.token : undefined;
   }
 
   get restApiClient(): IRemoteAPI {

@@ -12,7 +12,7 @@
 
 import { Store } from 'redux';
 import { container } from '../../inversify.config';
-import { KeycloakSetupService } from './KeycloakSetup';
+import { KeycloakSetupService } from '../keycloak/setup';
 import { AppState } from '../../store';
 import * as BrandingStore from '../../store/Branding';
 import * as UserStore from '../../store/User';
@@ -20,8 +20,8 @@ import * as WorkspacesStore from '../../store/Workspaces';
 import * as DevfileRegistriesStore from '../../store/DevfileRegistries';
 import * as InfrastructureNamespaceStore from '../../store/InfrastructureNamespace';
 import * as Plugins from '../../store/Plugins';
-import { KeycloakService } from '../keycloak/Keycloak';
-import { CheWorkspaceClient } from '../workspace-client/CheWorkspaceClient';
+import { KeycloakAuthService } from '../keycloak/auth';
+import { CheWorkspaceClient } from '../cheWorkspaceClient';
 
 /**
  * This class prepares all init data.
@@ -29,14 +29,14 @@ import { CheWorkspaceClient } from '../workspace-client/CheWorkspaceClient';
  */
 export class PreloadData {
   private keycloakSetup: KeycloakSetupService;
-  private keycloakService: KeycloakService;
+  private keycloakAuth: KeycloakAuthService;
   private store: Store<AppState>;
   private cheWorkspaceClient: CheWorkspaceClient;
 
   constructor(store: Store<AppState>) {
     this.store = store;
     this.keycloakSetup = container.get(KeycloakSetupService);
-    this.keycloakService = container.get(KeycloakService);
+    this.keycloakAuth = container.get(KeycloakAuthService);
     this.cheWorkspaceClient = container.get(CheWorkspaceClient);
   }
 
@@ -118,10 +118,10 @@ export class PreloadData {
   }
 
   private async updateKeycloakUserInfo(): Promise<void> {
-    if (!KeycloakSetupService.keycloakAuth.sso) {
+    if (!KeycloakAuthService.sso) {
       return;
     }
-    const userInfo = await this.keycloakService.fetchUserInfo();
+    const userInfo = await this.keycloakAuth.fetchUserInfo();
     const user = Object.assign({}, this.keycloakSetup.getUser(), userInfo);
     if (user) {
       this.store.dispatch(UserStore.setUser(user));

@@ -11,10 +11,6 @@
  */
 
 import {
-  Alert,
-  AlertActionCloseButton,
-  AlertGroup,
-  AlertVariant,
   Button,
   PageSection,
   PageSectionVariants,

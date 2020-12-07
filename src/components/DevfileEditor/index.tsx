@@ -17,7 +17,7 @@ import { DisposableCollection } from '../../services/helpers/disposable';
 import { ProtocolToMonacoConverter, MonacoToProtocolConverter } from 'monaco-languageclient/lib/monaco-converter';
 import { languages, IEditorConstructionOptions } from 'monaco-editor-core/esm/vs/editor/editor.main';
 import { TextDocument, getLanguageService } from 'yaml-language-server';
-import { initDefaultEditorTheme } from '../../services/monaco/monaco-theme-register';
+import { initDefaultEditorTheme } from '../../services/monacoThemeRegister';
 import { safeLoad } from 'js-yaml';
 import stringify, { language, conf } from '../../services/helpers/editor';
 import $ from 'jquery';
