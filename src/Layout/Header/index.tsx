@@ -17,7 +17,7 @@ import {
 } from '@patternfly/react-core';
 import { User } from 'che';
 
-import { HeaderTools } from './Tools';
+import HeaderTools from './Tools';
 import { ThemeVariant } from '../themeVariant';
 
 import * as styles from './index.module.css';

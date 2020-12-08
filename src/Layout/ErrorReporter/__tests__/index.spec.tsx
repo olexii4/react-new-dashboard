@@ -12,7 +12,7 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { render, screen, RenderResult } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { ErrorReporter } from '..';
 import { BrandingData } from '../../../services/bootstrap/branding.constant';
 import { Issue } from '../../../services/bootstrap/issuesReporter';
