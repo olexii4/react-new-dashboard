@@ -118,6 +118,7 @@ export class WorkspacesList extends React.PureComponent<Props> {
       <WorkspaceDeleteAction
         key={`delete_${workspace.id}${workspace.status}`}
         workspaceId={workspace.id}
+        workspaceName={workspace.devfile.metadata.name}
         status={WorkspaceStatus[workspace.status]}
         disabled={disabled}
       />

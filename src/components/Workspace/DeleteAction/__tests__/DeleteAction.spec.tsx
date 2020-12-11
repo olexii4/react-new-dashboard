@@ -18,32 +18,6 @@ import { WorkspaceDeleteAction } from '../';
 import { WorkspaceStatus } from '../../../../services/helpers/types';
 import { createFakeStore } from '../../../../store/__mocks__/store';
 
-jest.mock('@patternfly/react-core', () => {
-  return {
-    AlertVariant: function FakeAlertVariant() {
-      enum AlertVariant {
-        success = 'success',
-        danger = 'danger',
-        warning = 'warning',
-        info = 'info',
-        default = 'default'
-      }
-      return AlertVariant;
-    },
-    Tooltip: function FakeTooltip(props: {
-      content: string;
-      children: React.ReactElement[];
-    }) {
-      return (
-        <span>DummyTooltip
-          <span>{props.content}</span>
-          <span>{props.children}</span>
-        </span>
-      );
-    },
-  };
-});
-
 describe('Workspace delete component', () => {
   const workspaceId = 'workspace-test-id';
 
@@ -87,8 +61,14 @@ describe('Workspace delete component', () => {
     expect(stopWorkspace).not.toBeCalled();
     expect(deleteWorkspace).not.toBeCalled();
 
-    const getStartedTabButton = screen.getByTestId(`delete-${workspaceId}`);
-    getStartedTabButton.click();
+    const deleteWorkspaceButton = screen.getByTestId(`delete-${workspaceId}`);
+    deleteWorkspaceButton.click();
+
+    const warningInfoCheckbox = screen.getByTestId('warning-info-checkbox');
+    warningInfoCheckbox.click();
+
+    const deleteWarningInfoButton = screen.getByTestId('delete-button');
+    deleteWarningInfoButton.click();
 
     expect(stopWorkspace).not.toBeCalled();
     expect(deleteWorkspace).toBeCalledWith(workspaceId);
@@ -105,11 +85,35 @@ describe('Workspace delete component', () => {
     expect(stopWorkspace).not.toBeCalled();
     expect(deleteWorkspace).not.toBeCalled();
 
-    const getStartedTabButton = screen.getByTestId(`delete-${workspaceId}`);
-    getStartedTabButton.click();
+    const deleteWorkspaceButton = screen.getByTestId(`delete-${workspaceId}`);
+    deleteWorkspaceButton.click();
 
     expect(stopWorkspace).not.toBeCalled();
     expect(deleteWorkspace).not.toBeCalled();
+  });
+
+  it('shouldn\'t delete workspace without warning-info checkbox', () => {
+    WorkspaceDeleteAction.shouldDelete.length = 0;
+    const deleteWorkspace = jest.fn();
+    const stopWorkspace = jest.fn();
+
+    const status = WorkspaceStatus.RUNNING;
+
+    const component = renderComponent(createComponent(status, false, workspaceId, deleteWorkspace, stopWorkspace));
+
+    expect(stopWorkspace).not.toBeCalled();
+    expect(deleteWorkspace).not.toBeCalled();
+    expect(WorkspaceDeleteAction.shouldDelete).toEqual([]);
+
+    const getStartedTabButton = screen.getByTestId(`delete-${workspaceId}`);
+    getStartedTabButton.click();
+
+    const deleteWarningInfoButton = screen.getByTestId('delete-button');
+    deleteWarningInfoButton.click();
+
+    expect(deleteWorkspace).not.toBeCalled();
+    expect(stopWorkspace).not.toBeCalled();
+    expect(WorkspaceDeleteAction.shouldDelete).toEqual([]);
   });
 
   it('should stop workspace then delete if enable', () => {
@@ -127,6 +131,12 @@ describe('Workspace delete component', () => {
 
     const getStartedTabButton = screen.getByTestId(`delete-${workspaceId}`);
     getStartedTabButton.click();
+
+    const warningInfoCheckbox = screen.getByTestId('warning-info-checkbox');
+    warningInfoCheckbox.click();
+
+    const deleteWarningInfoButton = screen.getByTestId('delete-button');
+    deleteWarningInfoButton.click();
 
     expect(deleteWorkspace).not.toBeCalled();
     expect(stopWorkspace).toBeCalledWith(workspaceId);
@@ -170,7 +180,7 @@ function createComponent(
         clearWorkspaceQualifiedName={jest.fn()}
         setWorkspaceId={jest.fn()}
         clearWorkspaceId={jest.fn()}
-      />
+      >Delete Workspace</WorkspaceDeleteAction>
     </Provider>
   );
 }

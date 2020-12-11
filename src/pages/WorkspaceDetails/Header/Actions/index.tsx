@@ -13,7 +13,7 @@
 import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import React from 'react';
-import WorkspaceDeleteAction from '../../../../components/Workspace/DeleteAction';
+import WorkspaceDeleteAction, { WorkspaceDeleteAction as DeleteAction } from '../../../../components/Workspace/DeleteAction';
 import { Actions } from '../../../../containers/WorkspaceDetails';
 import { WorkspaceStatus } from '../../../../services/helpers/types';
 
@@ -21,25 +21,34 @@ import './Actions.styl';
 
 type Props = {
   workspaceId: string;
+  workspaceName: string;
   status: string | undefined;
   onAction: (action: Actions) => void;
 };
 
 type State = {
   isExpanded: boolean;
+  isModalOpen: boolean;
 }
 
 export class HeaderActionSelect extends React.PureComponent<Props, State> {
+  private readonly workspaceDeleteRef: React.RefObject<DeleteAction>;
 
   constructor(props: Props) {
     super(props);
 
     this.state = {
       isExpanded: false,
+      isModalOpen: false
     };
+
+    this.workspaceDeleteRef = React.createRef<DeleteAction>();
   }
 
   private handleToggle(isExpanded: boolean): void {
+    if (this.state.isModalOpen) {
+      return;
+    }
     this.setState({ isExpanded });
   }
 
@@ -51,7 +60,7 @@ export class HeaderActionSelect extends React.PureComponent<Props, State> {
   }
 
   private getDropdownItems(): React.ReactNode[] {
-    const { workspaceId, status } = this.props;
+    const { workspaceId, status, workspaceName } = this.props;
 
     return [
       (<DropdownItem
@@ -79,9 +88,21 @@ export class HeaderActionSelect extends React.PureComponent<Props, State> {
       (<DropdownItem
         key={`action-${Actions.DELETE_WORKSPACE}`}
         isDisabled={status === WorkspaceStatus[WorkspaceStatus.STARTING] || status === WorkspaceStatus[WorkspaceStatus.STOPPING]}
-        onClick={() => this.handleSelect(Actions.DELETE_WORKSPACE)}>
+        onClick={() => {
+          this.handleSelect(Actions.DELETE_WORKSPACE);
+          this.setState({ isExpanded: true });
+          this.workspaceDeleteRef.current?.onClick();
+        }}>
         <WorkspaceDeleteAction
+          workspaceName={workspaceName}
           workspaceId={workspaceId}
+          ref={this.workspaceDeleteRef}
+          onModalStatusChange={isModalOpen => {
+            this.setState({ isModalOpen });
+            if (!isModalOpen && this.state.isExpanded) {
+              this.setState({ isExpanded: false });
+            }
+          }}
           status={status ? WorkspaceStatus[status] : WorkspaceStatus.STOPPED}>
           {Actions.DELETE_WORKSPACE}
         </WorkspaceDeleteAction>

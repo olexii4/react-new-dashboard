@@ -10,8 +10,18 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
-import { AlertVariant, Tooltip } from '@patternfly/react-core';
-import { TrashIcon } from '@patternfly/react-icons';
+import {
+  AlertVariant,
+  Button,
+  ButtonVariant,
+  Checkbox,
+  Modal,
+  ModalVariant,
+  Text,
+  TextContent,
+} from '@patternfly/react-core';
+import getDefaultDeleteView from './defaultDeleteView';
+import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { container } from '../../../inversify.config';
@@ -25,14 +35,18 @@ import * as styles from '../action.module.css';
 type Props = MappedProps
   & {
     workspaceId: string;
-    disabled?: boolean;
     status: WorkspaceStatus;
+    workspaceName?: string;
+    disabled?: boolean;
     children?: React.ReactNode;
+    onModalStatusChange?: (isOpen: boolean) => void;
   };
 
 type State = {
   isDebounceDelay: boolean;
   workspaceStatus?: string;
+  isInfoOpen?: boolean;
+  warningInfoCheck?: boolean;
 };
 
 export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
@@ -92,8 +106,11 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
     this.debounce.unsubscribeAll();
   }
 
-  private async onClick(event: React.MouseEvent): Promise<void> {
-    event.stopPropagation();
+  public onClick(): void {
+    this.setInfoModalStatus(true);
+  }
+
+  private async onDelete(): Promise<void> {
 
     if (this.props.disabled
       || this.state.isDebounceDelay
@@ -120,35 +137,94 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
       this.showAlert('Workspace successfully deleted.', AlertVariant.success);
     } catch (e) {
       this.showAlert(`Unable to delete the workspace. ${e}`);
-      return;
     }
   }
 
-  public render(): React.ReactElement {
-    const tooltipContent = 'Delete Workspace';
-    const { workspaceId, disabled, children } = this.props;
+  private setInfoModalStatus(isInfoOpen: boolean): void {
+    if (this.state.isInfoOpen === isInfoOpen) {
+      return;
+    }
+    if (!isInfoOpen) {
+      this.setState({ warningInfoCheck: false });
+    }
+    this.setState({ isInfoOpen });
+    if (this.props.onModalStatusChange) {
+      this.props.onModalStatusChange(isInfoOpen);
+    }
+  }
+
+  private getInfoModalContent(): React.ReactNode {
+    const { workspaceId, workspaceName } = this.props;
+    const text = `Would you like to delete workspace '${workspaceName ? workspaceName : workspaceId}'?`;
+
+    return (
+      <TextContent>
+        {(<Text>{text}</Text>)}
+        <Checkbox
+          data-testid="warning-info-checkbox"
+          isChecked={this.state.warningInfoCheck}
+          onChange={() => {
+            this.setState({ warningInfoCheck: !this.state.warningInfoCheck });
+          }}
+          id="delete-warning-info-check"
+          label="I understand, this operation cannot be reverted."
+        />
+      </TextContent>);
+  }
+
+  private get defaultChildren(): React.ReactNode {
+    const { workspaceId, disabled } = this.props;
     const { isDebounceDelay } = this.state;
     const shouldDelete = WorkspaceDeleteAction.shouldDelete.includes(workspaceId);
     const className = disabled || isDebounceDelay || shouldDelete ? styles.disabledWorkspaceStatus : styles.workspaceStatus;
 
-    if (children) {
-      return (<div onClick={e => this.onClick(e)}>{children}</div>);
-    }
+    return getDefaultDeleteView(className);
+  }
+
+  private getInfoModal(): React.ReactNode {
+    const { isInfoOpen, warningInfoCheck } = this.state;
+
+    return (
+      <Modal
+        header={(
+          <span className={styles.infoModalHeader}>
+            <ExclamationTriangleIcon />Delete Workspace
+          </span>)}
+        variant={ModalVariant.small}
+        isOpen={isInfoOpen}
+        onClose={() => this.setInfoModalStatus(false)}
+        aria-label="warning-info"
+        footer={(
+          <React.Fragment>
+            <Button variant={ButtonVariant.danger} isDisabled={!warningInfoCheck}
+              data-testid="delete-button" onClick={() => this.onDelete()}>
+              Delete
+            </Button>
+            <Button variant={ButtonVariant.link} data-testid="cancel-button"
+              onClick={() => this.setInfoModalStatus(false)}>
+              Cancel
+            </Button>
+          </React.Fragment>)}
+      >
+        {this.getInfoModalContent()}
+      </Modal>
+    );
+  }
+
+  public render(): React.ReactElement {
+    const children = this.props.children ? this.props.children : this.defaultChildren;
+    const { workspaceId } = this.props;
 
     return (
       <span
         data-testid={`delete-${workspaceId}`}
         key={`wrks-delete-${workspaceId}`}
-        className={className}
-        onClick={e => this.onClick(e)}
-      >
-        <Tooltip
-          entryDelay={200}
-          exitDelay={200}
-          content={tooltipContent}
-        >
-          <TrashIcon />
-        </Tooltip>
+        onClick={e => {
+          e.stopPropagation();
+          this.onClick();
+        }}>
+        {this.getInfoModal()}
+        {children}
       </span>
     );
   }
@@ -160,6 +236,8 @@ const mapStateToProps = () => ({});
 const connector = connect(
   mapStateToProps,
   WorkspaceStore.actionCreators,
+  null,
+  { forwardRef: true },
 );
 
 type MappedProps = ConnectedProps<typeof connector>;

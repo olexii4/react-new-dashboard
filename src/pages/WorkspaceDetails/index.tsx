@@ -154,7 +154,11 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
     return (
       <React.Fragment>
         <Header workspaceName={workspaceName} status={workspace.status}>
-          <HeaderActionSelect onAction={onAction} workspaceId={workspace.id} status={workspace.status} />
+          <HeaderActionSelect
+            onAction={onAction}
+            workspaceId={workspace.id}
+            workspaceName={workspaceName}
+            status={workspace.status} />
         </Header>
         <PageSection variant={SECTION_THEME} className='workspace-details-tabs'>
           {(this.state.hasWarningMessage) && (
