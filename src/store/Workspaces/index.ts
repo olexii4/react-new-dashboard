@@ -333,6 +333,9 @@ export const actionCreators: ActionCreators = {
       return workspace;
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
+      if (e.response?.data?.message) {
+        throw new Error('Failed to create a new workspace from the devfile: \n' + e.response.data.message);
+      }
       throw new Error('Failed to create a new workspace from the devfile: \n' + e);
     }
   },
