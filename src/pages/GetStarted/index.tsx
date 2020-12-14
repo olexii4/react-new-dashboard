@@ -99,16 +99,12 @@ export class GetStarted extends React.PureComponent<Props, State> {
     try {
       workspace = await this.props.createWorkspaceFromDevfile(devfile, undefined, infrastructureNamespace, attr);
     } catch (e) {
-      const errorMessage = 'Failed to create a workspace';
       this.showAlert({
         key: 'new-workspace-failed',
         variant: AlertVariant.danger,
-        title: e.message ? e.message : errorMessage + '.'
+        title: e.message
       });
-      if (e.message) {
-        throw new Error(errorMessage + ', \n' + e.message);
-      }
-      throw new Error(errorMessage + ', \n' + e);
+      throw new Error(e.message);
     }
 
     const workspaceName = workspace.devfile.metadata.name;

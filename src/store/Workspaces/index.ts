@@ -334,9 +334,10 @@ export const actionCreators: ActionCreators = {
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
       if (e.response?.data?.message) {
+        // e.response.data.message is set unless the request failed. In which case e.message will hold the error code 
         throw new Error('Failed to create a new workspace from the devfile: \n' + e.response.data.message);
       }
-      throw new Error('Failed to create a new workspace from the devfile: \n' + e);
+      throw new Error('Failed to create a new workspace from the devfile: \n' + e.message);
     }
   },
 
