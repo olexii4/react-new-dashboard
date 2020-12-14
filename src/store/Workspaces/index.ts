@@ -288,6 +288,9 @@ export const actionCreators: ActionCreators = {
       await WorkspaceClient.restApiClient.stop(workspaceId);
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
+      if (e.message) {
+        throw new Error(`Failed to stop the workspace, ID: ${workspaceId}, ` + e.message);
+      }
       throw new Error(`Failed to stop the workspace, ID: ${workspaceId}, ` + e);
     }
   },
