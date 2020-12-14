@@ -103,7 +103,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
       this.showAlert({
         key: 'new-workspace-failed',
         variant: AlertVariant.danger,
-        title: e.message ? e.message : errorMessage + '. \n'
+        title: e.message ? e.message : errorMessage + '.'
       });
       if (e.message) {
         throw new Error(errorMessage + ', \n' + e.message);
