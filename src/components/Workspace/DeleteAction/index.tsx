@@ -159,8 +159,9 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
 
     return (
       <TextContent>
-        {(<Text>{text}</Text>)}
+        <Text>{text}</Text>
         <Checkbox
+          style={{ margin: '0 0 0 0.4rem' }}
           data-testid="warning-info-checkbox"
           isChecked={this.state.warningInfoCheck}
           onChange={() => {
