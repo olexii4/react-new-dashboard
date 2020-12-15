@@ -111,13 +111,17 @@ export class HeaderActionSelect extends React.PureComponent<Props, State> {
   }
 
   render(): React.ReactNode {
+    const { workspaceId } = this.props;
     const { isExpanded } = this.state;
 
     return (
       <Dropdown
         className="workspace-action-selector"
         toggle={(
-          <DropdownToggle onToggle={isExpanded => this.handleToggle(isExpanded)} toggleIndicator={CaretDownIcon}
+          <DropdownToggle
+            data-testid={`${workspaceId}-action-dropdown`}
+            onToggle={isExpanded => this.handleToggle(isExpanded)}
+            toggleIndicator={CaretDownIcon}
             isPrimary>
             Actions
           </DropdownToggle>

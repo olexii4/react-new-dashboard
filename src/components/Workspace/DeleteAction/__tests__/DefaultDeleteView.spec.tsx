@@ -11,12 +11,7 @@
  */
 
 import React from 'react';
-import { Provider } from 'react-redux';
 import renderer, { ReactTestRendererJSON } from 'react-test-renderer';
-import { render, RenderResult, screen } from '@testing-library/react';
-import { WorkspaceDeleteAction } from '../';
-import { WorkspaceStatus } from '../../../../services/helpers/types';
-import { createFakeStore } from '../../../../store/__mocks__/store';
 import getDefaultDeleteView from '../defaultDeleteView';
 
 jest.mock('@patternfly/react-core', () => {
@@ -36,7 +31,6 @@ jest.mock('@patternfly/react-core', () => {
 });
 
 describe('Default Delete View', () => {
-  const workspaceId = 'workspace-test-id';
 
   it('should render DefaultDeleteView widget correctly', () => {
     const className = 'testClassName';

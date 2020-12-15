@@ -99,7 +99,7 @@ describe('Workspace delete component', () => {
 
     const status = WorkspaceStatus.RUNNING;
 
-    const component = renderComponent(createComponent(status, false, workspaceId, deleteWorkspace, stopWorkspace));
+    renderComponent(createComponent(status, false, workspaceId, deleteWorkspace, stopWorkspace));
 
     expect(stopWorkspace).not.toBeCalled();
     expect(deleteWorkspace).not.toBeCalled();

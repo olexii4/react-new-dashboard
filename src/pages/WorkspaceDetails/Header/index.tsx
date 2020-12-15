@@ -11,10 +11,9 @@
  */
 
 import React from 'react';
-import { PageSection, Text, TextVariants, FlexItem, Flex } from '@patternfly/react-core';
+import { PageSection, Text, TextVariants, FlexItem, Flex, PageSectionVariants } from '@patternfly/react-core';
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 import { ROUTE } from '../../../route.enum';
-import { SECTION_THEME } from '../index';
 import WorkspaceStatusLabel from '../../../components/WorkspaceStatusLabel';
 
 import styles from './Header.module.css';
@@ -30,7 +29,7 @@ class Header extends React.PureComponent<Props> {
     const { workspaceName, status, children } = this.props;
 
     return (
-      <PageSection variant={SECTION_THEME} className={styles.workspaceDetailsHeader}>
+      <PageSection variant={PageSectionVariants.light} className={styles.workspaceDetailsHeader}>
         <Breadcrumb>
           <BreadcrumbItem to={`./#${ROUTE.WORKSPACES}`}>
             Workspaces
