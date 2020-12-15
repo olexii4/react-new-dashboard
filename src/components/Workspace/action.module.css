@@ -35,6 +35,6 @@
 
 .infoModalHeader svg {
   margin: 0 0.5rem 0 0;
-  color: #f0ab00;
+  color: var(--pf-global--warning-color--100);
   font-size: 1.5rem;
 }

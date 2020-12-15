@@ -12,7 +12,7 @@
 
 import React from 'react';
 import renderer, { ReactTestRendererJSON } from 'react-test-renderer';
-import getDefaultDeleteView from '../defaultDeleteView';
+import getDefaultDeleteButton from '../defaultDeleteButton';
 
 jest.mock('@patternfly/react-core', () => {
   return {
@@ -34,7 +34,7 @@ describe('Default Delete View', () => {
 
   it('should render DefaultDeleteView widget correctly', () => {
     const className = 'testClassName';
-    const component = getDefaultDeleteView(className);
+    const component = getDefaultDeleteButton(className);
 
     expect(getComponentSnapshot(component)).toMatchSnapshot();
   });

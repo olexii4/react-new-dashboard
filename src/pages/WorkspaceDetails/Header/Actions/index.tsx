@@ -39,7 +39,7 @@ export class HeaderActionSelect extends React.PureComponent<Props, State> {
 
     this.state = {
       isExpanded: false,
-      isModalOpen: false
+      isModalOpen: false,
     };
 
     this.workspaceDeleteRef = React.createRef<DeleteAction>();
@@ -57,6 +57,19 @@ export class HeaderActionSelect extends React.PureComponent<Props, State> {
       isExpanded: false,
     });
     this.props.onAction(selected);
+  }
+
+  private onDelete(): void {
+    this.handleSelect(Actions.DELETE_WORKSPACE);
+    this.setState({ isExpanded: true });
+    this.workspaceDeleteRef.current?.onClick();
+  }
+
+  private onModalStatusChange(isModalOpen: boolean): void {
+    this.setState({ isModalOpen });
+    if (!isModalOpen && this.state.isExpanded) {
+      this.setState({ isExpanded: false });
+    }
   }
 
   private getDropdownItems(): React.ReactNode[] {
@@ -88,21 +101,12 @@ export class HeaderActionSelect extends React.PureComponent<Props, State> {
       (<DropdownItem
         key={`action-${Actions.DELETE_WORKSPACE}`}
         isDisabled={status === WorkspaceStatus[WorkspaceStatus.STARTING] || status === WorkspaceStatus[WorkspaceStatus.STOPPING]}
-        onClick={() => {
-          this.handleSelect(Actions.DELETE_WORKSPACE);
-          this.setState({ isExpanded: true });
-          this.workspaceDeleteRef.current?.onClick();
-        }}>
+        onClick={() => this.onDelete()}>
         <WorkspaceDeleteAction
           workspaceName={workspaceName}
           workspaceId={workspaceId}
           ref={this.workspaceDeleteRef}
-          onModalStatusChange={isModalOpen => {
-            this.setState({ isModalOpen });
-            if (!isModalOpen && this.state.isExpanded) {
-              this.setState({ isExpanded: false });
-            }
-          }}
+          onModalStatusChange={isModalOpen => this.onModalStatusChange(isModalOpen)}
           status={status ? WorkspaceStatus[status] : WorkspaceStatus.STOPPED}>
           {Actions.DELETE_WORKSPACE}
         </WorkspaceDeleteAction>

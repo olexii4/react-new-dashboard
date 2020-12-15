@@ -20,7 +20,7 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import getDefaultDeleteView from './defaultDeleteView';
+import getDefaultDeleteButton from './defaultDeleteButton';
 import ExclamationTriangleIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
@@ -178,7 +178,7 @@ export class WorkspaceDeleteAction extends React.PureComponent<Props, State> {
     const shouldDelete = WorkspaceDeleteAction.shouldDelete.includes(workspaceId);
     const className = disabled || isDebounceDelay || shouldDelete ? styles.disabledWorkspaceStatus : styles.workspaceStatus;
 
-    return getDefaultDeleteView(className);
+    return getDefaultDeleteButton(className);
   }
 
   private getInfoModal(): React.ReactNode {

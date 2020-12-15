@@ -14,7 +14,7 @@ import React from 'react';
 import { Tooltip } from '@patternfly/react-core';
 import { TrashIcon } from '@patternfly/react-icons';
 
-function getDefaultDeleteView(className: string): React.ReactElement {
+function getDefaultDeleteButton(className: string): React.ReactElement {
   return (
     <span className={className}>
       <Tooltip entryDelay={200} exitDelay={200} content="Delete Workspace"><TrashIcon /></Tooltip>
@@ -22,4 +22,4 @@ function getDefaultDeleteView(className: string): React.ReactElement {
   );
 }
 
-export default getDefaultDeleteView;
+export default getDefaultDeleteButton;
