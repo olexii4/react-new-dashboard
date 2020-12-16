@@ -50,7 +50,7 @@ const AboutModalItems: React.FC<AboutModalItemsProps> = (
         <TextList component='dl'>
           {productVersion && (
             <>
-              <TextListItem component='dt'>{productName}</TextListItem>
+              <TextListItem component='dt'>{productName} version</TextListItem>
               <TextListItem component='dd'>
                 <div className='co-select-to-copy'>{productVersion}</div>
               </TextListItem>
