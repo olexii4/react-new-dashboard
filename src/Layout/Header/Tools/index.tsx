@@ -14,6 +14,9 @@ import React from 'react';
 import gravatarUrl from 'gravatar-url';
 import {
   AlertVariant,
+  ApplicationLauncher,
+  ApplicationLauncherGroup,
+  ApplicationLauncherItem,
   Avatar,
   Button,
   ButtonVariant,
@@ -33,6 +36,8 @@ import { KeycloakAuthService } from '../../../services/keycloak/auth';
 import { AppState } from '../../../store';
 import * as InfrastructureNamespaceStore from '../../../store/InfrastructureNamespace';
 import { ThemeVariant } from '../../themeVariant';
+import { QuestionCircleIcon } from '@patternfly/react-icons';
+import { AboutModal } from './about-modal';
 
 import './HeaderTools.styl';
 
@@ -45,30 +50,37 @@ type Props =
     changeTheme: (theme: ThemeVariant) => void;
   };
 type State = {
-  isOpen: boolean;
-}
+  isUsernameDropdownOpen: boolean;
+  isInfoDropdownOpen: boolean;
+  isModalOpen: boolean;
+};
+export class HeaderTools extends React.PureComponent<Props, State> {
 
-class HeaderTools extends React.PureComponent<Props, State> {
   private readonly appAlerts: AppAlerts;
-
   constructor(props: Props) {
     super(props);
 
     this.state = {
-      isOpen: false,
+      isUsernameDropdownOpen: false,
+      isInfoDropdownOpen: false,
+      isModalOpen: false,
     };
 
     this.appAlerts = container.get(AppAlerts);
   }
 
-  private onSelect(): void {
+  private onUsernameSelect(): void {
     this.setState({
-      isOpen: !this.state.isOpen,
+      isUsernameDropdownOpen: !this.state.isUsernameDropdownOpen,
+      isInfoDropdownOpen: false,
     });
   }
 
-  private onToggle(isOpen: boolean): void {
-    this.setState({ isOpen });
+  private onUsernameButtonToggle(isOpen: boolean): void {
+    this.setState({
+      isUsernameDropdownOpen: isOpen,
+      isInfoDropdownOpen: false,
+    });
   }
 
   private setTheme(theme: ThemeVariant): void {
@@ -181,7 +193,7 @@ class HeaderTools extends React.PureComponent<Props, State> {
     this.copyLoginCommand();
   }
 
-  private buildDropdownItems(): Array<React.ReactElement> {
+  private buildUserDropdownItems(): Array<React.ReactElement> {
     return [
       (
         <DropdownItem
@@ -222,45 +234,145 @@ class HeaderTools extends React.PureComponent<Props, State> {
     ];
   }
 
-  private buildToggleButton(): React.ReactElement {
-    const userName = this.props.user?.name || '';
-
+  private buildUserToggleButton(): React.ReactElement {
     return (
-      <DropdownToggle onToggle={isOpen => this.onToggle(isOpen)}>
-        {userName}
+      <DropdownToggle
+        onToggle={(isOpen) => this.onUsernameButtonToggle(isOpen)}
+      >
+        {this.props.user?.name}
       </DropdownToggle>
     );
   }
 
+  private onInfoDropdownToggle() {
+    this.setState({
+      isInfoDropdownOpen: !this.state.isInfoDropdownOpen,
+      isUsernameDropdownOpen: false,
+    });
+  }
+
+  private buildInfoDropdownItems(): React.ReactNode[] {
+    const branding = this.props.branding.data;
+    const makeAWish = 'mailto:che-dev@eclipse.org?subject=Wishes%20for%20';
+    const faq = branding.docs.faq;
+    const generalDocs = branding.docs.general;
+    const community = 'https://www.eclipse.org/che/';
+    return [
+      <ApplicationLauncherGroup key='info_button'>
+        <ApplicationLauncherItem
+          key='make_a_wish'
+          isExternal={true}
+          component='button'
+          onClick={() => window.open(makeAWish, '_blank')}
+        >
+          Make a wish
+        </ApplicationLauncherItem>
+        <ApplicationLauncherItem
+          key='documention'
+          isExternal={true}
+          component='button'
+          onClick={() => window.open(generalDocs, '_blank')}
+        >
+          Documentation
+        </ApplicationLauncherItem>
+        {faq && (
+          <ApplicationLauncherItem
+            key='faq'
+            isExternal={true}
+            onClick={() => window.open(faq, '_blank')}
+            component='button'
+          >
+            FAQ
+          </ApplicationLauncherItem>
+        )}
+        <ApplicationLauncherItem
+          key='community'
+          isExternal={true}
+          component='button'
+          onClick={() => window.open(community, '_target')}
+        >
+          Community
+        </ApplicationLauncherItem>
+        <ApplicationLauncherItem
+          key='about'
+          component='button'
+          onClick={(e) => this.onAboutModal(e)}
+        >
+          About
+        </ApplicationLauncherItem>
+      </ApplicationLauncherGroup>,
+    ];
+  }
+
+  private onAboutModal(e) {
+    e.preventDefault();
+    this.setState({
+      isInfoDropdownOpen: false,
+      isUsernameDropdownOpen: false,
+      isModalOpen: true,
+    });
+  }
+
+  private closeAboutModal() {
+    this.setState({
+      isInfoDropdownOpen: false,
+      isUsernameDropdownOpen: false,
+      isModalOpen: false,
+    });
+  }
+
   public render(): React.ReactElement {
-    const { isOpen } = this.state;
+    const {
+      isUsernameDropdownOpen,
+      isInfoDropdownOpen,
+      isModalOpen,
+    } = this.state;
 
     const userEmail = this.props.user?.email || '';
     const imageUrl = gravatarUrl(userEmail, { default: 'retro' });
     const avatar = <Avatar src={imageUrl} alt='Avatar image' />;
 
-    const toggleButton = this.buildToggleButton();
-    const dropdownItems = this.buildDropdownItems();
+    const userToggleButton = this.buildUserToggleButton();
+    const userDropdownItems = this.buildUserDropdownItems();
 
+    const infoDropdownItems = this.buildInfoDropdownItems();
+
+    const branding = this.props.branding.data;
     return (
-      <PageHeaderTools>
-        <PageHeaderToolsGroup>
-          <PageHeaderToolsItem>
-            <Dropdown
-              isPlain
-              position="right"
-              onSelect={() => this.onSelect()}
-              isOpen={isOpen}
-              toggle={toggleButton}
-              dropdownItems={dropdownItems}
-            />
-          </PageHeaderToolsItem>
-        </PageHeaderToolsGroup>
-        {avatar}
-      </PageHeaderTools>
+      <>
+        <PageHeaderTools>
+          <PageHeaderToolsGroup>
+            <PageHeaderToolsItem>
+              <ApplicationLauncher
+                onToggle={() => this.onInfoDropdownToggle()}
+                isOpen={isInfoDropdownOpen}
+                items={infoDropdownItems}
+                position='right'
+                toggleIcon={<QuestionCircleIcon alt='' />}
+              />
+              <Dropdown
+                isPlain
+                position='right'
+                onSelect={() => this.onUsernameSelect()}
+                isOpen={isUsernameDropdownOpen}
+                toggle={userToggleButton}
+                dropdownItems={userDropdownItems}
+              />
+            </PageHeaderToolsItem>
+          </PageHeaderToolsGroup>
+          {avatar}
+        </PageHeaderTools>
+        <AboutModal
+          isOpen={isModalOpen}
+          closeAboutModal={() => this.closeAboutModal()}
+          username={this.props.user?.name}
+          logo={branding.logoFile}
+          productName={branding.name}
+          productVersion={branding.productVersion}
+        />
+      </>
     );
   }
-
 }
 
 const mapStateToProps = (state: AppState) => ({
