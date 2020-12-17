@@ -347,6 +347,7 @@ export class HeaderTools extends React.PureComponent<Props, State> {
                 onToggle={() => this.onInfoDropdownToggle()}
                 isOpen={isInfoDropdownOpen}
                 items={infoDropdownItems}
+                aria-label='info button'
                 position='right'
                 toggleIcon={<QuestionCircleIcon alt='' />}
               />
