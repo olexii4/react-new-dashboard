@@ -277,9 +277,7 @@ export const actionCreators: ActionCreators = {
       dispatch({ type: 'UPDATE_WORKSPACE', workspace });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
-      const statusInfo = e.response && e.response.status ? ` Response code: ${e.response.status}.` : '';
-      const message = e.response && e.response.data && e.response.data.message ? e.response.data.message : e.message;
-      throw new Error(message ? message : `Unknown error happened.${statusInfo} Try again`);
+      throw new Error(e.message);
     }
   },
 
@@ -288,7 +286,7 @@ export const actionCreators: ActionCreators = {
       await WorkspaceClient.restApiClient.stop(workspaceId);
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
-      throw new Error(`Failed to stop the workspace, ID: ${workspaceId}, ` + e);
+      throw new Error(e.message);
     }
   },
 
