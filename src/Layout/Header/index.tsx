@@ -30,6 +30,7 @@ type Props = {
   logout: () => void;
   toggleNav: () => void;
   changeTheme: (theme: ThemeVariant) => void;
+  onCopyLoginCommand: () => Promise<void>;
 };
 type State = {
   isVisible: boolean;
@@ -78,6 +79,7 @@ export default class Header extends React.PureComponent<Props, State> {
             userName={userName}
             logout={() => this.props.logout()}
             changeTheme={theme => this.props.changeTheme(theme)}
+            onCopyLoginCommand={async () => this.props.onCopyLoginCommand()}
           />
         }
       />

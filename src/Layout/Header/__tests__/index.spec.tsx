@@ -49,6 +49,7 @@ describe('Page header', () => {
     logout={mockLogout}
     toggleNav={mockToggleNav}
     changeTheme={mockChangeTheme}
+    onCopyLoginCommand={() => Promise.resolve()}
   />);
 
   beforeEach(() => {
@@ -64,7 +65,7 @@ describe('Page header', () => {
 
     const logoutButton = screen.getByRole('button', { name: 'logout' });
     fireEvent.click(logoutButton);
-    
+
     expect(mockLogout).toHaveBeenCalled();
   });
 
@@ -73,7 +74,7 @@ describe('Page header', () => {
 
     const changeThemeButton = screen.getByRole('button', { name: 'change theme' });
     fireEvent.click(changeThemeButton);
-    
+
     expect(mockChangeTheme).toHaveBeenCalled();
   });
 

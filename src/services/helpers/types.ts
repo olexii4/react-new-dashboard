@@ -11,11 +11,13 @@
  */
 
 import { AlertVariant } from '@patternfly/react-core';
+import * as React from 'react';
 
 export interface AlertItem {
   key: string;
   title: string;
   variant: AlertVariant;
+  children?: React.ReactNode;
 }
 
 export interface FactoryResolver {

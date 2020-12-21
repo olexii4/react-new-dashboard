@@ -11,67 +11,77 @@
  */
 
 export type BrandingData = {
-  title: string;
-  name: string;
-  logoFile: string;
-  logoTextFile: string;
-  favicon: string;
-  loader: string;
-  websocketContext: string;
-  helpPath: string;
-  helpTitle: string;
-  supportEmail: string;
-  oauthDocs: string;
+  title: string,
+  name: string,
+  productVersion?: string;
+  logoFile: string,
+  logoTextFile: string,
+  favicon: string,
+  loader: string,
+  websocketContext: string,
+  helpPath: string,
+  helpTitle: string,
+  supportEmail: string,
+  oauthDocs: string,
   cli: {
     configName: string;
     name: string;
-  };
-  docs: BrandingDocs;
-  workspace: BrandingWorkspace;
-  footer: BrandingFooter;
-  configuration: BrandingConfiguration;
+  },
+  docs: BrandingDocs,
+  workspace: BrandingWorkspace,
+  footer: BrandingFooter,
+  configuration: BrandingConfiguration,
 }
 
 export type BrandingDocs = {
-  devfile: string;
-  workspace: string;
-  factory: string;
-  organization: string;
-  general: string;
-  converting: string;
-  certificate: string;
-  faq?: string;
+  devfile: string,
+  workspace: string,
+  factory: string,
+  organization: string,
+  general: string,
+  converting: string,
+  certificate: string,
+  faq?: string,
   storageTypes: string,
   webSocketTroubleshooting: string,
 }
 
 export type BrandingWorkspace = {
-  priorityStacks: Array<string>;
+  priorityStacks: Array<string>,
   defaultStack: string
 }
 
 export type BrandingFooter = {
-  content: string;
-  links: Array<{ title: string; location: string }>;
-  email: { title: string; address: string; subject: string } | null;
+  content: string,
+  links: Array<{ title: string, location: string }>,
+  email: { title: string, address: string, subject: string } | '' | null
 }
+
+export type CheCliTool = 'chectl' | 'crwctl';
 
 export type BrandingConfiguration = {
   menu: {
-    disabled: string[];
-  };
+    disabled: che.ConfigurableMenuItem[];
+    enabled?: che.ConfigurableMenuItem[];
+  },
   prefetch: {
     cheCDN?: string;
     resources: string[];
-  };
+  },
   features: {
-    disabled: string[];
-  };
+    disabled: TogglableFeature[];
+  },
+  cheCliTool: CheCliTool;
+}
+
+export enum TogglableFeature {
+  WORKSPACE_SHARING = 'workspaceSharing',
+  KUBERNETES_NAMESPACE_SELECTOR = 'kubernetesNamespaceSelector',
 }
 
 export const BRANDING_DEFAULT: BrandingData = {
-  title: 'new Eclipse Che',
-  name: 'new Eclipse Che',
+  title: 'Eclipse Che',
+  name: 'Eclipse Che',
   logoFile: 'che-logo.svg',
   logoTextFile: 'che-logo-text.svg',
   favicon: 'favicon.ico',
@@ -94,15 +104,15 @@ export const BRANDING_DEFAULT: BrandingData = {
     name: 'CHE'
   },
   docs: {
-    devfile: 'https://www.eclipse.org/che/docs/che-7/using-developer-environments-workspaces.html#making-a-workspace-portable-using-a-devfile_using-developer-environments-workspaces',
-    workspace: 'https://www.eclipse.org/che/docs/che-7/workspaces-overview/',
-    factory: 'https://www.eclipse.org/che/docs/factories-getting-started.html',
-    organization: 'https://www.eclipse.org/che/docs/organizations.html',
-    converting: 'https://www.eclipse.org/che/docs/che-7/converting-a-che-6-workspace-to-a-che-7-devfile/',
-    certificate: 'https://www.eclipse.org/che/docs/che-7/setup-che-in-tls-mode-with-self-signed-certificate/',
-    general: 'https://www.eclipse.org/che/docs/che-7',
-    storageTypes: 'https://www.eclipse.org/che/docs/che-7/configuring-storage-types/',
-    webSocketTroubleshooting: 'https://www.eclipse.org/che/docs/che-7/troubleshooting-network-problems/#troubleshooting-websocket-secure-connections_troubleshooting-network-problems',
+    'devfile': 'https://www.eclipse.org/che/docs/che-7/making-a-workspace-portable-using-a-devfile/',
+    'workspace': 'https://www.eclipse.org/che/docs/che-7/workspaces-overview/',
+    'factory': 'https://www.eclipse.org/che/docs/che-7',
+    'organization': 'https://www.eclipse.org/che/docs/che-7',
+    'converting': 'https://www.eclipse.org/che/docs/che-7',
+    'certificate': 'https://www.eclipse.org/che/docs/che-7/importing-certificates-to-browsers/',
+    'general': 'https://www.eclipse.org/che/docs/che-7',
+    'storageTypes': 'https://www.eclipse.org/che/docs/che-7/configuring-storage-types/',
+    'webSocketTroubleshooting': 'https://www.eclipse.org/che/docs/che-7/troubleshooting-network-problems/#troubleshooting-websocket-secure-connections_troubleshooting-network-problems'
   },
   configuration: {
     menu: {
@@ -113,11 +123,12 @@ export const BRANDING_DEFAULT: BrandingData = {
     },
     prefetch: {
       resources: []
-    }
+    },
+    cheCliTool: 'chectl'
   },
   footer: {
     content: '',
     links: [],
-    email: null
+    email: ''
   }
 };
