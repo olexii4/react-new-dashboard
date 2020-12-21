@@ -286,7 +286,7 @@ export const actionCreators: ActionCreators = {
       await WorkspaceClient.restApiClient.stop(workspaceId);
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
-      throw new Error(e.message);
+      throw new Error(`Failed to stop the workspace, ID: ${workspaceId}, ` + e.message);
     }
   },
 
@@ -297,7 +297,7 @@ export const actionCreators: ActionCreators = {
       dispatch({ type: 'DELETE_WORKSPACE', workspaceId });
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
-      throw new Error(`Failed to delete the workspace, ID: ${workspaceId}, ` + e);
+      throw new Error(`Failed to delete the workspace, ID: ${workspaceId}, ` + e.message);
     }
   },
 
@@ -331,10 +331,6 @@ export const actionCreators: ActionCreators = {
       return workspace;
     } catch (e) {
       dispatch({ type: 'RECEIVE_ERROR' });
-      if (e.response?.data?.message) {
-        // e.response.data.message is set unless the request failed. In which case e.message will hold the error code 
-        throw new Error('Failed to create a new workspace from the devfile: \n' + e.response.data.message);
-      }
       throw new Error('Failed to create a new workspace from the devfile: \n' + e.message);
     }
   },
