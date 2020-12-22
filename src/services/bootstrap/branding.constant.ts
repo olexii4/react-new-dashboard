@@ -104,15 +104,15 @@ export const BRANDING_DEFAULT: BrandingData = {
     name: 'CHE'
   },
   docs: {
-    'devfile': 'https://www.eclipse.org/che/docs/che-7/making-a-workspace-portable-using-a-devfile/',
-    'workspace': 'https://www.eclipse.org/che/docs/che-7/workspaces-overview/',
-    'factory': 'https://www.eclipse.org/che/docs/che-7',
-    'organization': 'https://www.eclipse.org/che/docs/che-7',
-    'converting': 'https://www.eclipse.org/che/docs/che-7',
-    'certificate': 'https://www.eclipse.org/che/docs/che-7/importing-certificates-to-browsers/',
-    'general': 'https://www.eclipse.org/che/docs/che-7',
-    'storageTypes': 'https://www.eclipse.org/che/docs/che-7/configuring-storage-types/',
-    'webSocketTroubleshooting': 'https://www.eclipse.org/che/docs/che-7/troubleshooting-network-problems/#troubleshooting-websocket-secure-connections_troubleshooting-network-problems'
+    devfile: 'https://www.eclipse.org/che/docs/che-7/making-a-workspace-portable-using-a-devfile/',
+    workspace: 'https://www.eclipse.org/che/docs/che-7/workspaces-overview/',
+    factory: 'https://www.eclipse.org/che/docs/che-7',
+    organization: 'https://www.eclipse.org/che/docs/che-7',
+    converting: 'https://www.eclipse.org/che/docs/che-7',
+    certificate: 'https://www.eclipse.org/che/docs/che-7/importing-certificates-to-browsers/',
+    general: 'https://www.eclipse.org/che/docs/che-7',
+    storageTypes: 'https://www.eclipse.org/che/docs/che-7/configuring-storage-types/',
+    webSocketTroubleshooting: 'https://www.eclipse.org/che/docs/che-7/troubleshooting-network-problems/#troubleshooting-websocket-secure-connections_troubleshooting-network-problems'
   },
   configuration: {
     menu: {
