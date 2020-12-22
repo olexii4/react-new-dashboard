@@ -41,9 +41,9 @@ export class PreloadData {
   }
 
   async init(): Promise<void> {
-    await this.updateBranding();
     await this.updateUser();
     await this.updateKeycloakUserInfo();
+    await this.updateBranding();
 
     this.updateRestApiClient();
     await this.updateJsonRpcMasterApi();

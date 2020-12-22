@@ -15,6 +15,8 @@ import { fetchBranding } from '../services/assets/branding';
 import { AppThunkAction, AppState } from '.';
 import { merge } from 'lodash';
 import { BRANDING_DEFAULT, BrandingData } from '../services/bootstrap/branding.constant';
+import { container } from '../inversify.config';
+import { CheWorkspaceClient } from '../services/cheWorkspaceClient';
 
 const ASSET_PREFIX = './assets/branding/';
 
@@ -42,6 +44,8 @@ export type ActionCreators = {
   requestBranding: () => any;
 };
 
+const cheWorkspaceClient = container.get(CheWorkspaceClient);
+
 export const actionCreators: ActionCreators = {
 
   requestBranding: (): AppThunkAction<KnownActions> =>
@@ -62,6 +66,11 @@ export const actionCreators: ActionCreators = {
       try {
         const receivedBranding = await fetchBranding(url);
         const branding = getBrandingData(receivedBranding);
+
+        const productVersion = await cheWorkspaceClient.restApiClient.getApiInfo();
+
+        // Use the products version if specified in product.json, otherwise use the default version given by che server
+        branding.productVersion = branding.productVersion ? branding.productVersion : productVersion['implementationVersion'];
 
         dispatch({
           type: 'RECEIVED_BRANDING',
