@@ -76,25 +76,6 @@ export const actionCreators: ActionCreators = {
 
 };
 
-const getBrandingData = (receivedBranding?: { [key: string]: any }): BrandingData => {
-  let branding: BrandingData = Object.assign({}, BRANDING_DEFAULT);
-
-  if (receivedBranding && Object.keys(receivedBranding).length > 0) {
-    branding = merge(branding, receivedBranding);
-  }
-  // resolve asset paths
-  const assetTitles: Array<keyof BrandingData> = ['logoFile', 'logoTextFile', 'favicon', 'loader'];
-  assetTitles.forEach((asset: string) => {
-    const path = branding[asset] as string;
-    if (path.startsWith(ASSET_PREFIX)) {
-      return;
-    }
-    branding[asset] = ASSET_PREFIX + branding[asset];
-  });
-
-  return branding;
-};
-
 const unloadedState: State = {
   isLoading: false,
   data: getBrandingData(),
@@ -120,3 +101,22 @@ export const reducer: Reducer<State> = (state: State | undefined, incomingAction
       return state;
   }
 };
+
+function getBrandingData(receivedBranding?: { [key: string]: any }): BrandingData {
+  let branding: BrandingData = Object.assign({}, BRANDING_DEFAULT);
+
+  if (receivedBranding && Object.keys(receivedBranding).length > 0) {
+    branding = merge(branding, receivedBranding);
+  }
+  // resolve asset paths
+  const assetTitles: Array<keyof BrandingData> = ['logoFile', 'logoTextFile', 'favicon', 'loader'];
+  assetTitles.forEach((asset: string) => {
+    const path = branding[asset] as string;
+    if (path.startsWith(ASSET_PREFIX)) {
+      return;
+    }
+    branding[asset] = ASSET_PREFIX + branding[asset];
+  });
+
+  return branding;
+}

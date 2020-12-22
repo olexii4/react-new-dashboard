@@ -79,7 +79,7 @@ class HeaderTools extends React.PureComponent<Props, State> {
     this.appAlerts.showAlert(alert);
   }
 
-  private get host(): string {
+  private getHost(): string {
     const { user } = this.props;
     if (user && user.links) {
       const targetLink = user.links.find(link => link.rel === 'current_user');
@@ -96,7 +96,7 @@ class HeaderTools extends React.PureComponent<Props, State> {
 
   private getLoginCommand(): string {
     const { keycloak, sso } = KeycloakAuthService;
-    let loginCommand = `chectl auth:login ${this.host}`;
+    let loginCommand = `chectl auth:login ${this.getHost()}`;
     if (!sso) {
       return loginCommand;
     }
