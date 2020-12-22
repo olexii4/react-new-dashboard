@@ -78,7 +78,7 @@ class WorkspaceDetails extends React.PureComponent<Props> {
 
     const workspace = this.props.allWorkspaces?.find(workspace =>
       workspace.namespace === namespace && workspace.devfile.metadata.name === workspaceName);
-    if (!workspace) {
+    if (!workspace && !this.props.isLoading) {
       this.props.history.replace({ pathname: '/workspaces' });
     }
   }
