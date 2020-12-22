@@ -11,49 +11,49 @@
  */
 
 export type BrandingData = {
-  title: string,
-  name: string,
+  title: string;
+  name: string;
   productVersion?: string;
-  logoFile: string,
-  logoTextFile: string,
-  favicon: string,
-  loader: string,
-  websocketContext: string,
-  helpPath: string,
-  helpTitle: string,
-  supportEmail: string,
-  oauthDocs: string,
+  logoFile: string;
+  logoTextFile: string;
+  favicon: string;
+  loader: string;
+  websocketContext: string;
+  helpPath: string;
+  helpTitle: string;
+  supportEmail: string;
+  oauthDocs: string;
   cli: {
     configName: string;
     name: string;
-  },
-  docs: BrandingDocs,
-  workspace: BrandingWorkspace,
-  footer: BrandingFooter,
-  configuration: BrandingConfiguration,
+  };
+  docs: BrandingDocs;
+  workspace: BrandingWorkspace;
+  footer: BrandingFooter;
+  configuration: BrandingConfiguration;
 }
 
 export type BrandingDocs = {
-  devfile: string,
-  workspace: string,
-  factory: string,
-  organization: string,
-  general: string,
-  converting: string,
-  certificate: string,
-  faq?: string,
-  storageTypes: string,
-  webSocketTroubleshooting: string,
+  devfile: string;
+  workspace: string;
+  factory: string;
+  organization: string;
+  general: string;
+  converting: string;
+  certificate: string;
+  faq?: string;
+  storageTypes: string;
+  webSocketTroubleshooting: string;
 }
 
 export type BrandingWorkspace = {
-  priorityStacks: Array<string>,
+  priorityStacks: Array<string>;
   defaultStack: string
 }
 
 export type BrandingFooter = {
-  content: string,
-  links: Array<{ title: string, location: string }>,
+  content: string;
+  links: Array<{ title: string; location: string }>;
   email: { title: string, address: string, subject: string } | '' | null
 }
 

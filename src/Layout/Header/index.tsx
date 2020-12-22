@@ -30,7 +30,6 @@ type Props = {
   logout: () => void;
   toggleNav: () => void;
   changeTheme: (theme: ThemeVariant) => void;
-  onCopyLoginCommand: () => Promise<void>;
 };
 type State = {
   isVisible: boolean;
@@ -58,22 +57,8 @@ export default class Header extends React.PureComponent<Props, State> {
     }
   }
 
-  private get host(): string {
-    const { user } = this.props;
-    if (user && user.links) {
-      const targetLink = user.links.find(link => link.rel === 'current_user');
-      if (targetLink) {
-        return new URL(targetLink.href).origin;
-      }
-    }
-    return '';
-  }
-
   public render(): React.ReactElement {
     const logo = <Brand src={this.props.logoUrl} alt='Logo' />;
-
-    const userEmail = this.props.user?.email || '';
-    const userName = this.props.user?.name || '';
 
     const className = this.state.isVisible ? styles.headerShow : styles.headerHide;
 
@@ -86,12 +71,9 @@ export default class Header extends React.PureComponent<Props, State> {
         onNavToggle={() => this.toggleNav()}
         headerTools={
           <HeaderTools
-            userEmail={userEmail}
-            userName={userName}
-            host={this.host}
+            user={this.props.user}
             logout={() => this.props.logout()}
             changeTheme={theme => this.props.changeTheme(theme)}
-            onCopyLoginCommand={async () => this.props.onCopyLoginCommand()}
           />
         }
       />

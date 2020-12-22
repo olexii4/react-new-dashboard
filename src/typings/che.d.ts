@@ -12,7 +12,7 @@
 
 declare namespace che {
 
-  export type ConfigurableMenuItem = 'administration' | 'factories' | 'getstarted' | 'organizations' | 'stacks';
+  export type ConfigurableMenuItem = 'getstarted' | 'workspaces';
 
   export interface Workspace {
     id: string;

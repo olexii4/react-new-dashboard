@@ -31,7 +31,7 @@ import { CheCliTool } from '../../../services/bootstrap/branding.constant';
 import { AlertItem } from '../../../services/helpers/types';
 import { KeycloakAuthService } from '../../../services/keycloak/auth';
 import { AppState } from '../../../store';
-
+import * as InfrastructureNamespaceStore from '../../../store/InfrastructureNamespace';
 import { ThemeVariant } from '../../themeVariant';
 
 import './HeaderTools.styl';
@@ -39,10 +39,8 @@ import './HeaderTools.styl';
 type Props =
   MappedProps
   & {
-    onCopyLoginCommand?: () => Promise<void>;
-    userEmail: string;
-    userName: string;
-    host?: string;
+    onCopyLoginCommand?: () => void;
+    user: che.User | undefined;
     logout: () => void;
     changeTheme: (theme: ThemeVariant) => void;
   };
@@ -81,20 +79,34 @@ class HeaderTools extends React.PureComponent<Props, State> {
     this.appAlerts.showAlert(alert);
   }
 
+  private get host(): string {
+    const { user } = this.props;
+    if (user && user.links) {
+      const targetLink = user.links.find(link => link.rel === 'current_user');
+      if (targetLink) {
+        return new URL(targetLink.href).origin;
+      }
+    }
+    return window.location.host;
+  }
+
   private getCliTool(): CheCliTool {
     return this.props.branding.data.configuration.cheCliTool || 'chectl';
   }
 
   private getLoginCommand(): string {
-    const { keycloak } = KeycloakAuthService;
-    const host = this.props.host ? this.props.host : window.location.host;
-    let loginCommand = `chectl auth:login ${host}`;
-
-    const refreshToken = keycloak ? keycloak.refreshToken : '';
-    if (refreshToken) {
-      loginCommand += ` -t ${refreshToken}`;
+    const { keycloak, sso } = KeycloakAuthService;
+    let loginCommand = `chectl auth:login ${this.host}`;
+    if (!sso) {
+      return loginCommand;
     }
-
+    if (!keycloak) {
+      throw new Error('Keycloak instance is undefined.');
+    }
+    if (!keycloak.refreshToken) {
+      throw new Error('Refresh token is empty.');
+    }
+    loginCommand += ` -t ${keycloak.refreshToken}`;
     return loginCommand;
   }
 
@@ -102,8 +114,9 @@ class HeaderTools extends React.PureComponent<Props, State> {
    * Copies login command in clipboard.
    */
   private copyLoginCommand(): void {
-    const loginCommand = this.getLoginCommand();
+    let loginCommand = '';
     try {
+      loginCommand = this.getLoginCommand();
       const copyToClipboardEl = document.createElement('span');
       copyToClipboardEl.appendChild(document.createTextNode(loginCommand));
       const style = copyToClipboardEl.style;
@@ -115,7 +128,10 @@ class HeaderTools extends React.PureComponent<Props, State> {
       bodyEl.append(copyToClipboardEl);
       const range = document.createRange();
       range.selectNode(copyToClipboardEl);
-      const selection = document.getSelection()!;
+      const selection = document.getSelection();
+      if (!selection) {
+        throw new Error('Document selection is empty.');
+      }
       selection.removeAllRanges();
       selection.addRange(range);
       document.execCommand('copy');
@@ -127,38 +143,41 @@ class HeaderTools extends React.PureComponent<Props, State> {
         title: 'The login command copied to clipboard.',
       });
     } catch (e) {
-      this.showAlert(
-        {
-          key: 'login-command-copied-to-clipboard-failed',
-          variant: AlertVariant.warning,
-          title: `Failed to put login to clipboard. ${e}`,
-        });
       this.showAlert({
-        key: 'login-command-info',
-        variant: AlertVariant.info,
-        title: 'Login command',
-        children: (
-          <React.Fragment>
-            <Button variant={ButtonVariant.link} isInline={true}
-              onClick={e => {
-                const target = e.target as Element;
-                target.classList.add('refresh-token-button-hidden');
-              }}>
-              Click here
-             </Button>
-            <span> to see the login command and copy it manually.</span>
-            <pre className="refresh-token-area">{loginCommand}</pre>
-          </React.Fragment>
-        ),
+        key: 'login-command-copied-to-clipboard-failed',
+        variant: AlertVariant.warning,
+        title: `Failed to put login to clipboard. ${e}`,
       });
+      if (loginCommand) {
+        this.showAlert({
+          key: 'login-command-info',
+          variant: AlertVariant.info,
+          title: 'Login command',
+          children: (
+            <React.Fragment>
+              <Button variant={ButtonVariant.link} isInline={true}
+                onClick={e => {
+                  const target = e.target as Element;
+                  target.classList.add('refresh-token-button-hidden');
+                }}>
+                Click here
+              </Button>
+              <span> to see the login command and copy it manually.</span>
+              <pre className="refresh-token-area">{loginCommand}</pre>
+            </React.Fragment>
+          ),
+        });
+      }
     }
   }
 
   private async onCopyLoginCommand(): Promise<void> {
     const { onCopyLoginCommand } = this.props;
     if (onCopyLoginCommand) {
-      await onCopyLoginCommand();
+      onCopyLoginCommand();
     }
+    // we need this request because of the token update as a side effect
+    await this.props.requestNamespaces();
     this.copyLoginCommand();
   }
 
@@ -204,9 +223,11 @@ class HeaderTools extends React.PureComponent<Props, State> {
   }
 
   private buildToggleButton(): React.ReactElement {
+    const userName = this.props.user?.name || '';
+
     return (
       <DropdownToggle onToggle={isOpen => this.onToggle(isOpen)}>
-        {this.props.userName}
+        {userName}
       </DropdownToggle>
     );
   }
@@ -214,7 +235,8 @@ class HeaderTools extends React.PureComponent<Props, State> {
   public render(): React.ReactElement {
     const { isOpen } = this.state;
 
-    const imageUrl = gravatarUrl(this.props.userEmail, { default: 'retro' });
+    const userEmail = this.props.user?.email || '';
+    const imageUrl = gravatarUrl(userEmail, { default: 'retro' });
     const avatar = <Avatar src={imageUrl} alt='Avatar image' />;
 
     const toggleButton = this.buildToggleButton();
@@ -246,7 +268,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const connector = connect(
-  mapStateToProps
+  mapStateToProps,
+  InfrastructureNamespaceStore.actionCreators,
 );
 
 type MappedProps = ConnectedProps<typeof connector>;

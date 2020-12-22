@@ -49,7 +49,6 @@ describe('Page header', () => {
     logout={mockLogout}
     toggleNav={mockToggleNav}
     changeTheme={mockChangeTheme}
-    onCopyLoginCommand={() => Promise.resolve()}
   />);
 
   beforeEach(() => {

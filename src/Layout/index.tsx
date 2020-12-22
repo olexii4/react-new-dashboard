@@ -14,7 +14,6 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Page } from '@patternfly/react-core';
 import { History } from 'history';
-import * as InfrastructureNamespaceStore from '../store/InfrastructureNamespace';
 
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -72,11 +71,6 @@ export class Layout extends React.PureComponent<Props, State> {
   private changeTheme(theme: ThemeVariant): void {
     this.setState({ theme });
     window.sessionStorage.setItem(THEME_KEY, theme);
-  }
-
-  private async onCopyLoginCommand(): Promise<void> {
-    // we need this request because of the token update as a side effect
-    await this.props.requestNamespaces();
   }
 
   private handleMessage(event: MessageEvent): void {
@@ -143,7 +137,6 @@ export class Layout extends React.PureComponent<Props, State> {
             logout={() => this.logout()}
             toggleNav={() => this.toggleNav()}
             changeTheme={theme => this.changeTheme(theme)}
-            onCopyLoginCommand={async () => this.onCopyLoginCommand()}
           />
         }
         sidebar={
@@ -169,8 +162,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const connector = connect(
-  mapStateToProps,
-  InfrastructureNamespaceStore.actionCreators,
+  mapStateToProps
 );
 
 type MappedProps = ConnectedProps<typeof connector>

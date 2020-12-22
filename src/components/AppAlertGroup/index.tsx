@@ -11,10 +11,18 @@
  */
 
 import { Alert, AlertActionCloseButton, AlertGroup, AlertVariant } from '@patternfly/react-core';
+import {
+  ExclamationCircleIcon,
+  InProgressIcon,
+  PauseCircleIcon,
+  ResourcesFullIcon,
+} from '@patternfly/react-icons/dist/js/icons';
 import React from 'react';
 import { container } from '../../inversify.config';
 import { AppAlerts } from '../../services/alerts/appAlerts';
-import { AlertItem } from '../../services/helpers/types';
+import { AlertItem, WorkspaceStatus } from '../../services/helpers/types';
+import styles from '../Workspace/Indicator/index.module.css';
+import { StoppedIcon } from '../WorkspaceStatusLabel';
 
 type Props = {};
 
@@ -46,11 +54,28 @@ class AppAlertGroup extends React.PureComponent<Props, State> {
     this.appAlerts.unsubscribe(this.showAlertHandler);
   }
 
+  private getTime(variant: AlertVariant): number {
+    let time: number;
+
+    switch (variant) {
+      case AlertVariant.success:
+        time = 2000;
+        break;
+      case AlertVariant.info:
+        time = 8000;
+        break;
+      default:
+        time = 20000;
+    }
+
+    return time;
+  }
+
   private getAlert(item: AlertItem): React.ReactElement {
     const { variant, title, key, children } = item;
     const showAlertTimer = setTimeout(() => {
       this.appAlerts.removeAlert(key);
-    }, variant === AlertVariant.success ? 2000 : variant !== AlertVariant.info ? 8000 : 20000);
+    }, this.getTime(variant));
     return (
       <Alert variant={variant} title={title} key={key} actionClose={
         <AlertActionCloseButton onClose={() => {
