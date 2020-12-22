@@ -42,6 +42,7 @@ type Props =
     onCopyLoginCommand?: () => Promise<void>;
     userEmail: string;
     userName: string;
+    host?: string;
     logout: () => void;
     changeTheme: (theme: ThemeVariant) => void;
   };
@@ -86,7 +87,7 @@ class HeaderTools extends React.PureComponent<Props, State> {
 
   private getLoginCommand(): string {
     const { keycloak } = KeycloakAuthService;
-    const host = window.location.host;
+    const host = this.props.host ? this.props.host : window.location.host;
     let loginCommand = `chectl auth:login ${host}`;
 
     const refreshToken = keycloak ? keycloak.refreshToken : '';
@@ -119,6 +120,7 @@ class HeaderTools extends React.PureComponent<Props, State> {
       selection.addRange(range);
       document.execCommand('copy');
       selection.removeAllRanges();
+      copyToClipboardEl.remove();
       this.showAlert({
         key: 'login-command-copied-to-clipboard',
         variant: AlertVariant.success,

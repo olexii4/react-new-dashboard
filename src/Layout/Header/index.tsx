@@ -58,6 +58,17 @@ export default class Header extends React.PureComponent<Props, State> {
     }
   }
 
+  private get host(): string {
+    const { user } = this.props;
+    if (user && user.links) {
+      const targetLink = user.links.find(link => link.rel === 'current_user');
+      if (targetLink) {
+        return new URL(targetLink.href).origin;
+      }
+    }
+    return '';
+  }
+
   public render(): React.ReactElement {
     const logo = <Brand src={this.props.logoUrl} alt='Logo' />;
 
@@ -77,6 +88,7 @@ export default class Header extends React.PureComponent<Props, State> {
           <HeaderTools
             userEmail={userEmail}
             userName={userName}
+            host={this.host}
             logout={() => this.props.logout()}
             changeTheme={theme => this.props.changeTheme(theme)}
             onCopyLoginCommand={async () => this.props.onCopyLoginCommand()}
