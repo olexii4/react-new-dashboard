@@ -11,18 +11,10 @@
  */
 
 import { Alert, AlertActionCloseButton, AlertGroup, AlertVariant } from '@patternfly/react-core';
-import {
-  ExclamationCircleIcon,
-  InProgressIcon,
-  PauseCircleIcon,
-  ResourcesFullIcon,
-} from '@patternfly/react-icons/dist/js/icons';
 import React from 'react';
 import { container } from '../../inversify.config';
 import { AppAlerts } from '../../services/alerts/appAlerts';
-import { AlertItem, WorkspaceStatus } from '../../services/helpers/types';
-import styles from '../Workspace/Indicator/index.module.css';
-import { StoppedIcon } from '../WorkspaceStatusLabel';
+import { AlertItem } from '../../services/helpers/types';
 
 type Props = {};
 
