@@ -43,7 +43,7 @@ describe('About modal', () => {
     jest.clearAllMocks();
   });
 
-  // react-test-renderer doesn't have support for portal: https://github.com/facebook/react/issues/11565
+  // todo react-test-renderer doesn't have support for portal: https://github.com/facebook/react/issues/11565
   // which makes this fail
   // it('should correctly render the component', () => {
   //   expect(renderer.create(component).toJSON()).toMatchSnapshot();

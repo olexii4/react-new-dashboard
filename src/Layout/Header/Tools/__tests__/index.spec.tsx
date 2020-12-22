@@ -173,6 +173,8 @@ function createStore(cheCliTool: string): Store {
     .withBranding({
       configuration: {
         cheCliTool
+      },
+      docs: {
       }
     } as BrandingData)
     .build();
