@@ -24,6 +24,7 @@ import {
   AlertVariant,
   Wizard, WizardStep,
 } from '@patternfly/react-core';
+import Head from '../../components/Head';
 import Header from '../../components/Header';
 import { LoadFactorySteps } from '../../containers/FactoryLoader';
 import { WorkspaceStatus } from '../../services/helpers/types';
@@ -209,6 +210,7 @@ class FactoryLoader extends React.PureComponent<Props, State> {
 
     return (
       <React.Fragment>
+        <Head pageName="Factory Loader" />
         {alertVisible && (
           <AlertGroup isToast>
             <Alert

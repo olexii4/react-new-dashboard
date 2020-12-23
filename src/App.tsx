@@ -16,6 +16,7 @@ import React, { Suspense } from 'react';
 import { Redirect, Switch } from 'react-router';
 import AppAlertGroup from './components/AppAlertGroup';
 import Fallback from './components/Fallback';
+import Head from './components/Head';
 import Layout from './Layout';
 import Routes from './Routes';
 
@@ -24,6 +25,7 @@ import './app.styl';
 function AppComponent(props: { history: History }): React.ReactElement {
   return (
     <ConnectedRouter history={props.history}>
+      <Head />
       <Layout history={props.history}>
         <AppAlertGroup />
         <Suspense fallback={Fallback}>

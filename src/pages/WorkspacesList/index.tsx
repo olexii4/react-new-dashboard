@@ -20,6 +20,7 @@ import { Table, TableBody, TableHeader } from '@patternfly/react-table';
 import { History } from 'history';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import Head from '../../components/Head';
 import CheProgress from '../../components/Progress';
 import WorkspaceDeleteAction from '../../components/Workspace/DeleteAction';
 import WorkspaceIndicator from '../../components/Workspace/Indicator';
@@ -148,6 +149,7 @@ export class WorkspacesList extends React.PureComponent<Props> {
 
     return (
       <React.Fragment>
+        <Head pageName="Workspaces" />
         <PageSection variant={SECTION_THEME}>
           <Text className='page-label' component='h1'>Workspaces</Text>
         </PageSection>

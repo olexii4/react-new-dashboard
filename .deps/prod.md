@@ -74,7 +74,7 @@
 | [`json5@1.0.1`](git+https://github.com/json5/json5.git) | MIT | [CQ22351](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22351) |
 | [`jsonc-parser@2.2.1`](https://github.com/microsoft/node-jsonc-parser) | MIT | clearlydefined |
 | [`loader-utils@1.4.0`](https://github.com/webpack/loader-utils.git) | MIT | clearlydefined |
-| [`lodash@4.17.15`](https://github.com/lodash/lodash.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
+| [`lodash@4.17.20`](https://github.com/lodash/lodash.git) | MIT | [CQ22829](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22829) |
 | [`loose-envify@1.4.0`](git://github.com/zertosh/loose-envify.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`md5-hex@3.0.1`](https://github.com/sindresorhus/md5-hex.git) | MIT | clearlydefined |
 | [`mini-create-react-context@0.4.0`](https://github.com/StringEpsilon/mini-create-react-context) | MIT | clearlydefined |
@@ -103,6 +103,8 @@
 | [`react-copy-to-clipboard@5.0.2`](https://github.com/nkbt/react-copy-to-clipboard.git) | MIT | clearlydefined |
 | [`react-dom@16.13.1`](https://github.com/facebook/react.git) | MIT | clearlydefined |
 | [`react-dropzone@9.0.0`](https://github.com/react-dropzone/react-dropzone.git) | MIT | [CQ22355](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22355) |
+| [`react-fast-compare@3.2.0`](git+https://github.com/FormidableLabs/react-fast-compare.git) | MIT | clearlydefined |
+| [`react-helmet@6.1.0`](https://github.com/nfl/react-helmet) | MIT | clearlydefined |
 | [`react-is@16.13.1`](https://github.com/facebook/react.git) | MIT | clearlydefined |
 | [`react-lifecycles-compat@3.0.4`](https://github.com/reactjs/react-lifecycles-compat.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`react-pluralize@1.6.3`](https://github.com/tsmith123/react-pluralize) | MIT | clearlydefined |
@@ -110,6 +112,7 @@
 | [`react-redux@7.2.0`](https://github.com/reduxjs/react-redux.git) | MIT | clearlydefined |
 | [`react-router-dom@5.2.0`](https://github.com/ReactTraining/react-router.git) | MIT | clearlydefined |
 | [`react-router@5.2.0`](https://github.com/ReactTraining/react-router.git) | MIT | clearlydefined |
+| [`react-side-effect@2.1.1`](https://github.com/gaearon/react-side-effect.git) | MIT | clearlydefined |
 | [`react-transition-group@2.9.0`](https://github.com/reactjs/react-transition-group.git) | BSD-3-Clause | [CQ22356](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22356) |
 | [`react@16.13.1`](https://github.com/facebook/react.git) | MIT | clearlydefined |
 | [`reactstrap@8.4.1`](git+ssh://git@github.com/reactstrap/reactstrap.git) | MIT | clearlydefined |

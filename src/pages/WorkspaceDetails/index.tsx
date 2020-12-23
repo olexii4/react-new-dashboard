@@ -26,6 +26,7 @@ import {
   Text,
   Button,
 } from '@patternfly/react-core';
+import Head from '../../components/Head';
 import { Actions } from '../../containers/WorkspaceDetails';
 import { WorkspaceStatus } from '../../services/helpers/types';
 import Header from './Header';
@@ -153,6 +154,7 @@ export class WorkspaceDetails extends React.PureComponent<Props, State> {
 
     return (
       <React.Fragment>
+        <Head pageName={workspaceName} />
         <Header workspaceName={workspaceName} status={workspace.status}>
           <HeaderActionSelect
             onAction={onAction}

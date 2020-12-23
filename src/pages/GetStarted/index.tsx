@@ -23,6 +23,7 @@ import {
   Title,
 } from '@patternfly/react-core';
 import Fallback from '../../components/Fallback';
+import Head from '../../components/Head';
 import { container } from '../../inversify.config';
 import { AppAlerts } from '../../services/alerts/appAlerts';
 import * as WorkspaceStore from '../../store/Workspaces';
@@ -167,6 +168,7 @@ export class GetStarted extends React.PureComponent<Props, State> {
 
     return (
       <React.Fragment>
+        <Head pageName="Get Started" />
         <PageSection variant={PageSectionVariants.light}>
           <Title headingLevel={'h1'}>{title}</Title>
         </PageSection>

@@ -25,6 +25,7 @@ import {
 import { CheckCircleIcon } from '@patternfly/react-icons';
 import { ExclamationCircleIcon, InProgressIcon } from '@patternfly/react-icons/dist/js/icons';
 import React, { RefObject } from 'react';
+import Head from '../../components/Head';
 import Header from '../../components/Header';
 import WorkspaceLogs from '../../components/LogsTab';
 import { LoadIdeSteps } from '../../containers/IdeLoader';
@@ -295,6 +296,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
     return (
       <React.Fragment>
+        <Head pageName={`Loading ${workspaceName}`} />
         {alertVisible && (
           <AlertGroup isToast>
             <Alert
