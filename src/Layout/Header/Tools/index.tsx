@@ -206,24 +206,6 @@ export class HeaderTools extends React.PureComponent<Props, State> {
       ),
       (
         <DropdownItem
-          key='light'
-          component='button'
-          onClick={(): void => this.setTheme(ThemeVariant.LIGHT)}
-        >
-          Light Theme
-        </DropdownItem>
-      ),
-      (
-        <DropdownItem
-          key='dark'
-          component='button'
-          onClick={(): void => this.setTheme(ThemeVariant.DARK)}
-        >
-          Dark Theme
-        </DropdownItem>
-      ),
-      (
-        <DropdownItem
           key='account_logout'
           component='button'
           onClick={() => this.props.logout()}
