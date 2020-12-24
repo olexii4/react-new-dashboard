@@ -66,6 +66,14 @@ const AboutModalItems: React.FC<AboutModalItemsProps> = (
               </TextListItem>
             </>
           )}
+          {browserName && (
+            <>
+              <TextListItem component='dt'>Browser Name</TextListItem>
+              <TextListItem component='dd' className='co-select-to-copy'>
+                {browserName}
+              </TextListItem>
+            </>
+          )}
           {browserVersion && (
             <>
               <TextListItem component='dt'>Browser Version</TextListItem>
@@ -79,14 +87,6 @@ const AboutModalItems: React.FC<AboutModalItemsProps> = (
               <TextListItem component='dt'>Browser OS</TextListItem>
               <TextListItem component='dd' className='co-select-to-copy'>
                 {browserOS}
-              </TextListItem>
-            </>
-          )}
-          {browserName && (
-            <>
-              <TextListItem component='dt'>Browser Name</TextListItem>
-              <TextListItem component='dd' className='co-select-to-copy'>
-                {browserName}
               </TextListItem>
             </>
           )}
