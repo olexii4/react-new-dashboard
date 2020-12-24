@@ -72,4 +72,10 @@ describe('About modal', () => {
     expect(getByText(/Browser OS/i)).not.toBeNull();
     expect(getByText(/Linux/i)).not.toBeNull();
   });
+
+  it('should display browser name', () => {
+    const { getByText } = render(component);
+    expect(getByText(/Browser Name/i)).not.toBeNull();
+    expect(getByText(/chrome/i)).not.toBeNull();
+  });
 });
