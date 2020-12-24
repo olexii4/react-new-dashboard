@@ -99,7 +99,6 @@
 | [`@types/normalize-package-data@2.4.0`](https://www.github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/parse-json@4.0.0`](https://www.github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/prettier@2.0.1`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
-| [`@types/prop-types@15.7.3`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/qs@6.9.3`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/range-parser@1.2.3`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | [CQ18717](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=18717) |
 | [`@types/react-copy-to-clipboard@4.3.0`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
@@ -110,7 +109,6 @@
 | [`@types/react-router-dom@5.1.5`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/react-router@5.1.7`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/react-test-renderer@16.9.3`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
-| [`@types/react@16.9.35`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/reactstrap@8.4.2`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/redux-mock-store@1.0.2`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/reselect@2.2.0`](https://github.com/rackt/reselect) | MIT | clearlydefined |
@@ -314,7 +312,6 @@
 | [`cssesc@3.0.0`](https://github.com/mathiasbynens/cssesc.git) | MIT | clearlydefined |
 | [`cssom@0.4.4`](https://github.com/NV/CSSOM.git) | MIT | clearlydefined |
 | [`cssstyle@2.3.0`](https://github.com/jsdom/cssstyle.git) | MIT | clearlydefined |
-| [`csstype@2.6.10`](https://github.com/frenic/csstype) | MIT | clearlydefined |
 | [`currently-unhandled@0.4.1`](https://github.com/jamestalmage/currently-unhandled.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`cyclist@1.0.1`](git://github.com/mafintosh/cyclist) | MIT | clearlydefined |
 | [`dashdash@1.14.1`](git://github.com/trentm/node-dashdash.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
@@ -511,6 +508,7 @@
 | [`is-alphanumerical@1.0.4`](https://github.com/wooorm/is-alphanumerical.git) | MIT | clearlydefined |
 | [`is-arrayish@0.2.1`](https://github.com/qix-/node-is-arrayish.git) | MIT | [CQ16925](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=16925) |
 | [`is-binary-path@1.0.1`](https://github.com/sindresorhus/is-binary-path.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
+| [`is-buffer@2.0.4`](git://github.com/feross/is-buffer.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`is-ci@2.0.0`](https://github.com/watson/is-ci.git) | MIT | clearlydefined |
 | [`is-data-descriptor@1.0.0`](https://github.com/jonschlinkert/is-data-descriptor.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`is-decimal@1.0.4`](https://github.com/wooorm/is-decimal.git) | MIT | clearlydefined |

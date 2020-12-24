@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | [`@babel/runtime@7.10.2`](https://github.com/babel/babel.git) | MIT | clearlydefined |
 | `@eclipse-che/api@7.18.1` | EPL-2.0 | - |
-| [`@eclipse-che/workspace-client@0.0.1-1604083811`](https://github.com/eclipse/che-workspace-client) | EPL-2.0 | - |
+| [`@eclipse-che/workspace-client@0.0.1-1608729566`](https://github.com/eclipse/che-workspace-client) | EPL-2.0 |  |
 | [`@patternfly/patternfly@4.10.31`](https://github.com/patternfly/patternfly.git) | MIT | [CQ22346](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22346) |
 | [`@patternfly/react-core@4.18.5`](https://github.com/patternfly/patternfly-react.git) | MIT | [CQ22347](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22347) |
 | [`@patternfly/react-icons@4.3.5`](https://github.com/patternfly/patternfly-react.git) | MIT | clearlydefined |
@@ -13,6 +13,9 @@
 | [`@patternfly/react-tokens@4.4.4`](https://github.com/patternfly/patternfly-react.git) | MIT | clearlydefined |
 | [`@types/classnames@2.2.10`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`@types/json-schema@7.0.6`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
+| [`@types/prop-types@15.7.3`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
+| [`@types/react-helmet@6.1.0`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
+| [`@types/react@16.9.35`](https://github.com/DefinitelyTyped/DefinitelyTyped.git) | MIT | clearlydefined |
 | [`agent-base@4.3.0`](git://github.com/TooTallNate/node-agent-base.git) | MIT | clearlydefined |
 | [`ajv-keywords@3.5.2`](git+https://github.com/epoberezkin/ajv-keywords.git) | MIT | clearlydefined |
 | [`ajv@6.12.6`](https://github.com/ajv-validator/ajv.git) | MIT | emo_ip_team |
@@ -27,9 +30,11 @@
 | [`copy-to-clipboard@3.3.1`](git+https://github.com/sudodoki/copy-to-clipboard) | MIT | clearlydefined |
 | [`core-js@2.6.11`](https://github.com/zloirock/core-js.git) | MIT | clearlydefined |
 | [`create-react-context@0.3.0`](https://github.com/thejameskyle/create-react-context) | MIT | clearlydefined |
+| [`csstype@2.6.10`](https://github.com/frenic/csstype) | MIT | clearlydefined |
 | [`debug@3.1.0`](git://github.com/visionmedia/debug.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`deep-equal@1.1.1`](http://github.com/substack/node-deep-equal.git) | MIT | clearlydefined |
 | [`define-properties@1.1.3`](git://github.com/ljharb/define-properties.git) | MIT | clearlydefined |
+| [`detect-browser@5.2.0`](https://github.com/DamonOehlman/detect-browser.git) | MIT | clearlydefined |
 | [`dom-helpers@3.4.0`](https://github.com/jquense/dom-helpers.git) | MIT | [CQ22349](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22349) |
 | [`emojis-list@3.0.0`](git+https://github.com/kikobeats/emojis-list.git) | MIT | clearlydefined |
 | [`es-abstract@1.17.5`](git://github.com/ljharb/es-abstract.git) | MIT | clearlydefined |
@@ -59,7 +64,6 @@
 | [`inversify-react@0.4.3`](https://github.com/Kukkimonsuta/inversify-react.git) | Apache-2.0 | clearlydefined |
 | [`inversify@5.0.1`](https://github.com/inversify/InversifyJS.git) | MIT | clearlydefined |
 | [`is-arguments@1.0.4`](git://github.com/ljharb/is-arguments.git) | MIT | clearlydefined |
-| [`is-buffer@2.0.4`](git://github.com/feross/is-buffer.git) | MIT | [CQ17757](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=17757) |
 | [`is-callable@1.1.5`](git://github.com/ljharb/is-callable.git) | MIT | clearlydefined |
 | [`is-date-object@1.0.2`](git://github.com/ljharb/is-date-object.git) | MIT | clearlydefined |
 | [`is-regex@1.0.5`](git://github.com/ljharb/is-regex.git) | MIT | clearlydefined |
