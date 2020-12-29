@@ -29,3 +29,4 @@
 | `remark-stringify@8.1.0` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
 | `trim@0.0.1` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
 | `x-is-string@0.1.0` | [CQ22418](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22418) |
+| `react-shallow-renderer@16.14.1` | [CQ22919](https://dev.eclipse.org/ipzilla/show_bug.cgi?id=22919) |
