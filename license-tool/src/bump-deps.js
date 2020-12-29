@@ -83,7 +83,8 @@ function arrayToDocument(title, depsArray, depToCQ, allLicenses) {
   return document;
 }
 
-const EXCLUDED_DEPENDENCIES = '.deps/EXCLUDED.md';
+const EXCLUDED_PROD_DEPENDENCIES = '.deps/EXCLUDED/prod.md';
+const EXCLUDED_DEV_DEPENDENCIES = '.deps/EXCLUDED/dev.md';
 const ALL_DEPENDENCIES = './DEPENDENCIES';
 const PROD_PATH = '.deps/prod.md';
 const DEV_PATH = '.deps/dev.md';
@@ -107,10 +108,6 @@ if (index !== -1) {
   })
 }
 
-if (existsSync(EXCLUDED_DEPENDENCIES)) {
-  parseExcludedFileData(readFileSync(EXCLUDED_DEPENDENCIES, ENCODING), depsToCQ);
-}
-
 let path = ALL_DEPENDENCIES;
 if (!existsSync(ALL_DEPENDENCIES)) {
   path = path.replace('./', '.deps/tmp/');
@@ -130,7 +127,16 @@ const allDeps = bufferToArray(JSON.parse(allDepsBuffer.toString()))
 // dev dependencies
 const devDeps = allDeps.filter(entry => prodDeps.includes(entry) === false);
 
+if (existsSync(EXCLUDED_PROD_DEPENDENCIES)) {
+  parseExcludedFileData(readFileSync(EXCLUDED_PROD_DEPENDENCIES, ENCODING), depsToCQ);
+}
+
 writeFileSync(PROD_PATH, arrayToDocument('Production dependencies', prodDeps, depsToCQ, allLicenses), ENCODING);
+
+if (existsSync(EXCLUDED_DEV_DEPENDENCIES)) {
+  parseExcludedFileData(readFileSync(EXCLUDED_DEV_DEPENDENCIES, ENCODING), depsToCQ);
+}
+
 writeFileSync(DEV_PATH, arrayToDocument('Development dependencies', devDeps, depsToCQ, allLicenses), ENCODING);
 
 if (logs) {
