@@ -142,6 +142,7 @@ export type ActionCreators = {
   clearWorkspaceQualifiedName: () => AppThunk<ClearWorkspaceQualifiedName>;
   setWorkspaceId: (workspaceId: string) => AppThunk<SetWorkspaceId>;
   clearWorkspaceId: () => AppThunk<ClearWorkspaceId>;
+  deleteWorkspaceLogs: (workspaceId: string) => AppThunk<KnownAction>;
 };
 
 type WorkspaceStatusMessageHandler = (message: api.che.workspace.event.WorkspaceStatusEvent) => void;
@@ -191,7 +192,7 @@ function unSubscribeToStatusChange(workspaceId: string): void {
 
 function subscribeToEnvironmentOutput(workspaceId: string, dispatch: ThunkDispatch<State, undefined, UpdateWorkspacesLogsAction | DeleteWorkspaceLogsAction>): void {
   const callback: EnvironmentOutputMessageHandler = message => {
-    if (message.text) {
+    if (message.runtimeId?.workspaceId === workspaceId && message.text) {
       const workspacesLogs = new Map<string, string[]>();
       workspacesLogs.set(workspaceId, [`${message.text}`]);
       dispatch({
@@ -356,6 +357,14 @@ export const actionCreators: ActionCreators = {
 
   clearWorkspaceId: (): AppThunk<ClearWorkspaceId> => dispatch => {
     dispatch({ type: 'CLEAR_WORKSPACE_ID' });
+  },
+
+  deleteWorkspaceLogs: (workspaceId: string): AppThunk<KnownAction> => async (dispatch): Promise<void> => {
+    dispatch({
+      type: 'SET_WORKSPACE_ID',
+      workspaceId,
+    });
+    dispatch({ type: 'DELETE_WORKSPACE_LOGS', workspaceId });
   },
 
 };

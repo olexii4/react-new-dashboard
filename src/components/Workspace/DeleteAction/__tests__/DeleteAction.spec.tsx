@@ -180,6 +180,7 @@ function createComponent(
         clearWorkspaceQualifiedName={jest.fn()}
         setWorkspaceId={jest.fn()}
         clearWorkspaceId={jest.fn()}
+        deleteWorkspaceLogs={jest.fn()}
       >Delete Workspace</WorkspaceDeleteAction>
     </Provider>
   );

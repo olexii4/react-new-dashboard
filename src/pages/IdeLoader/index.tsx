@@ -45,7 +45,7 @@ type Props = {
   preselectedTabKey?: IdeLoaderTabs
   ideUrl?: string;
   callbacks?: {
-    showAlert?: (variant: AlertVariant, title: string) => void
+    showAlert?: (alertOptions: AlertOptions) => void
   }
 };
 
@@ -57,13 +57,23 @@ type State = {
   activeTabKey: IdeLoaderTabs;
   currentRequestError: string;
   currentAlertVariant?: AlertVariant;
+  alertActionLinks?: React.ReactFragment;
+  alertBody?: string | undefined;
+};
+
+export type AlertOptions = {
+  title: string;
+  timeDelay?: number;
+  alertActionLinks?: React.ReactFragment;
+  alertVariant: AlertVariant;
+  body?: string;
 };
 
 class IdeLoader extends React.PureComponent<Props, State> {
   private loaderTimer;
   private readonly hideAlert: () => void;
   private readonly handleTabClick: (event: React.MouseEvent<HTMLElement, MouseEvent>, tabIndex: React.ReactText) => void;
-  public showAlert: (variant: AlertVariant, title: string, timeDelay?: number) => void;
+  public showAlert: (options: AlertOptions) => void;
 
   private readonly wizardRef: RefObject<any>;
 
@@ -89,8 +99,8 @@ class IdeLoader extends React.PureComponent<Props, State> {
     };
     // Init showAlert
     let showAlertTimer;
-    this.showAlert = (variant: AlertVariant, title: string): void => {
-      this.setState({ currentRequestError: title, currentAlertVariant: variant });
+    this.showAlert = (alertOptions: AlertOptions): void => {
+      this.setState({ currentRequestError: alertOptions.title, currentAlertVariant: alertOptions.alertVariant, alertActionLinks: alertOptions?.alertActionLinks, alertBody: alertOptions?.body });
       if (this.state.activeTabKey === IdeLoaderTabs.Progress) {
         return;
       }
@@ -100,13 +110,13 @@ class IdeLoader extends React.PureComponent<Props, State> {
       }
       showAlertTimer = setTimeout(() => {
         this.setState({ alertVisible: false });
-      }, variant === AlertVariant.success ? 2000 : 10000);
+      }, alertOptions.alertVariant === AlertVariant.success ? 2000 : 10000);
     };
     this.hideAlert = (): void => this.setState({ alertVisible: false });
     // Prepare showAlert as a callback
     if (this.props.callbacks && !this.props.callbacks.showAlert) {
-      this.props.callbacks.showAlert = (variant: AlertVariant, title: string) => {
-        this.showAlert(variant, title);
+      this.props.callbacks.showAlert = (alertOptions: AlertOptions) => {
+        this.showAlert(alertOptions);
       };
     }
   }
@@ -209,7 +219,10 @@ class IdeLoader extends React.PureComponent<Props, State> {
       return this.updateIdeIframe(url, --repeat);
     } else {
       const message = 'Cannot find IDE iframe element.';
-      this.showAlert(AlertVariant.warning, message);
+      this.showAlert({
+        alertVariant: AlertVariant.warning,
+        title: message
+      });
       console.error(message);
     }
   }
@@ -277,7 +290,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
 
   public render(): React.ReactElement {
     const { workspaceName, workspaceId, ideUrl, hasError, currentStep } = this.props;
-    const { alertVisible, loaderVisible, currentAlertVariant, currentRequestError } = this.state;
+    const { alertVisible, loaderVisible, currentAlertVariant, currentRequestError, alertActionLinks } = this.state;
 
     if (ideUrl) {
       return (
@@ -321,7 +334,10 @@ class IdeLoader extends React.PureComponent<Props, State> {
                     title={currentRequestError}
                     actionClose={<AlertActionCloseButton
                       onClose={() => this.setState({ currentRequestError: '' })} />}
-                  />
+                    actionLinks={alertActionLinks}
+                  >
+                    {this.state.alertBody}
+                  </Alert>
                 )}
                 <Wizard
                   className="ide-loader-wizard"
