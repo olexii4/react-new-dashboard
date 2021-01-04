@@ -148,7 +148,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
     });
   }
 
-  public async componentDidUpdate(prevProps, prevState): Promise<void> {
+  public async componentDidUpdate(prevProps: Props, prevState: Props): Promise<void> {
     const { allWorkspaces, match: { params } } = this.props;
     const { hasError } = this.state;
     const workspace = allWorkspaces.find(workspace =>
