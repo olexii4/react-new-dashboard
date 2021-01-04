@@ -197,7 +197,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
           } catch (e) {
             this.showAlert(`Workspace ${this.state.workspaceName} failed to start. ${e}`);
           }
-        }}>Open in Debug mode</AlertActionLink>
+        }}>Open in Verbose mode</AlertActionLink>
         <AlertActionLink onClick={() => {
           // Since patternfly appends numbers to an id we can't just get the tab by id so look for the tab item with Logs
           const elements: any = Array.from(document.getElementsByClassName('pf-c-tabs__item'));

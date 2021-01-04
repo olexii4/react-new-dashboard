@@ -164,7 +164,7 @@ describe('IDE Loader container', () => {
 
     expect(showAlert).toBeCalledTimes(1);
 
-    const errorAlerts = <React.Fragment><AlertActionLink onClick={() => jest.fn()}>Open in Debug mode</AlertActionLink><AlertActionLink onClick={() => jest.fn()}>Open Logs</AlertActionLink></React.Fragment>;
+    const errorAlerts = <React.Fragment><AlertActionLink onClick={() => jest.fn()}>Open in Verbose mode</AlertActionLink><AlertActionLink onClick={() => jest.fn()}>Open Logs</AlertActionLink></React.Fragment>;
     const firstCalledArgs = showAlert.mock.calls[0][0];
     expect(firstCalledArgs.title).toEqual('Workspace name-wksp-3 failed to start');
     expect(firstCalledArgs.alertVariant).toEqual('danger');
