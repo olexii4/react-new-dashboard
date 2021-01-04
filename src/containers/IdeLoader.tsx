@@ -183,32 +183,42 @@ class IdeLoader extends React.PureComponent<Props, State> {
     return (
       <React.Fragment>
         <AlertActionLink onClick={async () => {
-          try {
-            await this.props.startWorkspace(workspace.id, { 'debug-workspace-start': true });
-            await this.props.deleteWorkspaceLogs(workspace.id);
-            this.setState({
-              currentStep: LoadIdeSteps.INITIALIZING,
-              hasError: false
-            });
-
-            // Set the workspaces status to starting manually so that when initWorkspace
-            // is triggered on the debounce the workspace won't be attempted to start twice
-            workspace.status = 'STARTING';
-          } catch (e) {
-            this.showAlert(`Workspace ${this.state.workspaceName} failed to start. ${e}`);
-          }
+          this.verboseModeHandler(workspace);
         }}>Open in Verbose mode</AlertActionLink>
         <AlertActionLink onClick={() => {
           // Since patternfly appends numbers to an id we can't just get the tab by id so look for the tab item with Logs
-          const elements: any = Array.from(document.getElementsByClassName('pf-c-tabs__item'));
-          for (const ele of elements) {
-            if (ele.innerText === 'Logs') {
-              ele.firstChild.click();
-            }
-          }
+          this.logsHandler();
         }}>Open Logs</AlertActionLink>
       </React.Fragment>
     );
+  }
+
+  private async verboseModeHandler(workspace: che.Workspace) {
+    try {
+      await this.props.startWorkspace(workspace.id, { 'debug-workspace-start': true });
+      await this.props.deleteWorkspaceLogs(workspace.id);
+      this.setState({
+        currentStep: LoadIdeSteps.INITIALIZING,
+        hasError: false
+      });
+
+      // Set the workspaces status to starting manually so that when initWorkspace
+      // is triggered on the debounce the workspace won't be attempted to start twice
+      workspace.status = 'STARTING';
+
+      this.logsHandler();
+    } catch (e) {
+      this.showAlert(`Workspace ${this.state.workspaceName} failed to start. ${e}`);
+    }
+  }
+
+  private logsHandler() {
+    const elements: any = Array.from(document.getElementsByClassName('pf-c-tabs__item'));
+    for (const ele of elements) {
+      if (ele.innerText === 'Logs') {
+        ele.firstChild.click();
+      }
+    }
   }
 
   private updateIdeUrl(runtime: api.che.workspace.Runtime): void {
