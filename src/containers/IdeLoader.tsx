@@ -69,7 +69,7 @@ class IdeLoader extends React.PureComponent<Props, State> {
       currentStep: LoadIdeSteps.INITIALIZING,
       namespace,
       workspaceName,
-      hasError: workspace.status === WorkspaceStatus[WorkspaceStatus.ERROR],
+      hasError: workspace?.status === WorkspaceStatus[WorkspaceStatus.ERROR],
       preselectedTabKey: this.preselectedTabKey,
     };
 
