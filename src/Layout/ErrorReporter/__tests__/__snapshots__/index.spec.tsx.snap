@@ -9,7 +9,7 @@ exports[`ErrorReporter component should correctly render the reported issue 1`] 
     tabIndex={-1}
   >
     <section
-      className="pf-c-page__main-section pf-m-no-padding pf-m-fill"
+      className="pf-c-page__main-section pf-m-fill undefined pf-c-page-section-no-padding"
     >
       <div
         className="pf-l-stack"
