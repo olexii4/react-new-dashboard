@@ -46,7 +46,7 @@ export class PreloadData {
     await this.updateBranding();
 
     this.updateRestApiClient();
-    await this.updateJsonRpcMasterApi();
+    this.updateJsonRpcMasterApi();
 
     this.updateWorkspaces();
     this.updateInfrastructureNamespaces();

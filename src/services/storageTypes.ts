@@ -10,6 +10,8 @@
  *   Red Hat, Inc. - initial API and implementation
  */
 
+const DEFAULT_AVAILABLE_TYPES = '';
+
 export enum StorageTypeTitle {
   async = 'Asynchronous',
   ephemeral = 'Ephemeral',
@@ -37,7 +39,7 @@ export function fromTitle(title: string): che.WorkspaceStorageType {
 }
 
 export function getAvailable(settings: che.WorkspaceSettings): che.WorkspaceStorageType[] {
-  const availableTypes = settings['che.workspace.storage.available_types'];
+  const availableTypes = settings['che.workspace.storage.available_types'] || DEFAULT_AVAILABLE_TYPES;
   return availableTypes.split(',') as che.WorkspaceStorageType[];
 }
 
@@ -62,7 +64,7 @@ export function typeToAttributes(type: che.WorkspaceStorageType): che.WorkspaceC
 }
 
 export function attributesToType(attrs: che.WorkspaceConfigAttributes | undefined): che.WorkspaceStorageType {
-  if ( attrs?.persistVolumes === 'false') {
+  if (attrs?.persistVolumes === 'false') {
     if (attrs.asyncPersist === 'true') {
       return 'async';
     }
