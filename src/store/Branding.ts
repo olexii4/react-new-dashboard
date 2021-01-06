@@ -118,7 +118,7 @@ function getBrandingData(receivedBranding?: { [key: string]: any }): BrandingDat
     branding = merge(branding, receivedBranding);
   }
   // resolve asset paths
-  const assetTitles: Array<keyof BrandingData> = ['logoFile', 'logoTextFile', 'favicon', 'loader'];
+  const assetTitles: Array<keyof BrandingData> = ['logoFile', 'logoTextFile'];
   assetTitles.forEach((asset: string) => {
     const path = branding[asset] as string;
     if (path.startsWith(ASSET_PREFIX)) {

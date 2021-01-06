@@ -43,10 +43,11 @@ describe('Page header tools', () => {
   const mockOnCopyLoginCommand = jest.fn();
   global.open = jest.fn();
 
-  const cheCliTool = 'crwctl';
+  const productCli = 'crwctl';
   const email = 'johndoe@example.com';
   const name = 'John Doe';
-  const store = createStore(cheCliTool);
+  const helpTitle = 'Help';
+  const store = createStore(productCli, helpTitle);
   const user = {
     id: 'test-id',
     name: name,
@@ -101,7 +102,7 @@ describe('Page header tools', () => {
     const menuButton = screen.getByRole('button', { name });
     fireEvent.click(menuButton);
 
-    const copyLoginCommandButton = screen.getByText(`Copy ${cheCliTool} login command`);
+    const copyLoginCommandButton = screen.getByText(`Copy ${productCli} login command`);
     fireEvent.click(copyLoginCommandButton);
 
     expect(mockOnCopyLoginCommand).toBeCalled();
@@ -147,8 +148,8 @@ describe('Page header tools', () => {
     const infoButton = screen.getByRole('button', { name: 'info button' });
     fireEvent.click(infoButton);
 
-    const communityItem = screen.getByRole('menuitem', { name: /Community/i });
-    fireEvent.click(communityItem);
+    const helpItem = screen.getByRole('menuitem', { name: new RegExp(helpTitle, 'i') });
+    fireEvent.click(helpItem);
 
     expect(global.open).toBeCalled();
   });
@@ -168,9 +169,10 @@ describe('Page header tools', () => {
 
 });
 
-function createStore(cheCliTool: string): Store {
+function createStore(cheCliTool: string, helpTitle: string): Store {
   return new FakeStoreBuilder()
     .withBranding({
+      helpTitle: helpTitle,
       configuration: {
         cheCliTool
       },

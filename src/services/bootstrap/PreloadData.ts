@@ -67,9 +67,6 @@ export class PreloadData {
   }
 
   private async updateJsonRpcMasterApi(): Promise<void> {
-    const state = this.store.getState();
-    const { branding: { data: { websocketContext } } } = state;
-    this.cheWorkspaceClient.setWebsocketContext(websocketContext);
     return this.cheWorkspaceClient.updateJsonRpcMasterApi();
   }
 

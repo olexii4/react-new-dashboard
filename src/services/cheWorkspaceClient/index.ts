@@ -115,10 +115,6 @@ export class CheWorkspaceClient {
     this.baseUrl = baseUrl;
   }
 
-  setWebsocketContext(websocketContext: string): void {
-    this.websocketContext = websocketContext;
-  }
-
   updateRestApiClient(): void {
     const baseUrl = this.baseUrl;
     const headers = this.token ? { Authorization: `Bearer ${this.token}` } : {};
@@ -126,7 +122,7 @@ export class CheWorkspaceClient {
   }
 
   async updateJsonRpcMasterApi(): Promise<void> {
-    let jsonRpcApiLocation = this.originLocation.replace('http', 'ws') + this.websocketContext;
+    let jsonRpcApiLocation = this.originLocation.replace('http', 'ws') + '/api/websocket';
     // connect
     if (this.token) {
       const header = 'Authorization';

@@ -30,7 +30,6 @@ import {
 import { connect, ConnectedProps } from 'react-redux';
 import { container } from '../../../inversify.config';
 import { AppAlerts } from '../../../services/alerts/appAlerts';
-import { CheCliTool } from '../../../services/bootstrap/branding.constant';
 import { AlertItem } from '../../../services/helpers/types';
 import { KeycloakAuthService } from '../../../services/keycloak/auth';
 import { AppState } from '../../../store';
@@ -102,13 +101,13 @@ export class HeaderTools extends React.PureComponent<Props, State> {
     return window.location.host;
   }
 
-  private getCliTool(): CheCliTool {
-    return this.props.branding.data.configuration.cheCliTool || 'chectl';
+  private getCliTool(): string {
+    return this.props.branding.data.configuration.cheCliTool;
   }
 
   private getLoginCommand(): string {
     const { keycloak, sso } = KeycloakAuthService;
-    let loginCommand = `chectl auth:login ${this.getHost()}`;
+    let loginCommand = this.getCliTool() + ` auth:login ${this.getHost()}`;
     if (!sso) {
       return loginCommand;
     }
@@ -235,10 +234,9 @@ export class HeaderTools extends React.PureComponent<Props, State> {
 
   private buildInfoDropdownItems(): React.ReactNode[] {
     const branding = this.props.branding.data;
-    const makeAWish = 'mailto:che-dev@eclipse.org?subject=Wishes%20for%20';
+    const makeAWish = 'mailto:' + branding.supportEmail + '?subject=Wishes%20for%20';
     const faq = branding.docs.faq;
     const generalDocs = branding.docs.general;
-    const community = 'https://www.eclipse.org/che/';
     return [
       <ApplicationLauncherGroup key='info_button'>
         <ApplicationLauncherItem
@@ -250,7 +248,7 @@ export class HeaderTools extends React.PureComponent<Props, State> {
           Make a wish
         </ApplicationLauncherItem>
         <ApplicationLauncherItem
-          key='documention'
+          key='documentation'
           isExternal={true}
           component='button'
           onClick={() => window.open(generalDocs, '_blank')}
@@ -268,12 +266,12 @@ export class HeaderTools extends React.PureComponent<Props, State> {
           </ApplicationLauncherItem>
         )}
         <ApplicationLauncherItem
-          key='community'
+          key='help'
           isExternal={true}
           component='button'
-          onClick={() => window.open(community, '_target')}
+          onClick={() => window.open(branding.helpPath, '_target')}
         >
-          Community
+          {branding.helpTitle}
         </ApplicationLauncherItem>
         <ApplicationLauncherItem
           key='about'
