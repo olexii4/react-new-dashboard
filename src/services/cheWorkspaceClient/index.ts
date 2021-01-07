@@ -64,6 +64,7 @@ export class CheWorkspaceClient {
               if (refreshed && keycloak.token) {
                 const header = 'Authorization';
                 this.axios.defaults.headers.common[header] = `Bearer ${keycloak.token}`;
+                request.headers.common[header] = `Bearer ${keycloak.token}`;
               }
               resolve(keycloak);
             }).error((error: any) => {
