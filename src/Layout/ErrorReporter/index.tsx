@@ -26,7 +26,8 @@ export class ErrorReporter extends React.PureComponent<Props> {
       <Page>
         <PageSection
           isFilled={true}
-          className={styles.backdropBackground + ' pf-c-page-section-no-padding'}
+          padding={{ default: 'noPadding' }}
+          className={styles.backdropBackground}
         >
           <Stack>
             <StackItem isFilled></StackItem>
