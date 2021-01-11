@@ -728,7 +728,7 @@
     tippy.js "5.1.2"
     tslib "^1.11.1"
 
-"@patternfly/react-core@^4.23.1":
+"@patternfly/react-core@~4.84.4":
   version "4.84.4"
   resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.84.4.tgz#e3061596f0ac02c5cb181f41201293ba073013a1"
   integrity sha512-GIv6zJl+NGYIrSm2pATQFggRt4ZFYUKVNbLSsna2x8+eYeZscqIUFSPmBM+eNpQkGaoJk254Lu09pgm4hM/b4g==
